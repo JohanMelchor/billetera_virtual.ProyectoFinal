@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.viewcontroller.UsuarioViewController">
+   <children>
+      <SplitPane dividerPositions="0.5" layoutY="-3.0" orientation="VERTICAL" prefHeight="406.0" prefWidth="600.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <Button fx:id="btnAgregarUsuario" layoutX="183.0" layoutY="160.0" mnemonicParsing="false" onAction="#onAgregarUsuario" text="Agregar" />
+                  <Button fx:id="btnActualizarUsuario" layoutX="273.0" layoutY="160.0" mnemonicParsing="false" onAction="#onActualizarUsuario" text="Actualizar" />
+                  <Button fx:id="btnEliminarUsuario" layoutX="366.0" layoutY="160.0" mnemonicParsing="false" onAction="#onEliminarUsuario" text="Eliminar" />
+                  <TextField fx:id="txtNombreUsuario" layoutX="138.0" layoutY="22.0" />
+                  <TextField fx:id="txtIdUsuario" layoutX="138.0" layoutY="53.0" />
+                  <TextField fx:id="txtCorreoUsuario" layoutX="138.0" layoutY="87.0" />
+                  <TextField fx:id="txtTelefonoUsuario" layoutX="396.0" layoutY="22.0" />
+                  <TextField fx:id="txtDireccionUsuario" layoutX="396.0" layoutY="53.0" />
+                  <Label layoutX="27.0" layoutY="26.0" text="Nombre completo:" />
+                  <Label layoutX="54.0" layoutY="57.0" text="ID de usuario:" />
+                  <Label layoutX="88.0" layoutY="91.0" text="Correo:" />
+                  <Label layoutX="333.0" layoutY="26.0" text="Telefono:" />
+                  <Label layoutX="332.0" layoutY="57.0" text="Direccion:" />
+                  <Label layoutX="343.0" layoutY="91.0" text="Saldo:" />
+                  <Label layoutX="449.0" layoutY="91.0" text="00.0" />
+                  <Label layoutX="442.0" layoutY="91.0" prefHeight="17.0" prefWidth="0.0" text="\$" />
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="141.0" prefWidth="598.0">
+               <children>
+                  <TableView layoutX="-2.0" prefHeight="200.0" prefWidth="600.0">
+                    <columns>
+                      <TableColumn fx:id="tcNombreUsuario" prefWidth="122.0" text="Nombre Completo" />
+                      <TableColumn fx:id="tcIdUsuario" prefWidth="65.0" text="ID" />
+                        <TableColumn fx:id="tcCorreoUsuario" minWidth="6.0" prefWidth="144.0" text="Correo" />
+                        <TableColumn fx:id="tcTelefonoUsuario" prefWidth="89.0" text="Telefono" />
+                        <TableColumn fx:id="tcDireccionUsuario" prefWidth="99.0" text="Direccion" />
+                        <TableColumn fx:id="tcSaldoUsuario" text="Saldo" />
+                    </columns>
+                  </TableView>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>

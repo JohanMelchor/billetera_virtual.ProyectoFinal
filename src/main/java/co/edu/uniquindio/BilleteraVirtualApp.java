@@ -14,7 +14,7 @@ import java.io.IOException;
 public class BilleteraVirtualApp extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(BilleteraVirtualApp.class.getResource("hotelApp.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(BilleteraVirtualApp.class.getResource("BilleteraVirtualApp.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("App Billetera virtual");
         stage.setScene(scene);
