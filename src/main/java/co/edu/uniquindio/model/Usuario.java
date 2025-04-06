@@ -1,5 +1,7 @@
 package co.edu.uniquindio.model;
 
+import co.edu.uniquindio.model.Builder.UsuarioBuilder;
+
 public class Usuario {
     private String idUsuario;
     private String nombreCompleto;
@@ -8,7 +10,8 @@ public class Usuario {
     private String direccion;
     private Double saldo;
 
-    public Usuario() {}
+    public Usuario() {
+    }
 
     public Usuario(String idUsuario, String nombreCompleto, String correo,
                    String telefono, String direccion, Double saldo) {
@@ -18,6 +21,10 @@ public class Usuario {
         this.telefono = telefono;
         this.direccion = direccion;
         this.saldo = saldo;
+    }
+
+    public static UsuarioBuilder builder() {
+        return new UsuarioBuilder();
     }
 
     public String getNombreCompleto() {

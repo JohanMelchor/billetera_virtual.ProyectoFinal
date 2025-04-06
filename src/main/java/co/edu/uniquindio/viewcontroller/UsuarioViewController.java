@@ -2,7 +2,6 @@ package co.edu.uniquindio.viewcontroller;
 
 import co.edu.uniquindio.controller.UsuarioController;
 import co.edu.uniquindio.mapping.dto.UsuarioDto;
-import co.edu.uniquindio.model.Usuario;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -72,7 +71,6 @@ public class UsuarioViewController {
     @FXML
     void onActualizarUsuario(ActionEvent event) {
         actualizarUsuario();
-
     }
 
     @FXML
@@ -83,7 +81,6 @@ public class UsuarioViewController {
     @FXML
     void onEliminarUsuario(ActionEvent event) {
         eliminarUsuario();
-
     }
 
     @FXML
@@ -120,7 +117,7 @@ public class UsuarioViewController {
             txtCorreoUsuario.setText(usuarioSeleccionado.correo());
             txtDireccionUsuario.setText(usuarioSeleccionado.direccion());
             txtTelefonoUsuario.setText(usuarioSeleccionado.telefono());
-            tcSaldoUsuario.setText(usuarioSeleccionado.saldo());
+            lblSaldo.setText(usuarioSeleccionado.saldo());
         }
     }
 
@@ -129,19 +126,12 @@ public class UsuarioViewController {
     }
 
     private void initDataBanding() {
-        tcNombreUsuario.setCellValueFactory
-                (cellData-> new SimpleStringProperty
-                        (cellData.getValue().nombreCompleto()));
-        tcIdUsuario.setCellValueFactory(cellData-> new SimpleStringProperty
-                (cellData.getValue().idUsuario()));
-        tcCorreoUsuario.setCellValueFactory(cellData-> new SimpleStringProperty
-                (cellData.getValue().correo()));
-        tcTelefonoUsuario.setCellValueFactory(cellData-> new SimpleStringProperty
-                (cellData.getValue().telefono()));
-        tcDireccionUsuario.setCellValueFactory(cellData-> new SimpleStringProperty
-                (cellData.getValue().direccion()));
-        tcSaldoUsuario.setCellValueFactory(cellData-> new SimpleStringProperty
-                (String.valueOf(cellData.getValue().saldo())));
+        tcNombreUsuario.setCellValueFactory(cellData-> new SimpleStringProperty(cellData.getValue().nombreCompleto()));
+        tcIdUsuario.setCellValueFactory(cellData-> new SimpleStringProperty(cellData.getValue().idUsuario()));
+        tcCorreoUsuario.setCellValueFactory(cellData-> new SimpleStringProperty(cellData.getValue().correo()));
+        tcTelefonoUsuario.setCellValueFactory(cellData-> new SimpleStringProperty(cellData.getValue().telefono()));
+        tcDireccionUsuario.setCellValueFactory(cellData-> new SimpleStringProperty(cellData.getValue().direccion()));
+        tcSaldoUsuario.setCellValueFactory(cellData-> new SimpleStringProperty(String.valueOf(cellData.getValue().saldo())));
     }
 
     private void agregarUsuario(){
