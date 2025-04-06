@@ -28,6 +28,9 @@ public class UsuarioViewController {
     private Button btnEliminarUsuario;
 
     @FXML
+    private Button btnObtenerUsuario;
+
+    @FXML
     private TableView<UsuarioDto> tableUsuario;
 
     @FXML
@@ -64,7 +67,7 @@ public class UsuarioViewController {
     private TextField txtTelefonoUsuario;
 
     @FXML
-    private Label txtSueldo;
+    private Label lblSaldo;
 
     @FXML
     void onActualizarUsuario(ActionEvent event) {
@@ -80,6 +83,11 @@ public class UsuarioViewController {
     @FXML
     void onEliminarUsuario(ActionEvent event) {
         eliminarUsuario();
+
+    }
+
+    @FXML
+    void onObtenerUsuario(ActionEvent event) {
 
     }
 
@@ -175,7 +183,7 @@ public class UsuarioViewController {
         return new UsuarioDto(txtNombreUsuario.getText(),
                 txtIdUsuario.getText(),txtCorreoUsuario.getText(),
                 txtTelefonoUsuario.getText(),txtDireccionUsuario.getText(),
-                txtSueldo.getText());
+                lblSaldo.getText());
     }
 
     private void eliminarUsuario() {
