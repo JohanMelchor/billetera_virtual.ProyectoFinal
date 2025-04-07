@@ -27,9 +27,6 @@ public class UsuarioViewController {
     private Button btnEliminarUsuario;
 
     @FXML
-    private Button btnObtenerUsuario;
-
-    @FXML
     private TableView<UsuarioDto> tableUsuario;
 
     @FXML
@@ -75,17 +72,12 @@ public class UsuarioViewController {
 
     @FXML
     void onAgregarUsuario(ActionEvent event) {
-        crearUsuarioDto();
+        agregarUsuario();
     }
 
     @FXML
     void onEliminarUsuario(ActionEvent event) {
         eliminarUsuario();
-    }
-
-    @FXML
-    void onObtenerUsuario(ActionEvent event) {
-
     }
 
     @FXML
@@ -102,45 +94,18 @@ public class UsuarioViewController {
         listenerSeleccion();
     }
 
-    private void listenerSeleccion() {
-        tableUsuario.getSelectionModel().selectedItemProperty().addListener((
-                obs,oldSelection,newSelection) -> {
-            usuarioSeleccionado=newSelection;
-            mostrarInformacionUsuario(usuarioSeleccionado);
-        });
-    }
-
-    private void mostrarInformacionUsuario(UsuarioDto usuarioSeleccionado) {
-        if(usuarioSeleccionado != null){
-            txtNombreUsuario.setText(usuarioSeleccionado.nombreCompleto());
-            txtIdUsuario.setText(usuarioSeleccionado.idUsuario());
-            txtCorreoUsuario.setText(usuarioSeleccionado.correo());
-            txtDireccionUsuario.setText(usuarioSeleccionado.direccion());
-            txtTelefonoUsuario.setText(usuarioSeleccionado.telefono());
-            lblSaldo.setText(usuarioSeleccionado.saldo());
-        }
-    }
 
     private void obtenerUsuarios() {
         listaUsuarios.addAll(usuarioController.obtenerUsuarios());
     }
 
-    private void initDataBanding() {
-        tcNombreUsuario.setCellValueFactory(cellData-> new SimpleStringProperty(cellData.getValue().nombreCompleto()));
-        tcIdUsuario.setCellValueFactory(cellData-> new SimpleStringProperty(cellData.getValue().idUsuario()));
-        tcCorreoUsuario.setCellValueFactory(cellData-> new SimpleStringProperty(cellData.getValue().correo()));
-        tcTelefonoUsuario.setCellValueFactory(cellData-> new SimpleStringProperty(cellData.getValue().telefono()));
-        tcDireccionUsuario.setCellValueFactory(cellData-> new SimpleStringProperty(cellData.getValue().direccion()));
-        tcSaldoUsuario.setCellValueFactory(cellData-> new SimpleStringProperty(String.valueOf(cellData.getValue().saldo())));
-    }
 
     private void agregarUsuario(){
         UsuarioDto usuarioDto=crearUsuarioDto();
         if(datosValidos(usuarioDto)){
             if(usuarioController.agregarUsuario(usuarioDto)){
-                listaUsuarios.addAll(usuarioDto);
+                listaUsuarios.add(usuarioDto);
                 limpiarCampos();
-
             }
             else{
                 mostrarMensaje("Usuario no agregado", "Notificacion", "El cliente no fue agregado",
@@ -153,6 +118,13 @@ public class UsuarioViewController {
         }
     }
 
+    private UsuarioDto crearUsuarioDto() {
+        return new UsuarioDto(txtNombreUsuario.getText(),
+                txtIdUsuario.getText(),txtCorreoUsuario.getText(),
+                txtTelefonoUsuario.getText(),txtDireccionUsuario.getText(),
+                lblSaldo.getText());
+    }
+
     private void limpiarCampos() {
         txtCorreoUsuario.setText("");
         txtDireccionUsuario.setText("");
@@ -162,32 +134,51 @@ public class UsuarioViewController {
     }
 
     private boolean datosValidos(UsuarioDto usuarioDto) {
-        if(usuarioDto.nombreCompleto().isEmpty()||usuarioDto.idUsuario().isEmpty()||
-                usuarioDto.correo().isEmpty()||
-                usuarioDto.telefono().isEmpty())return false;
-
+        if(usuarioDto.nombreCompleto().isEmpty()
+            ||usuarioDto.idUsuario().isEmpty()
+            ||usuarioDto.correo().isEmpty()
+            ||usuarioDto.telefono().isEmpty()
+            ||usuarioDto.direccion().isEmpty()
+            ||usuarioDto.saldo().isEmpty()
+            ||usuarioDto.nombreCompleto() == null
+            ||usuarioDto.idUsuario() == null
+            ||usuarioDto.correo() == null
+            ||usuarioDto.telefono() == null
+            ||usuarioDto.direccion() == null||usuarioDto.saldo() == null){
+            return false;
+            
+        }
         return true;
-    }
-
-    private UsuarioDto crearUsuarioDto() {
-        return new UsuarioDto(txtNombreUsuario.getText(),
-                txtIdUsuario.getText(),txtCorreoUsuario.getText(),
-                txtTelefonoUsuario.getText(),txtDireccionUsuario.getText(),
-                lblSaldo.getText());
     }
 
     private void eliminarUsuario() {
         UsuarioDto usuarioDto=crearUsuarioDto();
         if(datosValidos(usuarioDto)){
-            if(usuarioController.eliminarUsuario(usuarioDto));
-
-        }else{
-            //mostrar alerta
+            if(usuarioController.eliminarUsuario(usuarioDto)){
+                listaUsuarios.remove(usuarioSeleccionado);
+                limpiarCampos();
+        } else {
+            mostrarMensaje("No se pudo eliminar", "Error", "El usuario no fue eliminado", Alert.AlertType.ERROR);
         }
-
+        //}else{
+            //mostrar alerta
+        //}
+        }
     }
 
     private void actualizarUsuario() {
+        UsuarioDto usuarioDto=crearUsuarioDto();
+        if(datosValidos(usuarioDto)){
+            if(usuarioController.actualizarUsuario(usuarioDto)){
+                listaUsuarios.set(listaUsuarios.indexOf(usuarioSeleccionado),usuarioDto);
+                limpiarCampos();
+            }else{
+                mostrarMensaje("No se pudo actualizar", "Error", "El usuario no fue actualizado", Alert.AlertType.ERROR);
+            }
+        }else{
+            mostrarMensaje("Campos incompletos", "Notificacion",
+                    "Los datos del formulario estan incompletos",Alert.AlertType.WARNING);
+        }
     }
 
     private void mostrarMensaje(String titulo, String header, String contenido, Alert.AlertType alertType) {
@@ -210,5 +201,29 @@ public class UsuarioViewController {
         } else {
             return false;
         }
+    }
+
+    private void listenerSeleccion() {
+        tableUsuario.getSelectionModel().selectedItemProperty().addListener((obs,oldSelection,newSelection) -> {usuarioSeleccionado=newSelection;mostrarInformacionUsuario(usuarioSeleccionado);});
+    }
+
+    private void mostrarInformacionUsuario(UsuarioDto usuarioSeleccionado) {
+        if(usuarioSeleccionado != null){
+            txtNombreUsuario.setText(usuarioSeleccionado.nombreCompleto());
+            txtIdUsuario.setText(usuarioSeleccionado.idUsuario());
+            txtCorreoUsuario.setText(usuarioSeleccionado.correo());
+            txtDireccionUsuario.setText(usuarioSeleccionado.direccion());
+            txtTelefonoUsuario.setText(usuarioSeleccionado.telefono());
+            lblSaldo.setText(usuarioSeleccionado.saldo());
+        }
+    }
+
+    private void initDataBanding() {
+        tcNombreUsuario.setCellValueFactory(cellData-> new SimpleStringProperty(cellData.getValue().nombreCompleto()));
+        tcIdUsuario.setCellValueFactory(cellData-> new SimpleStringProperty(cellData.getValue().idUsuario()));
+        tcCorreoUsuario.setCellValueFactory(cellData-> new SimpleStringProperty(cellData.getValue().correo()));
+        tcTelefonoUsuario.setCellValueFactory(cellData-> new SimpleStringProperty(cellData.getValue().telefono()));
+        tcDireccionUsuario.setCellValueFactory(cellData-> new SimpleStringProperty(cellData.getValue().direccion()));
+        tcSaldoUsuario.setCellValueFactory(cellData-> new SimpleStringProperty(String.valueOf(cellData.getValue().saldo())));
     }
 }

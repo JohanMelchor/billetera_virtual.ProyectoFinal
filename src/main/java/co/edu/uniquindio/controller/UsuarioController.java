@@ -18,7 +18,7 @@ public class UsuarioController {
     }
 
     public boolean actualizarUsuario(UsuarioDto usuarioDto){
-        return false;
+        return modelFactory.actualizarUsuario(usuarioDto);
     }
 
     public boolean eliminarUsuario(UsuarioDto usuarioDto){

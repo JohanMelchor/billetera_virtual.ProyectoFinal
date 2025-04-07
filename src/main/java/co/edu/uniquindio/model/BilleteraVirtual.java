@@ -58,8 +58,8 @@ public class BilleteraVirtual implements IUsuarioServices {
 
     @Override
     public boolean crearUsuario(Usuario usuario) {
-       Usuario newUsuario=buscarUsuario(usuario);
-        if(newUsuario!=null){
+       Usuario NuevoUsuario=buscarUsuario(usuario);
+        if(NuevoUsuario!=null){
             listaUsuarios.add(usuario);
             return true;
         }
@@ -69,8 +69,8 @@ public class BilleteraVirtual implements IUsuarioServices {
 
     @Override
     public boolean eliminarUsuario(Usuario usuario) {
-        Usuario deletedUsuario=buscarUsuario(usuario);
-        if(deletedUsuario!=null){
+        Usuario UsuarioEliminado=buscarUsuario(usuario);
+        if(UsuarioEliminado!=null){
             listaUsuarios.remove(usuario);
             return true;
         }
@@ -78,11 +78,24 @@ public class BilleteraVirtual implements IUsuarioServices {
         return false;
     }
 
-    private Usuario buscarUsuario(Usuario newUsuario) {
+    private Usuario buscarUsuario(Usuario nuevUsuario) {
         for(Usuario usuario: listaUsuarios) {
-            if(usuario.getIdUsuario().equalsIgnoreCase(newUsuario.getIdUsuario())) return usuario;
+            if(usuario.getIdUsuario().equalsIgnoreCase(nuevUsuario.getIdUsuario())) return usuario;
         }
-
         return null;
+    }
+
+    @Override
+    public boolean actualizarUsuario(Usuario usuario) {
+        Usuario UsuarioActualizado=buscarUsuario(usuario);
+        if(UsuarioActualizado!=null){
+            UsuarioActualizado.setNombreCompleto(usuario.getNombreCompleto());
+            UsuarioActualizado.setCorreo(usuario.getCorreo());
+            UsuarioActualizado.setTelefono(usuario.getTelefono());
+            UsuarioActualizado.setDireccion(usuario.getDireccion());
+            UsuarioActualizado.setSaldo(usuario.getSaldo());
+            return true;
+        }
+        return false;
     }
 }

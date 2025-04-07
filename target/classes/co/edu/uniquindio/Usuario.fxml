@@ -14,23 +14,21 @@
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
-                  <Button fx:id="btnAgregarUsuario" layoutX="154.0" layoutY="160.0" mnemonicParsing="false" onAction="#onAgregarUsuario" text="Agregar" />
-                  <Button fx:id="btnActualizarUsuario" layoutX="231.0" layoutY="160.0" mnemonicParsing="false" onAction="#onActualizarUsuario" text="Actualizar" />
-                  <Button fx:id="btnEliminarUsuario" layoutX="314.0" layoutY="160.0" mnemonicParsing="false" onAction="#onEliminarUsuario" text="Eliminar" />
-                  <TextField fx:id="txtNombreUsuario" layoutX="138.0" layoutY="22.0" />
-                  <TextField fx:id="txtIdUsuario" layoutX="138.0" layoutY="53.0" />
-                  <TextField fx:id="txtCorreoUsuario" layoutX="138.0" layoutY="87.0" />
-                  <TextField fx:id="txtTelefonoUsuario" layoutX="396.0" layoutY="22.0" />
-                  <TextField fx:id="txtDireccionUsuario" layoutX="396.0" layoutY="53.0" />
-                  <Label layoutX="27.0" layoutY="26.0" text="Nombre completo:" />
-                  <Label layoutX="54.0" layoutY="57.0" text="ID de usuario:" />
-                  <Label layoutX="88.0" layoutY="91.0" text="Correo:" />
-                  <Label layoutX="333.0" layoutY="26.0" text="Telefono:" />
-                  <Label layoutX="332.0" layoutY="57.0" text="Direccion:" />
-                  <Label layoutX="343.0" layoutY="91.0" text="Saldo:" />
-                  <Label fx:id="lblSaldo" layoutX="449.0" layoutY="91.0" text="00.0" />
-                  <Label layoutX="442.0" layoutY="91.0" prefHeight="17.0" prefWidth="0.0" text="\$" />
-                  <Button fx:id="btnObtenerUsuario" layoutX="385.0" layoutY="160.0" mnemonicParsing="false" onAction="#onObtenerUsuario" text="Obtener" />
+                  <Button fx:id="btnAgregarUsuario" layoutX="184.0" layoutY="160.0" mnemonicParsing="false" onAction="#onAgregarUsuario" text="Agregar" />
+                  <Button fx:id="btnActualizarUsuario" layoutX="265.0" layoutY="160.0" mnemonicParsing="false" onAction="#onActualizarUsuario" text="Actualizar" />
+                  <Button fx:id="btnEliminarUsuario" layoutX="357.0" layoutY="160.0" mnemonicParsing="false" onAction="#onEliminarUsuario" text="Eliminar" />
+                  <TextField fx:id="txtNombreUsuario" layoutX="139.0" layoutY="35.0" />
+                  <TextField fx:id="txtIdUsuario" layoutX="139.0" layoutY="66.0" />
+                  <TextField fx:id="txtCorreoUsuario" layoutX="139.0" layoutY="100.0" />
+                  <TextField fx:id="txtTelefonoUsuario" layoutX="397.0" layoutY="35.0" />
+                  <TextField fx:id="txtDireccionUsuario" layoutX="397.0" layoutY="66.0" />
+                  <Label layoutX="28.0" layoutY="39.0" text="Nombre completo:" />
+                  <Label layoutX="55.0" layoutY="70.0" text="ID de usuario:" />
+                  <Label layoutX="89.0" layoutY="104.0" text="Correo:" />
+                  <Label layoutX="334.0" layoutY="39.0" text="Telefono:" />
+                  <Label layoutX="333.0" layoutY="70.0" text="Direccion:" />
+                  <Label layoutX="344.0" layoutY="104.0" text="Saldo: $" />
+                  <Label fx:id="lblSaldo" layoutX="397.0" layoutY="104.0" text="00.0" />
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="141.0" prefWidth="598.0">

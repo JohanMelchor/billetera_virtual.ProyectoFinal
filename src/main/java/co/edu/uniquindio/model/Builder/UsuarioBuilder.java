@@ -1,4 +1,5 @@
 package co.edu.uniquindio.model.Builder;
+import co.edu.uniquindio.mapping.dto.UsuarioDto;
 import co.edu.uniquindio.model.Usuario;
 
 public class UsuarioBuilder{
@@ -35,6 +36,6 @@ public class UsuarioBuilder{
     }
     public Usuario build() {
         return new Usuario(idUsuario, nombreCompleto, correo, telefono, direccion, saldo);
-    }    
+    } 
 
 }
