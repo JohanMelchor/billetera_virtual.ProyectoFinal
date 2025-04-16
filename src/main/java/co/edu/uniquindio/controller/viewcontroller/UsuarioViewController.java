@@ -1,4 +1,4 @@
-package co.edu.uniquindio.viewcontroller;
+package co.edu.uniquindio.controller.viewcontroller;
 
 import co.edu.uniquindio.controller.UsuarioController;
 import co.edu.uniquindio.mapping.dto.UsuarioDto;
@@ -101,12 +101,14 @@ public class UsuarioViewController {
 
 
     private void agregarUsuario(){
-        UsuarioDto usuarioDto=crearUsuarioDto();
+        UsuarioDto usuarioDto = crearUsuarioDto();
         if(datosValidos(usuarioDto)){
             if(usuarioController.agregarUsuario(usuarioDto)){
-                listaUsuarios.add(usuarioDto);
+                listaUsuarios.clear();  // Limpiar y volver a cargar
+                listaUsuarios.addAll(usuarioController.obtenerUsuarios());
                 limpiarCampos();
-            }
+                mostrarMensaje("Usuario agregado", "Éxito", "El usuario fue agregado correctamente", Alert.AlertType.INFORMATION);
+        }
             else{
                 mostrarMensaje("Usuario no agregado", "Notificacion", "El cliente no fue agregado",
                         Alert.AlertType.ERROR);
@@ -125,12 +127,14 @@ public class UsuarioViewController {
                 lblSaldo.getText());
     }
 
+
     private void limpiarCampos() {
         txtCorreoUsuario.setText("");
         txtDireccionUsuario.setText("");
         txtIdUsuario.setText("");
         txtNombreUsuario.setText("");
         txtTelefonoUsuario.setText("");
+        lblSaldo.setText("0.0");
     }
 
     private boolean datosValidos(UsuarioDto usuarioDto) {
@@ -144,7 +148,8 @@ public class UsuarioViewController {
             ||usuarioDto.idUsuario() == null
             ||usuarioDto.correo() == null
             ||usuarioDto.telefono() == null
-            ||usuarioDto.direccion() == null||usuarioDto.saldo() == null){
+            ||usuarioDto.direccion() == null
+            ||usuarioDto.saldo() == null){
             return false;
             
         }
@@ -152,17 +157,17 @@ public class UsuarioViewController {
     }
 
     private void eliminarUsuario() {
-        UsuarioDto usuarioDto=crearUsuarioDto();
-        if(datosValidos(usuarioDto)){
-            if(usuarioController.eliminarUsuario(usuarioDto)){
+        if(usuarioSeleccionado != null){
+            boolean eliminado = usuarioController.eliminarUsuario(usuarioSeleccionado);
+            if(eliminado){
                 listaUsuarios.remove(usuarioSeleccionado);
                 limpiarCampos();
+                mostrarMensaje("Usuario eliminado", "Éxito", "El usuario fue eliminado correctamente", Alert.AlertType.INFORMATION);
+            } else {
+                mostrarMensaje("No se pudo eliminar", "Error", "El usuario no fue eliminado", Alert.AlertType.ERROR);
+            }
         } else {
-            mostrarMensaje("No se pudo eliminar", "Error", "El usuario no fue eliminado", Alert.AlertType.ERROR);
-        }
-        //}else{
-            //mostrar alerta
-        //}
+            mostrarMensaje("Selección requerida", "Advertencia", "Debe seleccionar un usuario de la tabla", Alert.AlertType.WARNING);
         }
     }
 

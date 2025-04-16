@@ -1,6 +1,5 @@
 package co.edu.uniquindio.model;
 
-import co.edu.uniquindio.mapping.dto.UsuarioDto;
 import co.edu.uniquindio.service.IUsuarioServices;
 
 import java.util.ArrayList;
@@ -59,11 +58,10 @@ public class BilleteraVirtual implements IUsuarioServices {
     @Override
     public boolean crearUsuario(Usuario usuario) {
        Usuario NuevoUsuario=buscarUsuario(usuario);
-        if(NuevoUsuario!=null){
+        if(NuevoUsuario==null){
             listaUsuarios.add(usuario);
             return true;
         }
-
         return false;
     }
 
@@ -71,16 +69,15 @@ public class BilleteraVirtual implements IUsuarioServices {
     public boolean eliminarUsuario(Usuario usuario) {
         Usuario UsuarioEliminado=buscarUsuario(usuario);
         if(UsuarioEliminado!=null){
-            listaUsuarios.remove(usuario);
+            listaUsuarios.remove(UsuarioEliminado);
             return true;
         }
-
         return false;
     }
 
     private Usuario buscarUsuario(Usuario nuevUsuario) {
         for(Usuario usuario: listaUsuarios) {
-            if(usuario.getIdUsuario().equalsIgnoreCase(nuevUsuario.getIdUsuario())) return usuario;
+            if(usuario.getIdUsuario().trim().equalsIgnoreCase(nuevUsuario.getIdUsuario().trim())) return usuario;
         }
         return null;
     }
@@ -93,7 +90,6 @@ public class BilleteraVirtual implements IUsuarioServices {
             UsuarioActualizado.setCorreo(usuario.getCorreo());
             UsuarioActualizado.setTelefono(usuario.getTelefono());
             UsuarioActualizado.setDireccion(usuario.getDireccion());
-            UsuarioActualizado.setSaldo(usuario.getSaldo());
             return true;
         }
         return false;
