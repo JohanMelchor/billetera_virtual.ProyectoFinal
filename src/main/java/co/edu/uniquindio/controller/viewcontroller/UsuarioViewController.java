@@ -158,7 +158,7 @@ public class UsuarioViewController {
 
     private void eliminarUsuario() {
         if(usuarioSeleccionado != null){
-            boolean eliminado = usuarioController.eliminarUsuario(usuarioSeleccionado);
+            boolean eliminado = usuarioController.eliminarUsuario(usuarioSeleccionado.idUsuario());
             if(eliminado){
                 listaUsuarios.remove(usuarioSeleccionado);
                 limpiarCampos();
