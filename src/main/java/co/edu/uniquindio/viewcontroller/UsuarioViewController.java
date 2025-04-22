@@ -1,4 +1,4 @@
-package co.edu.uniquindio.controller.viewcontroller;
+package co.edu.uniquindio.viewcontroller;
 
 import co.edu.uniquindio.controller.UsuarioController;
 import co.edu.uniquindio.mapping.dto.UsuarioDto;
