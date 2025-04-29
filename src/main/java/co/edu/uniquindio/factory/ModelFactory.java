@@ -30,15 +30,15 @@ public class ModelFactory implements IModelFactoryServices {
         billeteraVirtual = new BilleteraVirtual();
         usuarioMapping = new UsuarioMappingImpl();
 
-        Usuario usuario1 = Usuario.builder().NombreCompleto("juan").IdUsuario("123").Correo("juan@gmail.com").Telefono("321").Direccion("cs 1").Saldo(1000.0).build();
-        Usuario usuario2 = Usuario.builder().NombreCompleto("johan").IdUsuario("124").Correo("johan@gmail.com").Telefono("421").Direccion("cs 2").Saldo(2000.0).build();
-        Usuario usuario3 = Usuario.builder().NombreCompleto("felipe").IdUsuario("125").Correo("felipe@gmail.com").Telefono("521").Direccion("cs 3").Saldo(3000.0).build();
-        Usuario usuario4 = Usuario.builder().NombreCompleto("sofia").IdUsuario("126").Correo("sofia@gmail.com").Telefono("621").Direccion("cs 4").Saldo(4000.0).build();
+        Usuario usuario1 = Usuario.builder().nombreCompleto("juan").idUsuario("123").correo("juan@gmail.com").telefono("321").direccion("cs 1").saldo(1000.0).build();
+        Usuario usuario2 = Usuario.builder().nombreCompleto("johan").idUsuario("124").correo("johan@gmail.com").telefono("421").direccion("cs 2").saldo(2000.0).build();
+        Usuario usuario3 = Usuario.builder().nombreCompleto("felipe").idUsuario("125").correo("felipe@gmail.com").telefono("521").direccion("cs 3").saldo(3000.0).build();
+        Usuario usuario4 = Usuario.builder().nombreCompleto("sofia").idUsuario("126").correo("sofia@gmail.com").telefono("621").direccion("cs 4").saldo(4000.0).build();
 
-        billeteraVirtual.getListaUsuarios().add(usuario1);
-        billeteraVirtual.getListaUsuarios().add(usuario2);
-        billeteraVirtual.getListaUsuarios().add(usuario3);
-        billeteraVirtual.getListaUsuarios().add(usuario4);
+        billeteraVirtual.crearUsuario(usuario1);
+        billeteraVirtual.crearUsuario(usuario2);
+        billeteraVirtual.crearUsuario(usuario3);
+        billeteraVirtual.crearUsuario(usuario4);
     }
 
     @Override
@@ -52,8 +52,8 @@ public class ModelFactory implements IModelFactoryServices {
     }
 
     @Override
-    public boolean eliminarUsuario(UsuarioDto usuarioDto) {
-        return billeteraVirtual.eliminarUsuario(usuarioMapping.usuarioDtoToUsuario(usuarioDto));
+    public boolean eliminarUsuario(String idUsuairo) {
+        return billeteraVirtual.eliminarUsuario(idUsuairo);
     }
 
     @Override

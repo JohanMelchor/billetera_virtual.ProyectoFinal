@@ -66,8 +66,8 @@ public class BilleteraVirtual implements IUsuarioServices {
     }
 
     @Override
-    public boolean eliminarUsuario(Usuario usuario) {
-        Usuario UsuarioEliminado=buscarUsuario(usuario);
+    public boolean eliminarUsuario(String idUsuario) {
+        Usuario UsuarioEliminado=buscarUsuairoId(idUsuario);
         if(UsuarioEliminado!=null){
             listaUsuarios.remove(UsuarioEliminado);
             return true;
@@ -75,9 +75,16 @@ public class BilleteraVirtual implements IUsuarioServices {
         return false;
     }
 
+    private Usuario buscarUsuairoId(String idUsuario) {
+        for (Usuario usuario : listaUsuarios) {
+            if (usuario.getIdUsuario().equalsIgnoreCase(idUsuario)) {return usuario;}
+        }
+        return null;
+    }
+
     private Usuario buscarUsuario(Usuario nuevUsuario) {
         for(Usuario usuario: listaUsuarios) {
-            if(usuario.getIdUsuario().trim().equalsIgnoreCase(nuevUsuario.getIdUsuario().trim())) return usuario;
+            if(usuario.getIdUsuario().equalsIgnoreCase(nuevUsuario.getIdUsuario())) return usuario;
         }
         return null;
     }

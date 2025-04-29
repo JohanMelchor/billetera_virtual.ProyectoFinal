@@ -4,6 +4,6 @@ import co.edu.uniquindio.model.Usuario;
 
 public interface IUsuarioServices {
     boolean crearUsuario(Usuario usuario);
-    boolean eliminarUsuario(Usuario usuario);
+    boolean eliminarUsuario(String idUsuario);
     boolean actualizarUsuario(Usuario usuario);
 }
