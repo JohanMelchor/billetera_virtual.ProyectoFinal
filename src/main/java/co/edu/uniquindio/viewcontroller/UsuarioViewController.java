@@ -1,4 +1,4 @@
-package co.edu.uniquindio.controller.viewcontroller;
+package co.edu.uniquindio.viewcontroller;
 
 import co.edu.uniquindio.controller.UsuarioController;
 import co.edu.uniquindio.mapping.dto.UsuarioDto;
@@ -124,7 +124,7 @@ public class UsuarioViewController {
         return new UsuarioDto(txtNombreUsuario.getText(),
                 txtIdUsuario.getText(),txtCorreoUsuario.getText(),
                 txtTelefonoUsuario.getText(),txtDireccionUsuario.getText(),
-                lblSaldo.getText());
+                lblSaldo.getText(),"tipoUsuario","contraseña");
     }
 
 

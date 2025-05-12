@@ -30,10 +30,10 @@ public class ModelFactory implements IModelFactoryServices {
         billeteraVirtual = new BilleteraVirtual();
         usuarioMapping = new UsuarioMappingImpl();
 
-        Usuario usuario1 = Usuario.builder().nombreCompleto("juan").idUsuario("123").correo("juan@gmail.com").telefono("321").direccion("cs 1").saldo(1000.0).build();
-        Usuario usuario2 = Usuario.builder().nombreCompleto("johan").idUsuario("124").correo("johan@gmail.com").telefono("421").direccion("cs 2").saldo(2000.0).build();
-        Usuario usuario3 = Usuario.builder().nombreCompleto("felipe").idUsuario("125").correo("felipe@gmail.com").telefono("521").direccion("cs 3").saldo(3000.0).build();
-        Usuario usuario4 = Usuario.builder().nombreCompleto("sofia").idUsuario("126").correo("sofia@gmail.com").telefono("621").direccion("cs 4").saldo(4000.0).build();
+        Usuario usuario1 = Usuario.builder().nombreCompleto("juan").idUsuario("123").correo("juan@gmail.com").telefono("321").direccion("cs 1").saldo(1000.0).tipoUsuario("Administrador").contrasenia("1234").build();
+        Usuario usuario2 = Usuario.builder().nombreCompleto("johan").idUsuario("124").correo("johan@gmail.com").telefono("421").direccion("cs 2").saldo(2000.0).tipoUsuario("Usuario").contrasenia("1234").build();
+        Usuario usuario3 = Usuario.builder().nombreCompleto("felipe").idUsuario("125").correo("felipe@gmail.com").telefono("521").direccion("cs 3").saldo(3000.0).tipoUsuario("Usuario").contrasenia("1234").build();
+        Usuario usuario4 = Usuario.builder().nombreCompleto("sofia").idUsuario("126").correo("sofia@gmail.com").telefono("621").direccion("cs 4").saldo(4000.0).tipoUsuario("Administrador").contrasenia("1234").build();
 
         billeteraVirtual.crearUsuario(usuario1);
         billeteraVirtual.crearUsuario(usuario2);

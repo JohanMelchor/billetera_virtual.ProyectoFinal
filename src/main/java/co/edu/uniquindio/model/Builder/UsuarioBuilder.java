@@ -4,12 +4,14 @@ import co.edu.uniquindio.model.Usuario;
 
 
 public class UsuarioBuilder {
-    protected String idUsuario;
     protected String nombreCompleto;
+    protected String idUsuario;
     protected String correo;
     protected String telefono;
     protected String direccion;
     protected Double saldo;
+    protected String tipoUsuario;
+    protected String contrasenia;
 
     public UsuarioBuilder idUsuario(String idUsuario) {
         this.idUsuario = idUsuario;
@@ -41,8 +43,17 @@ public class UsuarioBuilder {
             return this;
         }
 
+        public UsuarioBuilder tipoUsuario(String tipoUsuario) {
+        this.tipoUsuario = tipoUsuario;
+        return this;
+        }
+        public UsuarioBuilder contrasenia(String contrasenia) {
+        this.contrasenia = contrasenia;
+        return this;
+        }
+
         public Usuario build() {
-            return new Usuario(idUsuario, nombreCompleto, correo, telefono, direccion, saldo);
+            return new Usuario(nombreCompleto,idUsuario, correo, telefono, direccion, saldo, tipoUsuario, contrasenia);
         }
 }
 

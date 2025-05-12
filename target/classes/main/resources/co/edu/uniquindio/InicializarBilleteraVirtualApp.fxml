@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="274.0" prefWidth="310.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.viewcontroller.InicializarBilleteraVirtualAppViewController">
+   <children>
+      <TabPane prefHeight="304.0" prefWidth="478.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="Login ">
+            <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="612.0" />
+                <SplitPane layoutX="14.0" layoutY="7.0" orientation="VERTICAL" prefHeight="498.0" prefWidth="760.0">
+                    <items>
+                        <fx:include source="LoginUsuario.fxml" />
+                    </items>
+                </SplitPane>
+            </content>
+          </Tab>
+          <Tab text="Register ">
+              <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="612.0" />
+                  <SplitPane layoutX="14.0" layoutY="7.0" orientation="VERTICAL" prefHeight="498.0" prefWidth="760.0">
+                      <items>
+                          <fx:include source="RegisterUsuario.fxml" />
+                      </items>
+                  </SplitPane>
+              </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>
