@@ -1,6 +1,7 @@
 package co.edu.uniquindio.service;
 
 import co.edu.uniquindio.mapping.dto.UsuarioDto;
+import co.edu.uniquindio.model.Usuario;
 
 import java.util.List;
 
@@ -11,4 +12,6 @@ public interface IModelFactoryServices {
     boolean eliminarUsuario(String idUsuairo);
     
     boolean actualizarUsuario(UsuarioDto usuarioDto);
+
+    Usuario usuarioExist(String correo, String contrasenia);
 }

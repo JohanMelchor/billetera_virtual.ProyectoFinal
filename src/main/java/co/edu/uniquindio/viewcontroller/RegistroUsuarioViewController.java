@@ -1,5 +1,6 @@
 package co.edu.uniquindio.viewcontroller;
 
+import co.edu.uniquindio.controller.ControladorEscenarios;
 import co.edu.uniquindio.controller.UsuarioController;
 import co.edu.uniquindio.mapping.dto.UsuarioDto;
 import javafx.event.ActionEvent;
@@ -8,7 +9,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.ComboBox;
 
 public class RegistroUsuarioViewController {
-    UsuarioController usuarioController;
+    UsuarioController usuarioController= new UsuarioController();
+    ControladorEscenarios controladorEscenarios;
 
     @FXML
     private Button btnCrearUsuario;
@@ -38,7 +40,6 @@ public class RegistroUsuarioViewController {
     @FXML
     void OnCrearUsuario(ActionEvent event) {
         agregarUsuario();
-
     }
 
     @FXML

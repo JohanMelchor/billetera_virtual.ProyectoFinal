@@ -60,4 +60,9 @@ public class ModelFactory implements IModelFactoryServices {
     public boolean actualizarUsuario(UsuarioDto usuarioDto) {
         return billeteraVirtual.actualizarUsuario(usuarioMapping.usuarioDtoToUsuario(usuarioDto));
     }
+
+    @Override
+    public Usuario usuarioExist(String correo, String contrasenia) {
+        return billeteraVirtual.usuarioExist(correo, contrasenia);
+    }
 }

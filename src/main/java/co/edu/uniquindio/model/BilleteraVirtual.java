@@ -101,4 +101,14 @@ public class BilleteraVirtual implements IUsuarioServices {
         }
         return false;
     }
+
+    @Override
+    public Usuario usuarioExist(String correo, String contrasenia) {
+        for (Usuario usuario : listaUsuarios) {
+            if(usuario.getCorreo().equals(correo) && usuario.getContrasenia().equals(contrasenia)){
+                return usuario;
+            }
+        }
+        return null;
+    }
 }

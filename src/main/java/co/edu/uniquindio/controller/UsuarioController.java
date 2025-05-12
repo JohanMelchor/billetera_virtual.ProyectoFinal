@@ -2,6 +2,7 @@ package co.edu.uniquindio.controller;
 
 import co.edu.uniquindio.factory.ModelFactory;
 import co.edu.uniquindio.mapping.dto.UsuarioDto;
+import co.edu.uniquindio.model.Usuario;
 
 
 import java.util.List;
@@ -25,6 +26,10 @@ public class UsuarioController {
 
     public boolean eliminarUsuario(String idUsuario){
         return modelFactory.eliminarUsuario(idUsuario);
+    }
+
+    public Usuario usuarioExist(String correo, String contrasenia) {
+        return modelFactory.usuarioExist(correo, contrasenia);
     }
 }
 

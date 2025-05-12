@@ -6,4 +6,5 @@ public interface IUsuarioServices {
     boolean crearUsuario(Usuario usuario);
     boolean eliminarUsuario(String idUsuario);
     boolean actualizarUsuario(Usuario usuario);
+    Usuario usuarioExist(String correo, String contrasenia);
 }

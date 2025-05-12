@@ -7,7 +7,7 @@
 
 <AnchorPane prefHeight="274.0" prefWidth="310.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.viewcontroller.InicializarBilleteraVirtualAppViewController">
    <children>
-      <TabPane prefHeight="304.0" prefWidth="478.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane fx:id="tabPane" prefHeight="304.0" prefWidth="478.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab text="Login ">
             <content>
