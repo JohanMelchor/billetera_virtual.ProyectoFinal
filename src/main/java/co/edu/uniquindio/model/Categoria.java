@@ -1,23 +1,14 @@
 package co.edu.uniquindio.model;
 
-import co.edu.uniquindio.model.Builder.CategoriaBuilder;
-
 public class Categoria {
     private String idCategoria;
-    private String nombreCategoria;
-    private String descripcionCategoria;
-    
-    public Categoria() {
-    }
+    private String nombre;
+    private String descripcion;
 
-    public Categoria(String idCategoria, String nombreCategoria, String descripcionCategoria) {
+    public Categoria(String idCategoria, String nombre, String descripcion) {
         this.idCategoria = idCategoria;
-        this.nombreCategoria = nombreCategoria;
-        this.descripcionCategoria = descripcionCategoria;
-    }
-
-    public static CategoriaBuilder builder() {
-        return new CategoriaBuilder();
+        this.nombre = nombre;
+        this.descripcion = descripcion;
     }
 
     public String getIdCategoria() {
@@ -27,17 +18,20 @@ public class Categoria {
     public void setIdCategoria(String idCategoria) {
         this.idCategoria = idCategoria;
     }
-    public String getNombreCategoria() {
-        return nombreCategoria;
-    }
-    public void setNombreCategoria(String nombreCategoria) {
-        this.nombreCategoria = nombreCategoria;
-    }
-    public String getDescripcionCategoria() {
-        return descripcionCategoria;
-    }
-    public void setDescripcionCategoria(String descripcionCategoria) {
-        this.descripcionCategoria = descripcionCategoria;
+
+    public String getNombre() {
+        return nombre;
     }
 
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
 }

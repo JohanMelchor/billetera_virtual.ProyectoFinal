@@ -29,8 +29,8 @@
                 <version>3.8.0</version>
                 <configuration>
                     <release>24</release>
-                    <source>16</source>
-                    <target>16</target>
+                    <source>24</source>
+                    <target>24</target>
                     <compilerArgs>--enable-preview</compilerArgs>
                 </configuration>
             </plugin>

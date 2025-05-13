@@ -1,47 +1,90 @@
 package co.edu.uniquindio.model;
 
-import co.edu.uniquindio.model.Builder.PresupuestoBuilder;
-
 public class Presupuesto {
     private String idPresupuesto;
     private String nombre;
-    private Double montoTotal;
+    private Double montoAsignado;
     private Double montoGastado;
+    private Categoria categoria;
+    private Usuario usuario;
+    private Double saldo;
 
-    public Presupuesto() {
-    }
-    public Presupuesto(String idPresupuesto, String nombre, Double montoTotal, Double montoGastado) {
+    public Presupuesto(String idPresupuesto, String nombre, Double montoAsignado, Double montoGastado, 
+                      Categoria categoria, Usuario usuario, Double saldo) {
         this.idPresupuesto = idPresupuesto;
         this.nombre = nombre;
-        this.montoTotal = montoTotal;
+        this.montoAsignado = montoAsignado;
         this.montoGastado = montoGastado;
+        this.categoria = categoria;
+        this.usuario = usuario;
+        this.saldo = saldo;
     }
-    public static PresupuestoBuilder builder(){
-        return new PresupuestoBuilder();
-    }
+
     public String getIdPresupuesto() {
         return idPresupuesto;
     }
+
     public void setIdPresupuesto(String idPresupuesto) {
         this.idPresupuesto = idPresupuesto;
     }
+
     public String getNombre() {
         return nombre;
     }
+
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-    public Double getMontoTotal() {
-        return montoTotal;
+
+    public Double getMontoAsignado() {
+        return montoAsignado;
     }
-    public void setMontoTotal(Double montoTotal) {
-        this.montoTotal = montoTotal;
+
+    public void setMontoAsignado(Double montoAsignado) {
+        this.montoAsignado = montoAsignado;
     }
+
     public Double getMontoGastado() {
         return montoGastado;
     }
+
     public void setMontoGastado(Double montoGastado) {
         this.montoGastado = montoGastado;
     }
 
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public Double getSaldo() {
+        return saldo;
+    }
+
+    public void setSaldo(Double saldo) {
+        this.saldo = saldo;
+    }
+
+    public void aumentarSaldo(Double monto) {
+        this.saldo += monto;
+    }
+
+    public boolean reducirSaldo(Double monto) {
+        if (this.saldo >= monto) {
+            this.saldo -= monto;
+            return true;
+        }
+        return false;
+    }
 }

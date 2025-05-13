@@ -1,49 +1,71 @@
 package co.edu.uniquindio.model;
 
-import co.edu.uniquindio.model.Builder.ReporteBuilder;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class Reporte {
     private String idReporte;
     private String tipoReporte;
-    private LocalDate rangoFechas;
-    private String formato;
+    private LocalDateTime fechaGeneracion;
+    private Usuario usuario;
+    private List<Transaccion> transacciones;
+    private String contenido;
 
-    public Reporte() {
-    }
-
-    public Reporte(String idReporte, String tipoReporte, LocalDate rangoFechas, String formato) {
+    public Reporte(String idReporte, String tipoReporte, LocalDateTime fechaGeneracion, 
+                  Usuario usuario, List<Transaccion> transacciones, String contenido) {
         this.idReporte = idReporte;
         this.tipoReporte = tipoReporte;
-        this.rangoFechas = rangoFechas;
-        this.formato = formato;
-    }
-    public static ReporteBuilder builder() {
-        return new ReporteBuilder();
+        this.fechaGeneracion = fechaGeneracion;
+        this.usuario = usuario;
+        this.transacciones = transacciones;
+        this.contenido = contenido;
     }
 
     public String getIdReporte() {
         return idReporte;
     }
+
     public void setIdReporte(String idReporte) {
         this.idReporte = idReporte;
     }
+
     public String getTipoReporte() {
         return tipoReporte;
     }
+
     public void setTipoReporte(String tipoReporte) {
         this.tipoReporte = tipoReporte;
     }
-    public LocalDate getRangoFechas() {
-        return rangoFechas;
+
+    public LocalDateTime getFechaGeneracion() {
+        return fechaGeneracion;
     }
-    public void setRangoFechas(LocalDate rangoFechas) {
-        this.rangoFechas = rangoFechas;
+
+    public void setFechaGeneracion(LocalDateTime fechaGeneracion) {
+        this.fechaGeneracion = fechaGeneracion;
     }
-    public String getFormato() {
-        return formato;
+
+    public Usuario getUsuario() {
+        return usuario;
     }
-    public void setFormato(String formato) {
-        this.formato = formato;
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public List<Transaccion> getTransacciones() {
+        return transacciones;
+    }
+
+    public void setTransacciones(List<Transaccion> transacciones) {
+        this.transacciones = transacciones;
+    }
+
+    public String getContenido() {
+        return contenido;
+    }
+
+    public void setContenido(String contenido) {
+        this.contenido = contenido;
     }
 }

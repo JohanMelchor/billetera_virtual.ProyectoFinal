@@ -13,4 +13,5 @@ module co.edu.uniquindio {
     exports co.edu.uniquindio.viewcontroller;
     opens co.edu.uniquindio.mapping.dto to javafx.fxml;
     exports co.edu.uniquindio.mapping.dto;
+    
 }

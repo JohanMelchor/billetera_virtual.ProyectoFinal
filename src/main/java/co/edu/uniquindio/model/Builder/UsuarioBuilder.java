@@ -2,7 +2,6 @@ package co.edu.uniquindio.model.Builder;
 
 import co.edu.uniquindio.model.Usuario;
 
-
 public class UsuarioBuilder {
     protected String idUsuario;
     protected String nombreCompleto;
@@ -21,28 +20,27 @@ public class UsuarioBuilder {
         return this;
     }
 
-        public UsuarioBuilder correo(String correo) {
-            this.correo = correo;
-            return this;
-        }
+    public UsuarioBuilder correo(String correo) {
+        this.correo = correo;
+        return this;
+    }
 
-        public UsuarioBuilder telefono(String telefono) {
-            this.telefono = telefono;
-            return this;
-        }
+    public UsuarioBuilder telefono(String telefono) {
+        this.telefono = telefono;
+        return this;
+    }
 
-        public UsuarioBuilder direccion(String direccion) {
-            this.direccion = direccion;
-            return this;
-        }
+    public UsuarioBuilder direccion(String direccion) {
+        this.direccion = direccion;
+        return this;
+    }
 
-        public UsuarioBuilder saldo(Double saldo) {
-            this.saldo = saldo;
-            return this;
-        }
+    public UsuarioBuilder saldo(Double saldo) {
+        this.saldo = saldo;
+        return this;
+    }
 
-        public Usuario build() {
-            return new Usuario(idUsuario, nombreCompleto, correo, telefono, direccion, saldo);
-        }
+    public Usuario build() {
+        return new Usuario(nombreCompleto, idUsuario, correo, telefono, direccion, saldo);
+    }
 }
-

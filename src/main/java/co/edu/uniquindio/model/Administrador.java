@@ -1,33 +1,24 @@
 package co.edu.uniquindio.model;
 
-import co.edu.uniquindio.model.Builder.AdministradorBuilder;
-
 public class Administrador {
-    private String idAdministrador;
+    private String idAdmin;
     private String nombre;
     private String correo;
-    private String telefono;
+    private String contraseña;
 
-    public Administrador() {
-    }
-
-    public Administrador(String idAdministrador, String nombre, String correo, String telefono) {
-        this.idAdministrador = idAdministrador;
+    public Administrador(String idAdmin, String nombre, String correo, String contraseña) {
+        this.idAdmin = idAdmin;
         this.nombre = nombre;
         this.correo = correo;
-        this.telefono = telefono;
+        this.contraseña = contraseña;
     }
 
-    public static AdministradorBuilder builder(){
-        return new AdministradorBuilder();
+    public String getIdAdmin() {
+        return idAdmin;
     }
 
-    public String getIdAdministrador() {
-        return idAdministrador;
-    }
-
-    public void setIdAdministrador(String idAdministrador) {
-        this.idAdministrador = idAdministrador;
+    public void setIdAdmin(String idAdmin) {
+        this.idAdmin = idAdmin;
     }
 
     public String getNombre() {
@@ -46,11 +37,11 @@ public class Administrador {
         this.correo = correo;
     }
 
-    public String getTelefono() {
-        return telefono;
+    public String getContraseña() {
+        return contraseña;
     }
 
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
+    public void setContraseña(String contraseña) {
+        this.contraseña = contraseña;
     }
 }
