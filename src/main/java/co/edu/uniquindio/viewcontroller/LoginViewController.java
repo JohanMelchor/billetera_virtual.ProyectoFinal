@@ -69,7 +69,7 @@ public class LoginViewController {
     void onRegistro(ActionEvent event) {
         try {
             // Cargar la vista de registro
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/co/edu/uniquindio/usuario.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/co/edu/uniquindio/Registro.fxml"));
             Parent root = loader.load();
             
             // Mostrar la vista

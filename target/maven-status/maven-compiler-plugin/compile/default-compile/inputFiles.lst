@@ -38,6 +38,7 @@ A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\vi
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\mapping\dto\CategoriaDto.java
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\mapping\mappers\CategoriaMappingImpl.java
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\service\ITransaccionServices.java
+A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\viewcontroller\RegistroViewController.java
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\viewcontroller\CategoriaViewController.java
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\controller\CuentaController.java
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\service\ICategoriaServices.java

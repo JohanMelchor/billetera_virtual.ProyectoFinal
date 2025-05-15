@@ -48,6 +48,7 @@ co\edu\uniquindio\model\Administrador.class
 co\edu\uniquindio\viewcontroller\TransaccionViewController$3.class
 co\edu\uniquindio\Util\PresupuestoConstantes.class
 co\edu\uniquindio\Util\DataUtil.class
+co\edu\uniquindio\viewcontroller\RegistroViewController.class
 co\edu\uniquindio\service\IPresupuestoMapping.class
 co\edu\uniquindio\service\IUsuarioMapping.class
 co\edu\uniquindio\model\Reporte.class

@@ -6,7 +6,8 @@ import co.edu.uniquindio.mapping.dto.UsuarioDto;
 import java.util.List;
 
 public class UsuarioController {
-    ModelFactory modelFactory;
+    private ModelFactory modelFactory;
+
     public UsuarioController() {
         modelFactory=ModelFactory.getInstance();
     }
@@ -24,6 +25,15 @@ public class UsuarioController {
 
     public boolean eliminarUsuario(String idUsuario){
         return modelFactory.eliminarUsuario(idUsuario);
+    }
+
+    public boolean registrarUsuario(UsuarioDto usuarioDto) {
+        return modelFactory.agregarUsuario(usuarioDto);
+    }
+
+    // Método para iniciar sesión
+    public boolean iniciarSesion(String idUsuario) {
+        return modelFactory.buscarUsuarioPorId(idUsuario) != null;
     }
 }
 

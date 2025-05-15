@@ -62,8 +62,7 @@ public class BilleteraVirtual implements IUsuarioServices, ICuentaServices, ITra
     // Métodos para Usuario
     @Override
     public boolean crearUsuario(Usuario usuario) {
-       Usuario nuevoUsuario = buscarUsuario(usuario);
-        if(nuevoUsuario == null){
+        if (buscarUsuarioPorId(usuario.getIdUsuario()) == null) {
             listaUsuarios.add(usuario);
             return true;
         }
@@ -72,7 +71,7 @@ public class BilleteraVirtual implements IUsuarioServices, ICuentaServices, ITra
 
     @Override
     public boolean eliminarUsuario(String idUsuario) {
-        Usuario usuarioEliminado = buscarUsuairoId(idUsuario);
+        Usuario usuarioEliminado = buscarUsuarioPorId(idUsuario);
         if(usuarioEliminado != null){
             listaUsuarios.remove(usuarioEliminado);
             return true;
@@ -80,9 +79,11 @@ public class BilleteraVirtual implements IUsuarioServices, ICuentaServices, ITra
         return false;
     }
 
-    private Usuario buscarUsuairoId(String idUsuario) {
+    public Usuario buscarUsuarioPorId(String idUsuario) {
         for (Usuario usuario : listaUsuarios) {
-            if (usuario.getIdUsuario().equalsIgnoreCase(idUsuario)) {return usuario;}
+            if (usuario.getIdUsuario().equals(idUsuario)) {
+                return usuario;
+            }
         }
         return null;
     }
@@ -399,13 +400,4 @@ public class BilleteraVirtual implements IUsuarioServices, ICuentaServices, ITra
         return null;
     }
 
-    // Método para buscar usuario por id
-    public Usuario buscarUsuarioPorId(String idUsuario) {
-        for(Usuario usuario : listaUsuarios) {
-            if(usuario.getIdUsuario().equals(idUsuario)) {
-                return usuario;
-            }
-        }
-        return null;
-    }
 }
