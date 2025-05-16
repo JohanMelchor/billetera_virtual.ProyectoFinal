@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class BilleteraVirtual implements IUsuarioServices, ICuentaServices, ITransaccionServices, IPresupuestoServices, ICategoriaServices {
+public class BilleteraVirtual implements IUsuarioServices,IAdministradorServices, ICuentaServices, ITransaccionServices, IPresupuestoServices, ICategoriaServices {
     private ArrayList<Usuario>listaUsuarios= new ArrayList<>();
     private ArrayList<Cuenta>listaCuentas= new ArrayList<>();
     private ArrayList<Transaccion>listaTransacciones= new ArrayList<>();
@@ -413,6 +413,23 @@ public class BilleteraVirtual implements IUsuarioServices, ICuentaServices, ITra
             }
         }
         return null;
+    }
+
+    @Override
+    public boolean crearAdministrador(Administrador administrador) {
+        if(buscarAdministradorPorId(administrador.getIdAdmin()) != null) {
+            return false;
+        }
+        listaAdministradores.add(administrador);
+        return true;
+    }
+
+    @Override
+    public Administrador buscarAdministradorPorId(String idAdmin) {
+        return listaAdministradores.stream()
+            .filter(a -> a.getIdAdmin().equals(idAdmin))
+            .findFirst()
+            .orElse(null);
     }
 
 }

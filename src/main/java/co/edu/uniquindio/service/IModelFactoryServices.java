@@ -39,4 +39,5 @@ public interface IModelFactoryServices {
     boolean agregarCategoria(CategoriaDto categoriaDto);
     boolean eliminarCategoria(String idCategoria);
     boolean actualizarCategoria(CategoriaDto categoriaDto);
+
 }

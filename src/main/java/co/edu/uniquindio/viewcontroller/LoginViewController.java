@@ -43,21 +43,27 @@ public class LoginViewController {
             return;
         }
         
+        // Primero intentamos como usuario normal
         if(usuarioController.validarCredenciales(idUsuario, password)) {
-            cargarVistaPrincipal(idUsuario);
-        } else {
+            cargarVistaUsuario(idUsuario);
+        } 
+        // Si no es usuario, intentamos como administrador
+        else if(usuarioController.validarCredencialesAdmin(idUsuario, password)) {
+            cargarVistaAdmin(idUsuario);
+        } 
+        else {
             mostrarAlerta("Error de acceso", "Credenciales inválidas", 
-                         "El usuario o contraseña ingresados son incorrectos.", Alert.AlertType.ERROR);
+                        "El usuario o contraseña ingresados son incorrectos.", Alert.AlertType.ERROR);
         }
     }
     
-    private void cargarVistaPrincipal(String idUsuario) {
+    private void cargarVistaUsuario(String idUsuario) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/co/edu/uniquindio/BilleteraVirtualApp.fxml"));
             Parent root = loader.load();
 
             BilleteraVirtualAppViewController controller = loader.getController();
-            controller.iniciarSesion(idUsuario);
+            controller.iniciarSesionUsuario(idUsuario);
             
             Stage stage = (Stage) btnLogin.getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -66,7 +72,26 @@ public class LoginViewController {
             stage.show();
         } catch (IOException e) {
             mostrarAlerta("Error", "Error al cargar la vista", 
-                         "No se pudo cargar la vista de usuario: " + e.getMessage(), Alert.AlertType.ERROR);
+                        "No se pudo cargar la vista de usuario: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    private void cargarVistaAdmin(String idAdmin) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/co/edu/uniquindio/BilleteraVirtualApp.fxml"));
+            Parent root = loader.load();
+
+            BilleteraVirtualAppViewController controller = loader.getController();
+            controller.iniciarSesionAdmin(idAdmin);
+            
+            Stage stage = (Stage) btnLogin.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.centerOnScreen();
+            stage.setTitle("Billetera Virtual - Panel de Administrador");
+            stage.show();
+        } catch (IOException e) {
+            mostrarAlerta("Error", "Error al cargar la vista", 
+                        "No se pudo cargar la vista de administrador: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
     

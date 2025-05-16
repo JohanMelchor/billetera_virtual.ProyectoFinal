@@ -278,5 +278,19 @@ public class ModelFactory implements IModelFactoryServices {
         return billeteraVirtual.validarCredenciales(idUsuario, password);
     }
 
+    public boolean validarCredencialesAdmin(String idAdmin, String password) {
+        for (Administrador admin : billeteraVirtual.getListaAdministradores()) {
+            if(admin.getIdAdmin().equals(idAdmin) && admin.getPassword().equals(password)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean esAdministrador(String idUsuario) {
+        return billeteraVirtual.getListaAdministradores().stream()
+                .anyMatch(admin -> admin.getIdAdmin().equals(idUsuario));
+    }
+
     
 }

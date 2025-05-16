@@ -24,6 +24,7 @@ public class BilleteraVirtualAppViewController {
     
     private String idUsuarioActual;
     private UsuarioDto usuarioActual;
+    private boolean esAdmin;
     
     @FXML
     private BorderPane mainBorderPane;
@@ -79,12 +80,22 @@ public class BilleteraVirtualAppViewController {
         lblUsuarioActual.setText("Usuario: No identificado");
     }
     
-    public void iniciarSesion(String idUsuario) {
+    public void iniciarSesionUsuario(String idUsuario) {
         this.idUsuarioActual = idUsuario;
+        this.esAdmin = false;
         
         if(cargarDatosUsuario()) {
             lblUsuarioActual.setText("Usuario: " + usuarioActual.nombreCompleto());
+            configurarVistaUsuario();
         }
+    }
+
+    public void iniciarSesionAdmin(String idAdmin) {
+        this.idUsuarioActual = idAdmin;
+        this.esAdmin = true;
+        
+        lblUsuarioActual.setText("Administrador: " + idAdmin);
+        configurarVistaAdmin();
     }
 
     private boolean cargarDatosUsuario() {
@@ -98,6 +109,31 @@ public class BilleteraVirtualAppViewController {
         }
         
         return false; // Usuario no encontrado
+    }
+
+    private void configurarVistaUsuario() {
+        // Ocultar funciones de administrador
+        btnUsuarios.setVisible(false);
+        btnEstadisticas.setVisible(false);
+        
+        // Mostrar funciones de usuario normal
+        btnCuentas.setVisible(true);
+        btnTransacciones.setVisible(true);
+        btnPresupuestos.setVisible(true);
+        btnCategorias.setVisible(true);
+    }
+
+    private void configurarVistaAdmin() {
+        // Mostrar todas las funciones
+        btnUsuarios.setVisible(true);
+        btnEstadisticas.setVisible(true);
+        btnCuentas.setVisible(true);
+        btnTransacciones.setVisible(true);
+        btnPresupuestos.setVisible(true);
+        btnCategorias.setVisible(true);
+        
+        // Cambiar estilo para indicar que es admin
+        lblUsuarioActual.setStyle("-fx-text-fill: red;");
     }
     
     @FXML

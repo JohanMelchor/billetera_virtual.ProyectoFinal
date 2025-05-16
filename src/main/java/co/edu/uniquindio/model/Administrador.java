@@ -37,11 +37,12 @@ public class Administrador {
         this.correo = correo;
     }
 
-    public String getpassword() {
+    public String getPassword() {
         return password;
     }
 
-    public void setpassword(String password) {
+    public void setPassword(String password) {
         this.password = password;
     }
+    
 }

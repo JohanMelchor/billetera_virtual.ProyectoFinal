@@ -12,7 +12,9 @@ public class UsuarioController {
         modelFactory=ModelFactory.getInstance();
     }
 
-    public List<UsuarioDto> obtenerUsuarios(){return modelFactory.obtenerUsuarios();}
+    public List<UsuarioDto> obtenerUsuarios(){
+        return modelFactory.obtenerUsuarios();
+    }
 
     public boolean agregarUsuario(UsuarioDto usuarioDto){
         return modelFactory.agregarUsuario(usuarioDto);
@@ -36,6 +38,14 @@ public class UsuarioController {
 
     public boolean validarCredenciales(String idUsuario, String password) {
         return modelFactory.validarCredenciales(idUsuario, password);
+    }
+
+    public boolean validarCredencialesAdmin(String idAdmin, String password) {
+        return modelFactory.validarCredencialesAdmin(idAdmin, password);
+    }
+
+    public boolean esAdministrador(String idUsuario) {
+        return modelFactory.esAdministrador(idUsuario);
     }
 }
 
