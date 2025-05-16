@@ -76,8 +76,8 @@ public class RegistroViewController {
         }
 
         UsuarioDto usuarioDto = new UsuarioDto(
-            txtNombre.getText(),
             txtIdUsuario.getText(),
+            txtNombre.getText(),
             txtCorreo.getText(),
             txtTelefono.getText(),
             txtDireccion.getText(),
