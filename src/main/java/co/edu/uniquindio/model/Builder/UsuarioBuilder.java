@@ -9,6 +9,7 @@ public class UsuarioBuilder {
     protected String telefono;
     protected String direccion;
     protected Double saldo;
+    protected String password;
 
     public UsuarioBuilder idUsuario(String idUsuario) {
         this.idUsuario = idUsuario;
@@ -40,7 +41,12 @@ public class UsuarioBuilder {
         return this;
     }
 
+    public UsuarioBuilder password(String password) {
+        this.password = password;
+        return this;
+    }
+
     public Usuario build() {
-        return new Usuario(nombreCompleto, idUsuario, correo, telefono, direccion, saldo);
+        return new Usuario(idUsuario, nombreCompleto, correo, telefono, direccion, saldo, password);
     }
 }

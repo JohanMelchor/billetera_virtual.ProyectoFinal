@@ -21,7 +21,14 @@ public class ModelFactory implements IModelFactoryServices {
     private ICategoriaMapping categoriaMapping;
 
     private ModelFactory(){
-        inicializarDatos();
+         billeteraVirtual = new BilleteraVirtual();
+        usuarioMapping = new UsuarioMappingImpl();
+        cuentaMapping = new CuentaMappingImpl();
+        transaccionMapping = new TransaccionMappingImpl();
+        presupuestoMapping = new PresupuestoMappingImpl();
+        categoriaMapping = new CategoriaMappingImpl();
+
+        billeteraVirtual = DataUtil.inicializarDatos();
     }
 
     public static ModelFactory getInstance(){
@@ -29,53 +36,6 @@ public class ModelFactory implements IModelFactoryServices {
             modelFactory = new ModelFactory();
         }
         return modelFactory;
-    }
-
-    private void inicializarDatos() {
-        billeteraVirtual = new BilleteraVirtual();
-        
-        // Inicializar mappers
-        usuarioMapping = new UsuarioMappingImpl();
-        cuentaMapping = new CuentaMappingImpl();
-        transaccionMapping = new TransaccionMappingImpl();
-        presupuestoMapping = new PresupuestoMappingImpl();
-        categoriaMapping = new CategoriaMappingImpl();
-
-        // Cargar datos iniciales
-        List<Usuario> usuarios = DataUtil.getUsuariosIniciales();
-        List<Categoria> categorias = DataUtil.getCategoriasIniciales();
-        List<Administrador> administradores = DataUtil.getAdministradoresIniciales();
-        
-        // Agregar usuarios
-        for (Usuario usuario : usuarios) {
-            billeteraVirtual.crearUsuario(usuario);
-        }
-        
-        // Agregar categorías
-        for (Categoria categoria : categorias) {
-            billeteraVirtual.crearCategoria(categoria);
-        }
-        
-        // Crear cuentas
-        List<Cuenta> cuentas = DataUtil.getCuentasIniciales(usuarios);
-        for (Cuenta cuenta : cuentas) {
-            billeteraVirtual.crearCuenta(cuenta);
-        }
-        
-        // Crear presupuestos
-        List<Presupuesto> presupuestos = DataUtil.getPresupuestosIniciales(usuarios, categorias);
-        for (Presupuesto presupuesto : presupuestos) {
-            billeteraVirtual.crearPresupuesto(presupuesto);
-        }
-        
-        // Asociar presupuestos a cuentas
-        DataUtil.asociarPresupuestosCuentas(cuentas, presupuestos);
-        
-        // Crear transacciones iniciales
-        List<Transaccion> transacciones = DataUtil.getTransaccionesIniciales(cuentas, categorias);
-        for (Transaccion transaccion : transacciones) {
-            billeteraVirtual.crearTransaccion(transaccion);
-        }
     }
 
     // Métodos para Usuario
@@ -308,4 +268,15 @@ public class ModelFactory implements IModelFactoryServices {
     public Categoria buscarCategoriaPorId(String idCategoria) {
         return billeteraVirtual.buscarCategoriaPorId(idCategoria);
     }
+
+    public UsuarioDto buscarUsuarioDtoPorId(String idUsuario) {
+        Usuario usuario = billeteraVirtual.buscarUsuarioPorId(idUsuario);
+        return (usuario != null) ? usuarioMapping.usuarioToUsuarioDto(usuario) : null;
+    }
+
+    public boolean validarCredenciales(String idUsuario, String password) {
+        return billeteraVirtual.validarCredenciales(idUsuario, password);
+    }
+
+    
 }

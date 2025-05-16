@@ -17,7 +17,15 @@ public class BilleteraVirtual implements IUsuarioServices, ICuentaServices, ITra
     private ArrayList<Administrador>listaAdministradores= new ArrayList<>();
     private ArrayList<Reporte>listaReportes= new ArrayList<>();
 
-    public BilleteraVirtual(){}
+    public BilleteraVirtual(){
+        this.listaUsuarios = new ArrayList<>();
+        this.listaCuentas = new ArrayList<>();
+        this.listaTransacciones = new ArrayList<>();
+        this.listaPresupuestos = new ArrayList<>();
+        this.listaCategorias = new ArrayList<>();
+        this.listaAdministradores = new ArrayList<>();
+        this.listaReportes = new ArrayList<>();
+    }
 
     public ArrayList<Cuenta> getListaCuentas() {
         return listaCuentas;
@@ -68,6 +76,7 @@ public class BilleteraVirtual implements IUsuarioServices, ICuentaServices, ITra
         }
         return false;
     }
+    
 
     @Override
     public boolean eliminarUsuario(String idUsuario) {
@@ -93,6 +102,12 @@ public class BilleteraVirtual implements IUsuarioServices, ICuentaServices, ITra
             if(usuario.getIdUsuario().equalsIgnoreCase(nuevUsuario.getIdUsuario())) return usuario;
         }
         return null;
+    }
+
+    public boolean validarCredenciales(String idUsuario, String password) {
+        Usuario usuario = buscarUsuarioPorId(idUsuario);
+        if(usuario == null) return false;
+            return usuario.getPassword().equals(password);
     }
 
     @Override

@@ -9,18 +9,20 @@ public class Usuario {
     private String telefono;
     private String direccion;
     private Double saldo;
+    private String password;
 
     public Usuario() {
     }
 
     public Usuario(String idUsuario, String nombreCompleto, String correo,
-                   String telefono, String direccion, Double saldo) {
+                   String telefono, String direccion, Double saldo, String password) {
         this.idUsuario = idUsuario;
         this.nombreCompleto = nombreCompleto;
         this.correo = correo;
         this.telefono = telefono;
         this.direccion = direccion;
         this.saldo = saldo;
+        this.password = password;
     }
 
     public static UsuarioBuilder builder() {
@@ -73,5 +75,13 @@ public class Usuario {
 
     public void setCorreo(String correo) {
         this.correo = correo;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

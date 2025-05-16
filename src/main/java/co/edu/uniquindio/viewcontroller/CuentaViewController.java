@@ -3,7 +3,6 @@ package co.edu.uniquindio.viewcontroller;
 import co.edu.uniquindio.controller.CuentaController;
 import co.edu.uniquindio.controller.UsuarioController;
 import co.edu.uniquindio.mapping.dto.CuentaDto;
-import co.edu.uniquindio.mapping.dto.UsuarioDto;
 import co.edu.uniquindio.Util.CuentaConstantes;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -11,9 +10,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
-
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 

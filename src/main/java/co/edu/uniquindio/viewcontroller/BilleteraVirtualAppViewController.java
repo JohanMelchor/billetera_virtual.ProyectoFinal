@@ -79,26 +79,14 @@ public class BilleteraVirtualAppViewController {
         lblUsuarioActual.setText("Usuario: No identificado");
     }
     
-    public void iniciarSesionUsuario(String idUsuario) {
-        if (idUsuario == null || idUsuario.isEmpty()) {
-            mostrarAlerta(Alert.AlertType.ERROR, "Error", "Usuario no válido", 
-                         "El ID de usuario no es válido");
-            return;
-        }
-        
+    public void iniciarSesion(String idUsuario) {
         this.idUsuarioActual = idUsuario;
-        if (!cargarDatosUsuario()) {
-            mostrarAlerta(Alert.AlertType.ERROR, "Error", "Usuario no encontrado", 
-                         "No se encontró ningún usuario con el ID proporcionado");
-            return;
+        
+        if(cargarDatosUsuario()) {
+            lblUsuarioActual.setText("Usuario: " + usuarioActual.nombreCompleto());
         }
-        
-        actualizarInterfaz();
-        
-        // Cargar vista predeterminada al iniciar sesión
-        mostrarBienvenida();
     }
-    
+
     private boolean cargarDatosUsuario() {
         List<UsuarioDto> usuarios = usuarioController.obtenerUsuarios();
         
@@ -110,42 +98,6 @@ public class BilleteraVirtualAppViewController {
         }
         
         return false; // Usuario no encontrado
-    }
-    
-    private void actualizarInterfaz() {
-        if(usuarioActual != null) {
-            lblUsuarioActual.setText("Usuario: " + usuarioActual.nombreCompleto());
-            
-            // En un sistema real, aquí se configurarían permisos según el rol (admin o usuario)
-            // Para usuarios administradores, se habilitarían estos botones
-            if(esAdministrador()) {
-                btnUsuarios.setVisible(true);
-                btnEstadisticas.setVisible(true);
-            } else {
-                btnUsuarios.setVisible(false);
-                btnEstadisticas.setVisible(false);
-            }
-        }
-    }
-    
-    private boolean esAdministrador() {
-        // Por ahora, asumimos que ningún usuario es administrador
-        // En un sistema real, se verificaría según algún atributo del usuario
-        return false;
-    }
-    
-    private void mostrarBienvenida() {
-        try {
-            // Puedes cargar una vista de bienvenida o simplemente usar la interfaz actual
-            // Por ahora, simplemente limpiamos el centro del BorderPane
-            Parent bienvenida = FXMLLoader.load(getClass().getResource("/co/edu/uniquindio/bienvenida.fxml"));
-            mainBorderPane.setCenter(bienvenida);
-        } catch (IOException e) {
-            // Si no encuentra la vista de bienvenida, simplemente mostrar un texto básico
-            Label lblBienvenida = new Label("Bienvenido a Billetera Virtual\n\nSeleccione una opción del menú lateral");
-            lblBienvenida.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-alignment: center;");
-            mainBorderPane.setCenter(lblBienvenida);
-        }
     }
     
     @FXML

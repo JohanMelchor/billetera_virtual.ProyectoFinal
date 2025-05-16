@@ -4,13 +4,13 @@ public class Administrador {
     private String idAdmin;
     private String nombre;
     private String correo;
-    private String contraseña;
+    private String password;
 
-    public Administrador(String idAdmin, String nombre, String correo, String contraseña) {
+    public Administrador(String idAdmin, String nombre, String correo, String password) {
         this.idAdmin = idAdmin;
         this.nombre = nombre;
         this.correo = correo;
-        this.contraseña = contraseña;
+        this.password = password;
     }
 
     public String getIdAdmin() {
@@ -37,11 +37,11 @@ public class Administrador {
         this.correo = correo;
     }
 
-    public String getContraseña() {
-        return contraseña;
+    public String getpassword() {
+        return password;
     }
 
-    public void setContraseña(String contraseña) {
-        this.contraseña = contraseña;
+    public void setpassword(String password) {
+        this.password = password;
     }
 }

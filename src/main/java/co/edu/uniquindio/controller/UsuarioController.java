@@ -12,7 +12,6 @@ public class UsuarioController {
         modelFactory=ModelFactory.getInstance();
     }
 
-
     public List<UsuarioDto> obtenerUsuarios(){return modelFactory.obtenerUsuarios();}
 
     public boolean agregarUsuario(UsuarioDto usuarioDto){
@@ -31,9 +30,12 @@ public class UsuarioController {
         return modelFactory.agregarUsuario(usuarioDto);
     }
 
-    // Método para iniciar sesión
-    public boolean iniciarSesion(String idUsuario) {
-        return modelFactory.buscarUsuarioPorId(idUsuario) != null;
+    public UsuarioDto buscarUsuarioPorId(String idUsuario) {
+        return modelFactory.buscarUsuarioDtoPorId(idUsuario);
+    }
+
+    public boolean validarCredenciales(String idUsuario, String password) {
+        return modelFactory.validarCredenciales(idUsuario, password);
     }
 }
 

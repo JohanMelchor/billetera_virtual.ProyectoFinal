@@ -9,8 +9,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
-import java.util.Optional;
-
 public class UsuarioViewController {
 
     UsuarioController usuarioController;
@@ -124,7 +122,8 @@ public class UsuarioViewController {
         return new UsuarioDto(txtNombreUsuario.getText(),
                 txtIdUsuario.getText(),txtCorreoUsuario.getText(),
                 txtTelefonoUsuario.getText(),txtDireccionUsuario.getText(),
-                lblSaldo.getText());
+                lblSaldo.getText(), "****");
+    //password
     }
 
 
@@ -192,20 +191,6 @@ public class UsuarioViewController {
         alert.setHeaderText(header);
         alert.setContentText(contenido);
         alert.showAndWait();
-    }
-
-    private boolean mostrarMensajeConfirmacion(String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setHeaderText(null);
-        alert.setTitle("Confirmación");
-        alert.setContentText(mensaje);
-
-        Optional<ButtonType> action = alert.showAndWait();
-        if (action.get() == ButtonType.OK) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     private void listenerSeleccion() {

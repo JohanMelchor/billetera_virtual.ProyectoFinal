@@ -58,27 +58,48 @@ public class RegistroViewController {
 
     @FXML
     void onRegister(ActionEvent event) {
+        String password = txtPassword.getText();
+        String confirmacion = txtConfirmPassword.getText();
+
+        // Validar campos obligatorios
+        if(txtNombre.getText().isEmpty() || txtIdUsuario.getText().isEmpty() || 
+           txtCorreo.getText().isEmpty() || txtPassword.getText().isEmpty()) {
+            mostrarAlerta("Error", "Campos obligatorios", 
+                         "Nombre, ID, correo y contraseña son campos obligatorios", Alert.AlertType.ERROR);
+            return;
+        }
+
+        if (!password.equals(confirmacion)) {
+            mostrarAlerta("Error", "Contraseñas no coinciden", 
+                         "Las contraseñas ingresadas no coinciden", Alert.AlertType.ERROR);
+            return;
+        }
+
         UsuarioDto usuarioDto = new UsuarioDto(
             txtNombre.getText(),
             txtIdUsuario.getText(),
             txtCorreo.getText(),
             txtTelefono.getText(),
             txtDireccion.getText(),
-            "0.0" // Saldo inicial
+            "0.0",
+            password
         );
 
         if (usuarioController.registrarUsuario(usuarioDto)) {
-            mostrarAlerta("Éxito", "Usuario registrado", Alert.AlertType.INFORMATION);
+            mostrarAlerta("Éxito", "Usuario registrado", 
+                         "El usuario se ha registrado correctamente", Alert.AlertType.INFORMATION);
+            onVolver(event);
         } else {
-            mostrarAlerta("Error", "El usuario ya existe", Alert.AlertType.ERROR);
+            mostrarAlerta("Error", "Usuario ya existe", 
+                         "El ID de usuario ya está registrado", Alert.AlertType.ERROR);
         }
     }
 
-    private void mostrarAlerta(String title, String message, Alert.AlertType alertType) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
+    private void mostrarAlerta(String titulo, String header, String contenido, Alert.AlertType tipo) {
+        Alert alert = new Alert(tipo);
+        alert.setTitle(titulo);
+        alert.setHeaderText(header);
+        alert.setContentText(contenido);
         alert.showAndWait();
     }
 
@@ -93,7 +114,8 @@ public class RegistroViewController {
         stage.setScene(scene);
         stage.show();
         } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo cargar la vista de login", Alert.AlertType.ERROR);
+            mostrarAlerta("Error", "Error al cargar la vista", 
+                         "No se pudo cargar la vista de login", Alert.AlertType.ERROR);
             e.printStackTrace();
         }
     }
