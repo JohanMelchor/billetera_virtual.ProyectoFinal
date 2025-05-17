@@ -85,7 +85,7 @@ public class BilleteraVirtualAppViewController {
         this.esAdmin = false;
         
         if(cargarDatosUsuario()) {
-            lblUsuarioActual.setText("Usuario: " + usuarioActual.nombreCompleto());
+            lblUsuarioActual.setText("Usuario : " + usuarioActual.nombreCompleto());
             configurarVistaUsuario();
         }
     }
@@ -94,7 +94,8 @@ public class BilleteraVirtualAppViewController {
         this.idUsuarioActual = idAdmin;
         this.esAdmin = true;
         
-        lblUsuarioActual.setText("Administrador: " + idAdmin);
+        String nombreAdmin = usuarioController.obtenerNombreAdmin(idAdmin);
+        lblUsuarioActual.setText("Administrador : " + nombreAdmin);
         configurarVistaAdmin();
     }
 
@@ -196,9 +197,9 @@ public class BilleteraVirtualAppViewController {
         }
     }
     
-    private void cargarVista(String recursoFXML, String titulo) {
+    private void cargarVista(String FXML, String titulo) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(recursoFXML));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML));
             Parent vista = loader.load();
             
             // Si la vista tiene un método para recibir el ID del usuario, lo usamos
@@ -229,10 +230,10 @@ public class BilleteraVirtualAppViewController {
             mainBorderPane.setCenter(vista);
         } catch (IOException e) {
             mostrarAlerta(Alert.AlertType.ERROR, "Error", "Error al cargar la vista", 
-                         "No se pudo cargar la vista '" + recursoFXML + "': " + e.getMessage());
+                         "No se pudo cargar la vista '" + FXML + "': " + e.getMessage());
         } catch (IllegalStateException e) {
             mostrarAlerta(Alert.AlertType.ERROR, "Error", "Recurso no encontrado", 
-                         "No se encontró el archivo: " + recursoFXML);
+                         "No se encontró el archivo: " + FXML);
         } catch (Exception e) {
             mostrarAlerta(Alert.AlertType.ERROR, "Error", "Error inesperado", 
                          "Ha ocurrido un error al cargar la vista: " + e.getMessage());

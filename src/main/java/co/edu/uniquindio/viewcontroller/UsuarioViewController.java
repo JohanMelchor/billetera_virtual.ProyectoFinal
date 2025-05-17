@@ -199,8 +199,8 @@ public class UsuarioViewController {
 
     private void mostrarInformacionUsuario(UsuarioDto usuarioSeleccionado) {
         if(usuarioSeleccionado != null){
-            txtNombreUsuario.setText(usuarioSeleccionado.nombreCompleto());
             txtIdUsuario.setText(usuarioSeleccionado.idUsuario());
+            txtNombreUsuario.setText(usuarioSeleccionado.nombreCompleto());
             txtCorreoUsuario.setText(usuarioSeleccionado.correo());
             txtDireccionUsuario.setText(usuarioSeleccionado.direccion());
             txtTelefonoUsuario.setText(usuarioSeleccionado.telefono());
@@ -209,8 +209,8 @@ public class UsuarioViewController {
     }
 
     private void initDataBanding() {
-        tcNombreUsuario.setCellValueFactory(cellData-> new SimpleStringProperty(cellData.getValue().nombreCompleto()));
         tcIdUsuario.setCellValueFactory(cellData-> new SimpleStringProperty(cellData.getValue().idUsuario()));
+        tcNombreUsuario.setCellValueFactory(cellData-> new SimpleStringProperty(cellData.getValue().nombreCompleto()));
         tcCorreoUsuario.setCellValueFactory(cellData-> new SimpleStringProperty(cellData.getValue().correo()));
         tcTelefonoUsuario.setCellValueFactory(cellData-> new SimpleStringProperty(cellData.getValue().telefono()));
         tcDireccionUsuario.setCellValueFactory(cellData-> new SimpleStringProperty(cellData.getValue().direccion()));

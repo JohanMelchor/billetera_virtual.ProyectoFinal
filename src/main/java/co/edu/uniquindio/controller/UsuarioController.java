@@ -47,5 +47,9 @@ public class UsuarioController {
     public boolean esAdministrador(String idUsuario) {
         return modelFactory.esAdministrador(idUsuario);
     }
+
+    public String obtenerNombreAdmin(String idAdmin) {
+        return modelFactory.obtenerNombreAdmin(idAdmin);
+    }
 }
 

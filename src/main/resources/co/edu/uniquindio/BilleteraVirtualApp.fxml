@@ -8,18 +8,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="mainBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.viewcontroller.BilleteraVirtualAppViewController">
+<BorderPane fx:id="mainBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.viewcontroller.BilleteraVirtualAppViewController">
    <top>
       <HBox alignment="CENTER" prefHeight="60.0" prefWidth="200.0" spacing="20.0" style="-fx-background-color: #f0f0f0;" BorderPane.alignment="CENTER">
          <children>
-            <Label text="Billetera Virtual" textAlignment="CENTER">
+            <Label alignment="CENTER" text="Billetera Virtual" textAlignment="CENTER">
                <font>
                   <Font name="System Bold" size="24.0" />
-               </font>
-            </Label>
-            <Label fx:id="lblUsuarioActual" text="Usuario: No identificado">
-               <font>
-                  <Font size="14.0" />
                </font>
             </Label>
          </children>
@@ -53,6 +48,11 @@
                </font>
             </Label>
             <Label text="Seleccione una opción del menú lateral" textAlignment="CENTER">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label fx:id="lblUsuarioActual" text="Usuario: No identificado">
                <font>
                   <Font size="14.0" />
                </font>

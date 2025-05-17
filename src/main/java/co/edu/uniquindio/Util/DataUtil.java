@@ -7,10 +7,10 @@ public class DataUtil {
     public static BilleteraVirtual inicializarDatos() {
         BilleteraVirtual billeteraVirtual = new BilleteraVirtual();
 
-        Usuario Usuario1 = Usuario.builder().nombreCompleto("juan").idUsuario("123").correo("juan@gmail.com").telefono("321").direccion("cs 1").saldo(1000.0).password("123").build();
-        Usuario Usuario2 = Usuario.builder().nombreCompleto("johan").idUsuario("124").correo("johan@gmail.com").telefono("421").direccion("cs 2").saldo(2000.0).password("124").build();
-        Usuario Usuario3 = Usuario.builder().nombreCompleto("felipe").idUsuario("125").correo("felipe@gmail.com").telefono("521").direccion("cs 3").saldo(3000.0).password("125").build();
-        Usuario Usuario4 = Usuario.builder().nombreCompleto("sofia").idUsuario("126").correo("sofia@gmail.com").telefono("621").direccion("cs 4").saldo(4000.0).password("126").build();
+        Usuario Usuario1 = Usuario.builder().nombreCompleto("Juan").idUsuario("001").correo("juan@gmail.com").telefono("321").direccion("cs 1").saldo(1000.0).password("123").build();
+        Usuario Usuario2 = Usuario.builder().nombreCompleto("Johan").idUsuario("002").correo("johan@gmail.com").telefono("421").direccion("cs 2").saldo(2000.0).password("124").build();
+        Usuario Usuario3 = Usuario.builder().nombreCompleto("Felipe").idUsuario("003").correo("felipe@gmail.com").telefono("521").direccion("cs 3").saldo(3000.0).password("125").build();
+        Usuario Usuario4 = Usuario.builder().nombreCompleto("Sofia").idUsuario("004").correo("sofia@gmail.com").telefono("621").direccion("cs 4").saldo(4000.0).password("126").build();
 
         billeteraVirtual.getListaUsuarios().add(Usuario1);
         billeteraVirtual.getListaUsuarios().add(Usuario2);

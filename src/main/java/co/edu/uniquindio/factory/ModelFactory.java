@@ -59,6 +59,7 @@ public class ModelFactory implements IModelFactoryServices {
         return billeteraVirtual.actualizarUsuario(usuarioMapping.usuarioDtoToUsuario(usuarioDto));
     }
 
+
     // Métodos para Cuenta
     @Override
     public List<CuentaDto> obtenerCuentas() {
@@ -290,6 +291,15 @@ public class ModelFactory implements IModelFactoryServices {
     public boolean esAdministrador(String idUsuario) {
         return billeteraVirtual.getListaAdministradores().stream()
                 .anyMatch(admin -> admin.getIdAdmin().equals(idUsuario));
+    }
+
+    public String obtenerNombreAdmin(String idAdmin) {
+        for (Administrador admin : billeteraVirtual.getListaAdministradores()) {
+            if (admin.getIdAdmin().equals(idAdmin)) {
+                return admin.getNombre();
+            }
+        }
+        return null;
     }
 
     
