@@ -28,6 +28,7 @@ public class DataUtil {
         billeteraVirtual.getListaCuentas().add(Cuenta.builder().idCuenta("CUE02").nombreBanco("Banco de Bogotá").numeroCuenta("200001").tipoCuenta("Corriente").usuario(Usuario1).build());
         billeteraVirtual.getListaCuentas().add(Cuenta.builder().idCuenta("CUE03").nombreBanco("Bancolombia").numeroCuenta("300001").tipoCuenta("Ahorro").usuario(Usuario2).build());
         billeteraVirtual.getListaCuentas().add(Cuenta.builder().idCuenta("CUE04").nombreBanco("Davivienda").numeroCuenta("400001").tipoCuenta("Ahorro").usuario(Usuario3).build());
+        billeteraVirtual.getListaCuentas().add(Cuenta.builder().idCuenta("CUE05").nombreBanco("LuloBank").numeroCuenta("500001").tipoCuenta("Corriente").usuario(Usuario4).build());
 
         billeteraVirtual.getListaPresupuestos().add(new Presupuesto("PRE01", "Gastos Mensuales", 1500.0, 200.0, billeteraVirtual.getListaCategorias().get(0), Usuario1, 1000.0));
         billeteraVirtual.getListaPresupuestos().add(new Presupuesto("PRE02", "Ahorros", 2000.0, 0.0, null, Usuario1, 2000.0));

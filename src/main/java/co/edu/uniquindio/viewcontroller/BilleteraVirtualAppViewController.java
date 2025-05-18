@@ -164,7 +164,7 @@ public class BilleteraVirtualAppViewController {
     
     @FXML
     void onEstadisticas(ActionEvent event) {
-        cargarVista("/co/edu/uniquindio/estadisticas.fxml", "Estadísticas");
+        cargarVista("/co/edu/uniquindio/estadistica.fxml", "Estadísticas");
     }
     
     @FXML
