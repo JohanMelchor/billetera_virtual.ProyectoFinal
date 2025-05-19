@@ -135,8 +135,8 @@ public class BilleteraVirtualAppViewController {
     }
 
     private void configurarVistaAdmin() {
-        // Mostrar todas las funciones
-        btnPerfil.setVisible(true);
+        // Mostrar funciones de administrador
+        btnPerfil.setVisible(false);
         btnUsuarios.setVisible(true);
         btnEstadisticas.setVisible(true);
         btnCuentas.setVisible(true);

@@ -10,8 +10,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 
 public class PerfilViewController {
     private UsuarioController usuarioController;
@@ -34,7 +34,10 @@ public class PerfilViewController {
     private Button btnGuardar;
 
     @FXML
-    private RadioButton rbShow;
+    private TextField txtPasswordVisible;
+
+    @FXML
+    private ToggleButton btnShow;
 
     @FXML
     private TextField txtCorreo;
@@ -57,6 +60,22 @@ public class PerfilViewController {
     @FXML
     void initialize() {
         usuarioController = new UsuarioController();
+        if (txtPasswordVisible != null) {
+            txtPasswordVisible.setVisible(false);
+        }
+    }
+
+    @FXML 
+    void onShow(ActionEvent event) {
+        if (btnShow.isSelected()) {
+            txtPasswordVisible.setText(txtPassword.getText());
+            txtPasswordVisible.setVisible(true);
+            txtPassword.setVisible(false);
+        } else {
+            txtPassword.setText(txtPasswordVisible.getText());
+            txtPassword.setVisible(true);
+            txtPasswordVisible.setVisible(false);
+        }
     }
 
     @FXML
@@ -71,7 +90,7 @@ public class PerfilViewController {
 
     @FXML
     void onGuardar(ActionEvent event) {
-        
+
         if(validarCampos()) {
             UsuarioDto usuarioActualizado = new UsuarioDto(
                 idUsuarioActual,
@@ -111,6 +130,7 @@ public class PerfilViewController {
         txtDireccion.setEditable(true);
         txtIdUsuario.setEditable(false);
         txtPassword.setEditable(false);
+        txtPasswordVisible.setEditable(false);
     }
 
     private void cargarDatosUsuario() {
@@ -122,7 +142,8 @@ public class PerfilViewController {
             txtCorreo.setText(usuario.correo());
             txtTelefono.setText(usuario.telefono());
             txtDireccion.setText(usuario.direccion());
-            txtPassword.setText(usuario.password()); 
+            txtPassword.setText(usuario.password());
+            txtPasswordVisible.setText(usuario.password()); 
         }
     }
 
