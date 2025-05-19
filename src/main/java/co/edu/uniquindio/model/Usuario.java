@@ -1,8 +1,9 @@
 package co.edu.uniquindio.model;
 
 import co.edu.uniquindio.model.Builder.UsuarioBuilder;
+import co.edu.uniquindio.service.Prototype.IUsuarioPrototype;
 
-public class Usuario {
+public class Usuario implements IUsuarioPrototype{
     private String idUsuario;
     private String nombreCompleto;
     private String correo;
@@ -83,5 +84,14 @@ public class Usuario {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public IUsuarioPrototype clonar() {
+        try {
+            return (Usuario) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError("No se pudo clonar el usuario", e);
+        }
     }
 }

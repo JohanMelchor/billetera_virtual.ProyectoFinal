@@ -17,6 +17,7 @@ public class PerfilViewController {
     private UsuarioController usuarioController;
     private String idUsuarioActual;
     private UsuarioDto usuarioOriginal;
+    private UsuarioDto usuarioCopia;
 
     @FXML
     private ResourceBundle resources;
@@ -28,7 +29,7 @@ public class PerfilViewController {
     private Button btnCambio;
 
     @FXML
-    private Button btnCancelar;
+    private Button btnDefecto;
 
     @FXML
     private Button btnGuardar;
@@ -84,8 +85,17 @@ public class PerfilViewController {
     }
 
     @FXML
-    void onCancelar(ActionEvent event) {
-        cargarDatosUsuario();
+    void onDefecto(ActionEvent event) {
+        if(usuarioCopia != null) {
+        // Restaurar los datos originales usando el clon
+        txtIdUsuario.setText(usuarioCopia.idUsuario());
+        txtNombre.setText(usuarioCopia.nombreCompleto());
+        txtCorreo.setText(usuarioCopia.correo());
+        txtTelefono.setText(usuarioCopia.telefono());
+        txtDireccion.setText(usuarioCopia.direccion());
+        txtPassword.setText(usuarioCopia.password());
+        txtPasswordVisible.setText(usuarioCopia.password());
+    }
     }
 
     @FXML
@@ -118,6 +128,7 @@ public class PerfilViewController {
     public void inicializarConUsuario(String idUsuario) {
         this.idUsuarioActual = idUsuario;
         this.usuarioOriginal = usuarioController.buscarUsuarioPorId(idUsuario);
+        this.usuarioCopia = usuarioOriginal != null ? usuarioOriginal.clonar() : null;
         configurarCampos();
         cargarDatosUsuario();
     }

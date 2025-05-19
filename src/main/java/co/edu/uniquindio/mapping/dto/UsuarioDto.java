@@ -7,4 +7,15 @@ public record UsuarioDto (String idUsuario,
                           String direccion,
                           String saldo,
                           String password) {
+    public UsuarioDto clonar() {
+        return new UsuarioDto(
+            this.idUsuario,
+            this.nombreCompleto,
+            this.correo,
+            this.telefono,
+            this.direccion,
+            this.saldo,
+            this.password
+        );
+    }
 }
