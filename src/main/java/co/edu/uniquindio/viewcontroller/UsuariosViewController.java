@@ -9,7 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
-public class UsuarioViewController {
+public class UsuariosViewController {
 
     UsuarioController usuarioController;
     ObservableList<UsuarioDto> listaUsuarios = FXCollections.observableArrayList();

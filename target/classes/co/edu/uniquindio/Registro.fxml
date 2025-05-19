@@ -6,21 +6,21 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="518.0" prefWidth="682.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.viewcontroller.RegistroViewController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.viewcontroller.RegistroViewController">
    <children>
-      <Label alignment="CENTER" layoutX="186.0" layoutY="63.0" prefHeight="46.0" prefWidth="312.0" text="Registro de usuarios">
+      <Label alignment="CENTER" layoutX="169.0" layoutY="52.0" prefHeight="46.0" prefWidth="312.0" text="Registro de usuarios">
          <font>
             <Font name="System Bold" size="31.0" />
          </font>
       </Label>
-      <TextField fx:id="txtIdUsuario" layoutX="237.0" layoutY="135.0" prefHeight="25.0" prefWidth="209.0" promptText="Id de usuario" />
-      <TextField fx:id="txtDireccion" layoutX="237.0" layoutY="269.0" prefHeight="25.0" prefWidth="209.0" promptText="Direccion" />
-      <TextField fx:id="txtNombre" layoutX="237.0" layoutY="171.0" prefHeight="25.0" prefWidth="209.0" promptText="Nombre completo" />
-      <TextField fx:id="txtCorreo" layoutX="237.0" layoutY="204.0" prefHeight="25.0" prefWidth="209.0" promptText="Correo" />
-      <TextField fx:id="txtTelefono" layoutX="237.0" layoutY="237.0" prefHeight="25.0" prefWidth="209.0" promptText="Telefono" />
-      <TextField fx:id="txtPassword" layoutX="237.0" layoutY="303.0" prefHeight="25.0" prefWidth="209.0" promptText="Contraseña" />
-      <Button fx:id="btnRegister" alignment="CENTER" layoutX="304.0" layoutY="392.0" mnemonicParsing="false" onAction="#onRegister" text="Registrarse" />
-      <Button fx:id="btnVolver" alignment="CENTER" layoutX="316.0" layoutY="435.0" mnemonicParsing="false" onAction="#onVolver" text="Volver" />
-      <TextField fx:id="txtConfirmPassword" layoutX="237.0" layoutY="339.0" prefHeight="25.0" prefWidth="209.0" promptText="Confirmar Contraseña" />
+      <TextField fx:id="txtIdUsuario" layoutX="220.0" layoutY="124.0" prefHeight="25.0" prefWidth="209.0" promptText="Id de usuario" />
+      <TextField fx:id="txtDireccion" layoutX="220.0" layoutY="258.0" prefHeight="25.0" prefWidth="209.0" promptText="Direccion" />
+      <TextField fx:id="txtNombre" layoutX="220.0" layoutY="160.0" prefHeight="25.0" prefWidth="209.0" promptText="Nombre completo" />
+      <TextField fx:id="txtCorreo" layoutX="220.0" layoutY="193.0" prefHeight="25.0" prefWidth="209.0" promptText="Correo" />
+      <TextField fx:id="txtTelefono" layoutX="220.0" layoutY="226.0" prefHeight="25.0" prefWidth="209.0" promptText="Telefono" />
+      <TextField fx:id="txtPassword" layoutX="220.0" layoutY="292.0" prefHeight="25.0" prefWidth="209.0" promptText="Contraseña" />
+      <Button fx:id="btnRegister" alignment="CENTER" layoutX="287.0" layoutY="381.0" mnemonicParsing="false" onAction="#onRegister" text="Registrarse" />
+      <Button fx:id="btnVolver" alignment="CENTER" layoutX="299.0" layoutY="424.0" mnemonicParsing="false" onAction="#onVolver" text="Volver" />
+      <TextField fx:id="txtConfirmPassword" layoutX="220.0" layoutY="328.0" prefHeight="25.0" prefWidth="209.0" promptText="Confirmar Contraseña" />
    </children>
 </AnchorPane>

@@ -97,13 +97,6 @@ public class BilleteraVirtual implements IUsuarioServices,IAdministradorServices
         return null;
     }
 
-    private Usuario buscarUsuario(Usuario nuevUsuario) {
-        for(Usuario usuario: listaUsuarios) {
-            if(usuario.getIdUsuario().equalsIgnoreCase(nuevUsuario.getIdUsuario())) return usuario;
-        }
-        return null;
-    }
-
     public boolean validarCredenciales(String idUsuario, String password) {
         Usuario usuario = buscarUsuarioPorId(idUsuario);
         if(usuario == null) return false;
@@ -112,12 +105,15 @@ public class BilleteraVirtual implements IUsuarioServices,IAdministradorServices
 
     @Override
     public boolean actualizarUsuario(Usuario usuario) {
-        Usuario usuarioActualizado = buscarUsuario(usuario);
-        if(usuarioActualizado != null){
-            usuarioActualizado.setNombreCompleto(usuario.getNombreCompleto());
-            usuarioActualizado.setCorreo(usuario.getCorreo());
-            usuarioActualizado.setTelefono(usuario.getTelefono());
-            usuarioActualizado.setDireccion(usuario.getDireccion());
+        
+        Usuario usuarioExistente = buscarUsuarioPorId(usuario.getIdUsuario());
+        if(usuarioExistente != null){
+            // Actualizar solo los campos permitidos
+            usuarioExistente.setNombreCompleto(usuario.getNombreCompleto());
+            usuarioExistente.setCorreo(usuario.getCorreo());
+            usuarioExistente.setTelefono(usuario.getTelefono());
+            usuarioExistente.setDireccion(usuario.getDireccion());
+            
             return true;
         }
         return false;

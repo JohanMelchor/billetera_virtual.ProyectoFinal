@@ -21,15 +21,14 @@ public class UsuarioMappingImpl implements IUsuarioMapping {
 
     @Override
     public UsuarioDto usuarioToUsuarioDto(Usuario usuario) {
-        return new UsuarioDto(usuario.getNombreCompleto(),
-                usuario.getIdUsuario(), usuario.getCorreo(),
+        return new UsuarioDto(usuario.getIdUsuario(),usuario.getNombreCompleto(), usuario.getCorreo(),
                 usuario.getTelefono(),usuario.getDireccion(),
                 String.valueOf(usuario.getSaldo()),usuario.getPassword());
     }
 
     @Override
     public Usuario usuarioDtoToUsuario(UsuarioDto usuarioDto) {
-        return new Usuario(usuarioDto.nombreCompleto(),usuarioDto.idUsuario(),
+        return new Usuario(usuarioDto.idUsuario(),usuarioDto.nombreCompleto(),
                 usuarioDto.correo(),usuarioDto.telefono(),usuarioDto.direccion(),
                 Double.parseDouble(usuarioDto.saldo()),usuarioDto.password());
     }

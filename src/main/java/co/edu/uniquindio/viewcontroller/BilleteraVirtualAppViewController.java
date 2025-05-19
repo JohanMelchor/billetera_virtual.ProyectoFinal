@@ -31,6 +31,9 @@ public class BilleteraVirtualAppViewController {
     
     @FXML
     private Label lblUsuarioActual;
+
+    @FXML
+    private Label lblUsuarioActualA;
     
     @FXML
     private Button btnUsuarios;
@@ -49,6 +52,9 @@ public class BilleteraVirtualAppViewController {
     
     @FXML
     private Button btnEstadisticas;
+    
+    @FXML
+    private Button btnPerfil;
     
     @FXML
     private Button btnCerrarSesion;
@@ -78,6 +84,7 @@ public class BilleteraVirtualAppViewController {
         
         // Configurar mensaje por defecto
         lblUsuarioActual.setText("Usuario: No identificado");
+        lblUsuarioActualA.setText("Usuario: No identificado");
     }
     
     public void iniciarSesionUsuario(String idUsuario) {
@@ -86,6 +93,7 @@ public class BilleteraVirtualAppViewController {
         
         if(cargarDatosUsuario()) {
             lblUsuarioActual.setText("Usuario : " + usuarioActual.nombreCompleto());
+            lblUsuarioActualA.setText("Usuario : " + usuarioActual.nombreCompleto());
             configurarVistaUsuario();
         }
     }
@@ -96,6 +104,7 @@ public class BilleteraVirtualAppViewController {
         
         String nombreAdmin = usuarioController.obtenerNombreAdmin(idAdmin);
         lblUsuarioActual.setText("Administrador : " + nombreAdmin);
+        lblUsuarioActualA.setText("Administrador : " + nombreAdmin);
         configurarVistaAdmin();
     }
 
@@ -118,6 +127,7 @@ public class BilleteraVirtualAppViewController {
         btnEstadisticas.setVisible(false);
         
         // Mostrar funciones de usuario normal
+        btnPerfil.setVisible(true);
         btnCuentas.setVisible(true);
         btnTransacciones.setVisible(true);
         btnPresupuestos.setVisible(true);
@@ -126,6 +136,7 @@ public class BilleteraVirtualAppViewController {
 
     private void configurarVistaAdmin() {
         // Mostrar todas las funciones
+        btnPerfil.setVisible(true);
         btnUsuarios.setVisible(true);
         btnEstadisticas.setVisible(true);
         btnCuentas.setVisible(true);
@@ -135,11 +146,14 @@ public class BilleteraVirtualAppViewController {
         
         // Cambiar estilo para indicar que es admin
         lblUsuarioActual.setStyle("-fx-text-fill: red;");
+        lblUsuarioActualA.setStyle("-fx-text-fill: red;");
     }
+    
+    
     
     @FXML
     void onUsuarios(ActionEvent event) {
-        cargarVista("/co/edu/uniquindio/usuario.fxml", "Gestión de Usuarios");
+        cargarVista("/co/edu/uniquindio/usuarios.fxml", "Gestión de Usuarios");
     }
     
     @FXML
@@ -165,6 +179,11 @@ public class BilleteraVirtualAppViewController {
     @FXML
     void onEstadisticas(ActionEvent event) {
         cargarVista("/co/edu/uniquindio/estadistica.fxml", "Estadísticas");
+    }
+
+    @FXML
+    void onPerfil(ActionEvent event) {
+        cargarVista("/co/edu/uniquindio/perfil.fxml", "Perfil");
     }
     
     @FXML
@@ -212,7 +231,7 @@ public class BilleteraVirtualAppViewController {
                 return;
             }
             
-            if(controller instanceof UsuarioViewController) {
+            if(controller instanceof UsuariosViewController) {
                 // No hace falta pasar nada, la vista gestiona todos los usuarios
             } else if(controller instanceof CuentaViewController) {
                 ((CuentaViewController) controller).inicializarConUsuario(idUsuarioActual);
@@ -220,11 +239,12 @@ public class BilleteraVirtualAppViewController {
                 ((TransaccionViewController) controller).inicializarConUsuario(idUsuarioActual);
             } else if(controller instanceof PresupuestoViewController) {
                 ((PresupuestoViewController) controller).inicializarConUsuario(idUsuarioActual);
+            }else if(controller instanceof PerfilViewController) {
+                ((PerfilViewController) controller).inicializarConUsuario(idUsuarioActual);
             } else if(controller instanceof CategoriaViewController) {
                 // No hace falta pasar nada, las categorías son globales
             } else if(controller instanceof EstadisticasViewController) {
                 // Para estadísticas, no necesita un usuario específico pero se puede
-                // configurar si es necesario
             }
             
             mainBorderPane.setCenter(vista);

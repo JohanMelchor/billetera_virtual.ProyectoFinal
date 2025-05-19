@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="518.0" prefWidth="682.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.viewcontroller.LoginViewController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.viewcontroller.LoginViewController">
    <children>
       <Label alignment="CENTER" layoutX="54.0" layoutY="117.0" text="Billetera Virtual" textAlignment="CENTER">
          <font>
@@ -24,6 +24,6 @@
       <PasswordField fx:id="txtPassword" layoutX="54.0" layoutY="268.0" prefHeight="25.0" prefWidth="177.0" promptText="Contraseña" />
       <Button fx:id="btnLogin" alignment="CENTER" layoutX="93.0" layoutY="322.0" mnemonicParsing="false" onAction="#onLogin" prefHeight="30.0" prefWidth="100.0" text="Ingresar" />
       <Button fx:id="btnRegistro" alignment="CENTER" layoutX="93.0" layoutY="371.0" mnemonicParsing="false" onAction="#onRegistro" prefHeight="30.0" prefWidth="100.0" text="Registrarse" />
-      <Separator layoutX="271.0" orientation="VERTICAL" prefHeight="518.0" prefWidth="21.0" />
+      <Separator layoutX="271.0" orientation="VERTICAL" prefHeight="500.0" prefWidth="3.0" />
    </children>
 </AnchorPane>
