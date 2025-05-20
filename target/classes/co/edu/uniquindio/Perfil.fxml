@@ -6,27 +6,63 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.viewcontroller.PerfilViewController">
    <children>
-      <Label layoutX="275.0" layoutY="74.0" style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Mi Perfil" />
-      <Label layoutX="189.0" layoutY="125.0" text="Nombre:" />
-      <TextField fx:id="txtNombre" layoutX="254.0" layoutY="121.0" promptText="Ingrese nuevo nombre" />
-      <Label layoutX="196.0" layoutY="228.0" text="Correo:" />
-      <TextField fx:id="txtCorreo" layoutX="257.0" layoutY="224.0" promptText="Ingrese nuevo correo" />
-      <Label layoutX="189.0" layoutY="161.0" text="Teléfono:" />
-      <TextField fx:id="txtTelefono" layoutX="255.0" layoutY="157.0" promptText="Ingrese nuevo telefono" />
-      <Label layoutX="189.0" layoutY="195.0" text="Dirección:" />
-      <TextField fx:id="txtDireccion" layoutX="257.0" layoutY="191.0" promptText="Ingrese nueva Dirección" />
-      <Button fx:id="btnGuardar" layoutX="149.0" layoutY="377.0" onAction="#onGuardar" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Guardar Cambios" />
-      <Button fx:id="btnDefecto" layoutX="286.0" layoutY="377.0" onAction="#onDefecto" style="-fx-background-color: #f44336; -fx-text-fill: white;" text="Por defecto" />
-    <Label layoutX="174.0" layoutY="259.0" style="-fx-font-style: italic; -fx-text-fill: gray;" text="* Contraseña, saldo y ID no se pueden modificar aquí *" />
-      <Label layoutX="174.0" layoutY="288.0" text="Id de usuario: " />
-      <TextField fx:id="txtIdUsuario" layoutX="257.0" layoutY="284.0" />
-      <Label layoutX="179.0" layoutY="320.0" text="Contraseña: " />
-      <Button fx:id="btnCambio" alignment="CENTER" layoutX="396.0" layoutY="377.0" onAction="#onCambioPassword" style="-fx-background-color:rgb(196, 188, 86); -fx-text-fill: white;" text="Cambiar Contraseña" />
-      <ToggleButton fx:id="btnShow" layoutX="425.0" layoutY="316.0" mnemonicParsing="false" onAction="#onShow" text="👁" />
-      <PasswordField fx:id="txtPassword" layoutX="257.0" layoutY="316.0" />
-      <TextField fx:id="txtPasswordVisible" layoutX="257.0" layoutY="316.0" />
+      <Pane fx:id="pnPerfil" prefHeight="500.0" prefWidth="650.0">
+         <children>
+            <Label layoutX="285.0" layoutY="38.0" style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Mi Perfil" />
+            <Label layoutX="191.0" layoutY="110.0" text="Nombre:" />
+            <TextField fx:id="txtNombre" layoutX="259.0" layoutY="106.0" promptText="Ingrese nuevo nombre" />
+            <Label layoutX="195.0" layoutY="144.0" text="Correo:" />
+            <TextField fx:id="txtCorreo" layoutX="259.0" layoutY="140.0" promptText="Ingrese nuevo correo" />
+            <Label layoutX="190.0" layoutY="179.0" text="Teléfono:" />
+            <TextField fx:id="txtTelefono" layoutX="258.0" layoutY="175.0" promptText="Ingrese nuevo telefono" />
+            <Label layoutX="188.0" layoutY="216.0" text="Dirección:" />
+            <TextField fx:id="txtDireccion" layoutX="259.0" layoutY="212.0" promptText="Ingrese nueva Dirección" />
+            <Button fx:id="btnGuardar" layoutX="161.0" layoutY="369.0" onAction="#onGuardar" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Guardar Cambios" />
+            <Button fx:id="btnDefecto" layoutX="294.0" layoutY="369.0" onAction="#onDefecto" style="-fx-background-color: #f44336; -fx-text-fill: white;" text="Por defecto" />
+            <Label layoutX="191.0" layoutY="259.0" style="-fx-font-style: italic; -fx-text-fill: gray;" text="* Contraseña, saldo y ID no se pueden modificar aquí *" />
+            <Label layoutX="177.0" layoutY="295.0" text="Id de usuario: " />
+            <TextField fx:id="txtIdUsuario" layoutX="259.0" layoutY="291.0" />
+            <Label layoutX="182.0" layoutY="329.0" text="Contraseña: " />
+            <Button fx:id="btnCambio" alignment="CENTER" layoutX="408.0" layoutY="369.0" onAction="#onCambioPassword" style="-fx-background-color:rgb(196, 188, 86); -fx-text-fill: white;" text="Cambiar Contraseña" />
+            <ToggleButton fx:id="btnShow" layoutX="420.0" layoutY="325.0" mnemonicParsing="false" onAction="#onShow" text="👁" />
+            <PasswordField fx:id="txtPassword" layoutX="259.0" layoutY="325.0" />
+            <TextField fx:id="txtPasswordVisible" layoutX="259.0" layoutY="325.0" />
+         </children>
+      </Pane>
+      <VBox fx:id="VbCambioPassword" alignment="TOP_RIGHT" layoutX="142.0" layoutY="126.0" prefHeight="248.0" prefWidth="366.0" visible="false">
+         <children>
+            <Button fx:id="btnCerrar" contentDisplay="CENTER" mnemonicParsing="false" onAction="#onCerrar" style="-fx-background-color: #f44336; -fx-text-fill: white;" text="X">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Button>
+            <VBox prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <Pane prefHeight="200.0" prefWidth="309.0">
+                     <children>
+                        <Label layoutX="72.0" layoutY="43.0" text="Contraseña Actual:" />
+                        <TextField fx:id="txtPasswordActual" layoutX="183.0" layoutY="39.0" promptText="Ingrese contraseña actual" />
+                        <Label layoutX="72.0" layoutY="77.0" text="Contraseña nueva:" />
+                        <Label layoutX="54.0" layoutY="109.0" text="Confirmar contraseña:" />
+                        <TextField fx:id="txtPasswordConfirm" layoutX="183.0" layoutY="105.0" promptText="Confirmar contraseña" />
+                        <TextField fx:id="txtPasswordNew" layoutX="183.0" layoutY="73.0" promptText="Ingrese nueva contraseña" />
+                        <Button fx:id="btnGuardarPassword" layoutX="122.0" layoutY="153.0" mnemonicParsing="false" onAction="#OnGuardarPassword" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Guardar Contraseña" />
+                        <Label alignment="CENTER" layoutX="77.0" layoutY="-1.0" text="Cambio de Contraseña">
+                           <font>
+                              <Font name="System Bold" size="20.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </Pane>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
    </children>
 </AnchorPane>

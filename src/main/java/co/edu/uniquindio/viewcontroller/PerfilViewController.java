@@ -12,6 +12,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 
 public class PerfilViewController {
     private UsuarioController usuarioController;
@@ -23,10 +25,22 @@ public class PerfilViewController {
     private ResourceBundle resources;
 
     @FXML
+    private VBox VbCambioPassword;
+
+    @FXML
+    private Pane pnPerfil;
+
+    @FXML
     private URL location;
 
     @FXML
     private Button btnCambio;
+
+    @FXML
+    private Button btnCerrar;
+
+    @FXML
+    private Button btnGuardarPassword;
 
     @FXML
     private Button btnDefecto;
@@ -36,6 +50,15 @@ public class PerfilViewController {
 
     @FXML
     private TextField txtPasswordVisible;
+
+    @FXML
+    private TextField txtPasswordActual;
+
+    @FXML
+    private TextField txtPasswordConfirm;
+
+    @FXML
+    private TextField txtPasswordNew;
 
     @FXML
     private ToggleButton btnShow;
@@ -81,7 +104,38 @@ public class PerfilViewController {
 
     @FXML
     void onCambioPassword(ActionEvent event) {
+        VbCambioPassword.setVisible(true);
+        VbCambioPassword.setManaged(true);
+        pnPerfil.setVisible(false);
+    }
 
+    @FXML
+    void onCerrar(ActionEvent event) {
+        VbCambioPassword.setVisible(false);
+        VbCambioPassword.setManaged(false);
+        pnPerfil.setVisible(true);
+        limpiarCamposContrasena();
+    }
+
+    @FXML
+    void OnGuardarPassword(ActionEvent event) {
+        if (validarContrasenas()) {
+        UsuarioDto usuarioActualizado = new UsuarioDto(
+            idUsuarioActual,
+            usuarioOriginal.nombreCompleto(),
+            usuarioOriginal.correo(),
+            usuarioOriginal.telefono(),
+            usuarioOriginal.direccion(),
+            usuarioOriginal.saldo(),
+            txtPasswordNew.getText()  // Nueva contraseña (en un proyecto real, debería encriptarse)
+        );
+
+        if (usuarioController.actualizarUsuario(usuarioActualizado)) {
+            mostrarAlerta("Éxito", "Contraseña actualizada", "La contraseña se cambió correctamente.", Alert.AlertType.INFORMATION);
+            limpiarCamposContrasena();
+            onCambioPassword(null);  // Oculta los campos después del cambio
+        }
+    }
     }
 
     @FXML
@@ -175,6 +229,28 @@ public class PerfilViewController {
         alert.setHeaderText(header);
         alert.setContentText(contenido);
         alert.showAndWait();
+    }
+
+    private boolean validarContrasenas() {
+        if (!usuarioController.validarCredenciales(idUsuarioActual, txtPasswordActual.getText())) {
+            mostrarAlerta("Error", "Contraseña incorrecta", "La contraseña actual no es válida.", Alert.AlertType.ERROR);
+            return false;
+        }
+        if (txtPasswordNew.getText().length() < 6) {
+            mostrarAlerta("Error", "Contraseña insegura", "La nueva contraseña debe tener al menos 6 caracteres.", Alert.AlertType.ERROR);
+            return false;
+        }
+        if (!txtPasswordNew.getText().equals(txtPasswordConfirm.getText())) {
+            mostrarAlerta("Error", "Contraseñas no coinciden", "Las contraseñas nuevas no coinciden.", Alert.AlertType.ERROR);
+            return false;
+        }
+        return true;
+    }
+
+    private void limpiarCamposContrasena() {
+        txtPasswordActual.clear();
+        txtPasswordNew.clear();
+        txtPasswordConfirm.clear();
     }
     
 }
