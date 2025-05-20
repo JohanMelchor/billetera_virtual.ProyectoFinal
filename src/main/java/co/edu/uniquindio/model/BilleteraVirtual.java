@@ -113,7 +113,8 @@ public class BilleteraVirtual implements IUsuarioServices,IAdministradorServices
             usuarioExistente.setCorreo(usuario.getCorreo());
             usuarioExistente.setTelefono(usuario.getTelefono());
             usuarioExistente.setDireccion(usuario.getDireccion());
-            
+            usuarioExistente.setPassword(usuario.getPassword());
+
             return true;
         }
         return false;

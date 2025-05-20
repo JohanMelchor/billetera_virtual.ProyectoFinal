@@ -127,13 +127,18 @@ public class PerfilViewController {
             usuarioOriginal.telefono(),
             usuarioOriginal.direccion(),
             usuarioOriginal.saldo(),
-            txtPasswordNew.getText()  // Nueva contraseña (en un proyecto real, debería encriptarse)
+            txtPasswordNew.getText()  // Nueva contraseña
         );
-
         if (usuarioController.actualizarUsuario(usuarioActualizado)) {
             mostrarAlerta("Éxito", "Contraseña actualizada", "La contraseña se cambió correctamente.", Alert.AlertType.INFORMATION);
+            // ACTUALIZA LOS OBJETOS EN MEMORIA
+            this.usuarioOriginal = usuarioActualizado;
+            this.usuarioCopia = usuarioActualizado.clonar();
             limpiarCamposContrasena();
-            onCambioPassword(null);  // Oculta los campos después del cambio
+            onCerrar(null);  // Oculta los campos después del cambio
+            // Actualiza los campos de la vista
+            txtPassword.setText(usuarioActualizado.password());
+            txtPasswordVisible.setText(usuarioActualizado.password());
         }
     }
     }
@@ -141,7 +146,7 @@ public class PerfilViewController {
     @FXML
     void onDefecto(ActionEvent event) {
         if(usuarioCopia != null) {
-        // Restaurar los datos originales usando el clon
+        // Restaurar los datos originales usando el prototype
         txtIdUsuario.setText(usuarioCopia.idUsuario());
         txtNombre.setText(usuarioCopia.nombreCompleto());
         txtCorreo.setText(usuarioCopia.correo());
@@ -188,7 +193,6 @@ public class PerfilViewController {
     }
 
     private void configurarCampos() {
-        // Puedes hacer campos editables/no editables según necesites
         txtNombre.setEditable(true);
         txtCorreo.setEditable(true);
         txtTelefono.setEditable(true);
@@ -236,7 +240,7 @@ public class PerfilViewController {
             mostrarAlerta("Error", "Contraseña incorrecta", "La contraseña actual no es válida.", Alert.AlertType.ERROR);
             return false;
         }
-        if (txtPasswordNew.getText().length() < 6) {
+        if (txtPasswordNew.getText().length() < 3) {
             mostrarAlerta("Error", "Contraseña insegura", "La nueva contraseña debe tener al menos 6 caracteres.", Alert.AlertType.ERROR);
             return false;
         }
