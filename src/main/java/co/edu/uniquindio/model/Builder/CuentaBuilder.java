@@ -1,5 +1,6 @@
 package co.edu.uniquindio.model.Builder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import co.edu.uniquindio.model.Cuenta;
@@ -12,7 +13,7 @@ public class CuentaBuilder {
     protected String numeroCuenta;
     protected String tipoCuenta;
     protected Usuario usuario;
-    protected List<Presupuesto> presupuestos;
+    protected List<Presupuesto> presupuestos = new ArrayList<>();
     protected Double saldoTotal;
 
     public CuentaBuilder idCuenta(String idCuenta) {

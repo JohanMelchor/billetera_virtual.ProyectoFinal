@@ -6,9 +6,7 @@
 <?import javafx.scene.text.*?>
 <?import javafx.collections.FXCollections?>
 
-<VBox spacing="10" xmlns="http://javafx.com/javafx/17" 
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="co.edu.uniquindio.viewcontroller.TransaccionViewController">
+<VBox spacing="10" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.viewcontroller.TransaccionViewController">
 
     <!-- Título -->
     <Label text="Gestión Completa de Transacciones" style="-fx-font-weight: bold; -fx-font-size: 18;"/>
@@ -27,11 +25,6 @@
         <ComboBox fx:id="cbTipoTransaccion" GridPane.rowIndex="0" GridPane.columnIndex="1">
             <items>
                 <FXCollections fx:factory="observableArrayList">
-                    <String fx:value="Depósito a Cuenta"/>
-                    <String fx:value="Depósito a Presupuesto"/>
-                    <String fx:value="Retiro de Cuenta"/>
-                    <String fx:value="Retiro de Presupuesto"/>
-                    <String fx:value="Transferencia"/>
                 </FXCollections>
             </items>
         </ComboBox>

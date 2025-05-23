@@ -15,7 +15,6 @@ public class Cuenta {
     private Double saldoTotal;
 
     public Cuenta() {
-        this.presupuestos = new ArrayList<>();
     }
 
     public Cuenta(String idCuenta, String nombreBanco, String numeroCuenta, String tipoCuenta, Usuario usuario,
