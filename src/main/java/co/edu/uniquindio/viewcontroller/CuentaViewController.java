@@ -41,6 +41,9 @@ public class CuentaViewController {
     
     @FXML
     private Button btnEliminarCuenta;
+
+    @FXML
+    private Button btnPresupuesto;
     
     @FXML
     private TableView<CuentaDto> tableCuentas;
@@ -269,4 +272,12 @@ public class CuentaViewController {
         Optional<ButtonType> action = alert.showAndWait();
         return action.isPresent() && action.get() == ButtonType.OK;
     }
+
+/*@FXML
+    void onGestionarPresupuestos(ActionEvent event) {
+        if (cuentaSeleccionada != null) {
+            // Abrir la vista de presupuestos pasando el ID de la cuenta
+            abrirVistaPresupuestos(cuentaSeleccionada.idCuenta());
+        }
+    }*/
 }

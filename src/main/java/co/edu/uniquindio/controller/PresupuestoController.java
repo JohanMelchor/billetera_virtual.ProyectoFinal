@@ -31,4 +31,12 @@ public class PresupuestoController {
     public boolean eliminarPresupuesto(String idPresupuesto) {
         return modelFactory.eliminarPresupuesto(idPresupuesto);
     }
+
+    public boolean agregarPresupuestoACuenta(String idCuenta, PresupuestoDto presupuestoDto) {
+        return modelFactory.agregarPresupuestoACuenta(idCuenta, presupuestoDto);
+    }
+
+    public List<PresupuestoDto> obtenerPresupuestosPorCuenta(String idCuenta) {
+        return modelFactory.obtenerPresupuestosPorCuenta(idCuenta);
+    }
 }

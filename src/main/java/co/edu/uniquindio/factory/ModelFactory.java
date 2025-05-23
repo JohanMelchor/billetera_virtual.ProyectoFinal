@@ -5,11 +5,8 @@ import co.edu.uniquindio.mapping.mappers.*;
 import co.edu.uniquindio.model.*;
 import co.edu.uniquindio.service.*;
 import co.edu.uniquindio.Util.DataUtil;
-import co.edu.uniquindio.Util.TransaccionConstantes;
-
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class ModelFactory implements IModelFactoryServices {
     private static ModelFactory modelFactory;
@@ -108,106 +105,31 @@ public class ModelFactory implements IModelFactoryServices {
     }
 
     @Override
-    public boolean realizarDeposito(String idCuenta, Double monto, String descripcion, String idCategoria) {
-        Cuenta cuenta = billeteraVirtual.buscarCuentaPorId(idCuenta);
-        if (cuenta == null) return false;
-        
-        Categoria categoria = null;
-        if(idCategoria != null && !idCategoria.isEmpty()) {
-            categoria = billeteraVirtual.buscarCategoriaPorId(idCategoria);
-        }
-        
-        // Crear transacción de depósito
-        Transaccion transaccion = new Transaccion(
-            UUID.randomUUID().toString(),
-            LocalDateTime.now(),
-            TransaccionConstantes.TIPO_DEPOSITO, // Corregido: Tipo DEPOSITO
-            monto,
-            descripcion,
-            null,
-            cuenta, // En un depósito, la cuenta es el destino
-            categoria
-        );
-        
-        // Aumentar saldo en la cuenta
-        if (cuenta.getPresupuesto() != null) {
-            cuenta.getPresupuesto().aumentarSaldo(monto);
-            return billeteraVirtual.crearTransaccion(transaccion);
-        }
-        
-        return false;
+    public boolean depositoCuenta(String idCuenta, Double monto, String descripcion, String idCategoria) { 
+        return billeteraVirtual.depositoCuenta(idCuenta, monto, descripcion, idCategoria);
     }
 
     @Override
-    public boolean realizarRetiro(String idCuenta, Double monto, String descripcion, String idCategoria) {
-        Cuenta cuenta = billeteraVirtual.buscarCuentaPorId(idCuenta);
-        if (cuenta == null || cuenta.getPresupuesto() == null) return false;
-        
-        // Verificar si hay suficiente saldo
-        if (cuenta.getPresupuesto().getSaldo() < monto) return false;
-        
-        Categoria categoria = null;
-        if(idCategoria != null && !idCategoria.isEmpty()) {
-            categoria = billeteraVirtual.buscarCategoriaPorId(idCategoria);
-        }
-        
-        // Crear transacción de retiro
-        Transaccion transaccion = new Transaccion(
-            UUID.randomUUID().toString(),
-            LocalDateTime.now(),
-            TransaccionConstantes.TIPO_RETIRO,
-            monto,
-            descripcion,
-            cuenta, // En un retiro, la cuenta es el origen
-            null,
-            categoria
-        );
-        
-        // Disminuir saldo en la cuenta
-        if (cuenta.getPresupuesto().reducirSaldo(monto)) {
-            return billeteraVirtual.crearTransaccion(transaccion);
-        }
-        
-        return false;
+    public boolean depositoPresupuesto(String idCuenta, String idPresupuesto, Double monto, String descripcion, String idCategoria) {
+        return billeteraVirtual.depositoPresupuesto(idCuenta, idPresupuesto, monto, descripcion, idCategoria);
     }
 
     @Override
-    public boolean realizarTransferencia(String idCuentaOrigen, String idCuentaDestino, Double monto, String descripcion, String idCategoria) {
-        Cuenta cuentaOrigen = billeteraVirtual.buscarCuentaPorId(idCuentaOrigen);
-        Cuenta cuentaDestino = billeteraVirtual.buscarCuentaPorId(idCuentaDestino);
-        
-        if (cuentaOrigen == null || cuentaDestino == null || 
-            cuentaOrigen.getPresupuesto() == null || cuentaDestino.getPresupuesto() == null) {
-            return false;
-        }
-        
-        // Verificar si hay suficiente saldo
-        if (cuentaOrigen.getPresupuesto().getSaldo() < monto) return false;
-        
-        Categoria categoria = null;
-        if(idCategoria != null && !idCategoria.isEmpty()) {
-            categoria = billeteraVirtual.buscarCategoriaPorId(idCategoria);
-        }
-        
-        // Crear transacción de transferencia
-        Transaccion transaccion = new Transaccion(
-            UUID.randomUUID().toString(),
-            LocalDateTime.now(),
-            TransaccionConstantes.TIPO_TRANSFERENCIA,
-            monto,
-            descripcion,
-            cuentaOrigen,
-            cuentaDestino,
-            categoria
-        );
-        
-        // Transferir fondos
-        if (cuentaOrigen.getPresupuesto().reducirSaldo(monto)) {
-            cuentaDestino.getPresupuesto().aumentarSaldo(monto);
-            return billeteraVirtual.crearTransaccion(transaccion);
-        }
-        
-        return false;
+    public boolean retirarCuenta(String idCuenta, Double monto, String descripcion, String idCategoria) {
+        return billeteraVirtual.retirarCuenta(idCuenta, monto, descripcion, idCategoria);
+    }
+
+    @Override
+    public boolean retirarPresupuesto(String idCuenta, String idPresupuesto, Double monto, 
+                                    String descripcion, String idCategoria) {
+        return billeteraVirtual.retirarPresupuesto(idCuenta, idPresupuesto, monto, descripcion, idCategoria);
+    }
+
+    @Override
+    public boolean realizarTransferencia(String idCuentaOrigen, String idCuentaDestino, 
+                                    Double monto, String descripcion, String idCategoria) {
+        return billeteraVirtual.realizarTransferencia(idCuentaOrigen, idCuentaDestino, 
+                                                    monto, descripcion, idCategoria);
     }
 
     // Métodos para Presupuesto
@@ -302,5 +224,21 @@ public class ModelFactory implements IModelFactoryServices {
         return null;
     }
 
-    
+    public boolean agregarPresupuestoACuenta(String idCuenta, PresupuestoDto presupuestoDto) {
+        Cuenta cuenta = billeteraVirtual.buscarCuentaPorId(idCuenta);
+        if (cuenta != null) {
+            Presupuesto presupuesto = presupuestoMapping.presupuestoDtoToPresupuesto(presupuestoDto);
+            return cuenta.agregarPresupuesto(presupuesto);
+        }
+        return false;
+    }
+
+    public List<PresupuestoDto> obtenerPresupuestosPorCuenta(String idCuenta) {
+        Cuenta cuenta = billeteraVirtual.buscarCuentaPorId(idCuenta);
+        if (cuenta != null) {
+            return presupuestoMapping.getPresupuestoDto(cuenta.getPresupuestos());
+        }
+        return new ArrayList<>();
+    }
+
 }

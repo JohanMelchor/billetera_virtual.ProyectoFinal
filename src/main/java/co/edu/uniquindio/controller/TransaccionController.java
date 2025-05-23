@@ -6,7 +6,7 @@ import co.edu.uniquindio.mapping.dto.TransaccionDto;
 import java.util.List;
 
 public class TransaccionController {
-    ModelFactory modelFactory;
+    private ModelFactory modelFactory;
     
     public TransaccionController() {
         modelFactory = ModelFactory.getInstance();
@@ -28,15 +28,27 @@ public class TransaccionController {
         return modelFactory.agregarTransaccion(transaccionDto);
     }
     
-    public boolean realizarDeposito(String idCuenta, Double monto, String descripcion, String idCategoria) {
-        return modelFactory.realizarDeposito(idCuenta, monto, descripcion, idCategoria);
+    public boolean depositoCuenta(String idCuenta, Double monto, String descripcion, String idCategoria) {
+        return modelFactory.depositoCuenta(idCuenta, monto, descripcion, idCategoria);
+    }
+
+    public boolean depositoPresupuesto(String idCuenta, String idPresupuesto, Double monto, 
+                                            String descripcion, String idCategoria) {
+        return modelFactory.depositoPresupuesto(idCuenta, idPresupuesto, monto, descripcion, idCategoria);
     }
     
-    public boolean realizarRetiro(String idCuenta, Double monto, String descripcion, String idCategoria) {
-        return modelFactory.realizarRetiro(idCuenta, monto, descripcion, idCategoria);
+    public boolean retiroPorCuenta(String idCuenta, Double monto, String descripcion, String idCategoria) {
+        return modelFactory.retirarCuenta(idCuenta, monto, descripcion, idCategoria);
     }
     
-    public boolean realizarTransferencia(String idCuentaOrigen, String idCuentaDestino, Double monto, String descripcion, String idCategoria) {
-        return modelFactory.realizarTransferencia(idCuentaOrigen, idCuentaDestino, monto, descripcion, idCategoria);
+    public boolean retiroPorPresupuesto(String idCuenta, String idPresupuesto, Double monto, 
+                                      String descripcion, String idCategoria) {
+        return modelFactory.retirarPresupuesto(idCuenta, idPresupuesto, monto, descripcion, idCategoria);
+    }
+    
+    public boolean realizarTransferencia(String idCuentaOrigen, String idCuentaDestino, 
+                                  Double monto, String descripcion, String idCategoria) {
+        return modelFactory.realizarTransferencia(idCuentaOrigen, idCuentaDestino, 
+                                            monto, descripcion, idCategoria);
     }
 }

@@ -23,6 +23,7 @@ public class PresupuestoViewController {
     private ObservableList<CategoriaDto> listaCategorias = FXCollections.observableArrayList();
     private PresupuestoDto presupuestoSeleccionado;
     private String idUsuarioActual;
+    private String idCuentaActual;
     
     @FXML
     private TextField txtIdPresupuesto;
@@ -84,6 +85,11 @@ public class PresupuestoViewController {
         this.idUsuarioActual = idUsuario;
         cargarDatos();
     }
+
+    public void inicializarConCuenta(String idCuenta) {
+        this.idCuentaActual = idCuenta;
+        cargarPresupuestosDeCuenta();
+    }
     
     private void initView() {
         initDataBinding();
@@ -120,6 +126,13 @@ public class PresupuestoViewController {
             // Cargar categorías
             listaCategorias.clear();
             listaCategorias.addAll(categoriaController.obtenerCategorias());
+        }
+    }
+
+    private void cargarPresupuestosDeCuenta() {
+        if (idCuentaActual != null) {
+            listaPresupuestos.clear();
+            listaPresupuestos.addAll(presupuestoController.obtenerPresupuestosPorCuenta(idCuentaActual));
         }
     }
     
@@ -176,34 +189,13 @@ public class PresupuestoViewController {
     @FXML
     void onAgregarPresupuesto(ActionEvent event) {
         PresupuestoDto nuevoPresupuesto = crearPresupuestoDto();
-        if(datosValidos(nuevoPresupuesto)) {
-            if(presupuestoController.agregarPresupuesto(nuevoPresupuesto)) {
-                cargarDatos();
-                limpiarCampos();
-                mostrarMensaje(
-                    "Presupuesto agregado", 
-                    "Éxito", 
-                    PresupuestoConstantes.EXITO_AGREGAR_PRESUPUESTO, 
-                    Alert.AlertType.INFORMATION
-                );
-                
-                // Generar nuevo ID único para el siguiente presupuesto
-                generarIdUnico();
+        if (datosValidos(nuevoPresupuesto)) {
+            if (presupuestoController.agregarPresupuestoACuenta(idCuentaActual, nuevoPresupuesto)) {
+                cargarPresupuestosDeCuenta();
+                mostrarMensaje("Éxito", "Presupuesto agregado","Presupuesto agregado al bolsillo", Alert.AlertType.INFORMATION);
             } else {
-                mostrarMensaje(
-                    "Error", 
-                    "No se pudo agregar", 
-                    PresupuestoConstantes.ERROR_AGREGAR_PRESUPUESTO, 
-                    Alert.AlertType.ERROR
-                );
+                mostrarMensaje("Error", "No se pudo agregar el presupuesto" ,"No hay saldo suficiente en la cuenta", Alert.AlertType.ERROR);
             }
-        } else {
-            mostrarMensaje(
-                "Campos incompletos", 
-                "Datos incompletos", 
-                PresupuestoConstantes.ERROR_CAMPOS_VACIOS, 
-                Alert.AlertType.WARNING
-            );
         }
     }
     

@@ -7,12 +7,13 @@ co\edu\uniquindio\viewcontroller\TransaccionViewController$2.class
 co\edu\uniquindio\service\IModelFactoryServices.class
 co\edu\uniquindio\viewcontroller\BilleteraVirtualAppViewController.class
 co\edu\uniquindio\model\Builder\UsuarioBuilder.class
+co\edu\uniquindio\service\IAdministradorServices.class
+co\edu\uniquindio\viewcontroller\UsuariosViewController.class
 co\edu\uniquindio\mapping\dto\CuentaDto.class
 co\edu\uniquindio\Util\TransaccionConstantes.class
 co\edu\uniquindio\mapping\dto\TransaccionDto.class
 co\edu\uniquindio\mapping\mappers\CategoriaMappingImpl.class
 co\edu\uniquindio\viewcontroller\PresupuestoViewController.class
-co\edu\uniquindio\viewcontroller\UsuarioViewController.class
 co\edu\uniquindio\mapping\dto\PresupuestoDto.class
 co\edu\uniquindio\service\ITransaccionServices.class
 co\edu\uniquindio\controller\PresupuestoController.class
@@ -21,6 +22,7 @@ co\edu\uniquindio\model\Categoria.class
 co\edu\uniquindio\Util\CategoriaConstantes.class
 co\edu\uniquindio\controller\UsuarioController.class
 co\edu\uniquindio\service\IUsuarioServices.class
+co\edu\uniquindio\viewcontroller\PerfilViewController.class
 co\edu\uniquindio\service\ICategoriaServices.class
 co\edu\uniquindio\Util\CuentaConstantes.class
 co\edu\uniquindio\mapping\mappers\UsuarioMappingImpl.class
@@ -39,6 +41,7 @@ co\edu\uniquindio\viewcontroller\CuentaViewController.class
 co\edu\uniquindio\controller\CuentaController.class
 module-info.class
 co\edu\uniquindio\model\Cuenta.class
+co\edu\uniquindio\viewcontroller\TransaccionViewController$4.class
 co\edu\uniquindio\model\Builder\CuentaBuilder.class
 co\edu\uniquindio\controller\CategoriaController.class
 co\edu\uniquindio\viewcontroller\LoginViewController.class
@@ -52,6 +55,7 @@ co\edu\uniquindio\viewcontroller\RegistroViewController.class
 co\edu\uniquindio\service\IPresupuestoMapping.class
 co\edu\uniquindio\service\IUsuarioMapping.class
 co\edu\uniquindio\model\Reporte.class
+co\edu\uniquindio\service\Prototype\IUsuarioPrototype.class
 co\edu\uniquindio\service\ITransaccionMapping.class
 co\edu\uniquindio\viewcontroller\EstadisticasViewController.class
 co\edu\uniquindio\service\IPresupuestoServices.class

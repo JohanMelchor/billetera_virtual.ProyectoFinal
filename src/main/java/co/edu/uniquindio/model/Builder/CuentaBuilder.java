@@ -1,6 +1,9 @@
 package co.edu.uniquindio.model.Builder;
 
+import java.util.List;
+
 import co.edu.uniquindio.model.Cuenta;
+import co.edu.uniquindio.model.Presupuesto;
 import co.edu.uniquindio.model.Usuario;
 
 public class CuentaBuilder {
@@ -9,6 +12,8 @@ public class CuentaBuilder {
     protected String numeroCuenta;
     protected String tipoCuenta;
     protected Usuario usuario;
+    protected List<Presupuesto> presupuestos;
+    protected Double saldoTotal;
 
     public CuentaBuilder idCuenta(String idCuenta) {
         this.idCuenta = idCuenta;
@@ -35,7 +40,17 @@ public class CuentaBuilder {
         return this;
     }
 
+    public CuentaBuilder presupuestos(List<Presupuesto> presupuestos) {
+        this.presupuestos = presupuestos;
+        return this;
+    }
+
+    public CuentaBuilder saldoTotal(Double saldoTotal) {
+        this.saldoTotal = saldoTotal;
+        return this;
+    }
+
     public Cuenta build() {
-        return new Cuenta(idCuenta, nombreBanco, numeroCuenta, tipoCuenta, usuario);
+        return new Cuenta(idCuenta, nombreBanco, numeroCuenta, tipoCuenta, usuario, presupuestos, saldoTotal);
     }
 }

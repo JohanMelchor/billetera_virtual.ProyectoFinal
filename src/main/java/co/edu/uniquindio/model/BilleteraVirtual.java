@@ -189,82 +189,88 @@ public class BilleteraVirtual implements IUsuarioServices,IAdministradorServices
     }
 
     @Override
-    public boolean agregarFondos(String idCuenta, Double monto) {
+    public boolean retirarCuenta(String idCuenta, Double monto, String descripcion, String idCategoria) {
         Cuenta cuenta = buscarCuentaPorId(idCuenta);
-        if(cuenta != null && cuenta.getPresupuesto() != null) {
-            cuenta.getPresupuesto().aumentarSaldo(monto);
-            
-            // Crear transacción de depósito
-            Transaccion transaccion = new Transaccion(
-                UUID.randomUUID().toString(),
-                LocalDateTime.now(),
-                TransaccionConstantes.TIPO_DEPOSITO,
-                monto,
-                "Depósito de fondos",
-                null,
-                cuenta,
-                null
-            );
-            listaTransacciones.add(transaccion);
-            
-            return true;
+        if (cuenta == null || !cuenta.reducirSaldoTotal(monto)) {
+            return false;
         }
-        return false;
+
+        Categoria categoria = buscarCategoriaPorId(idCategoria);
+        
+        Transaccion transaccion = new Transaccion(
+            UUID.randomUUID().toString(),
+            LocalDateTime.now(),
+            "RETIRO_CUENTA",
+            monto,
+            descripcion,
+            cuenta,
+            null,
+            categoria
+        );
+        
+        return crearTransaccion(transaccion);
     }
 
     @Override
-    public boolean retirarFondos(String idCuenta, Double monto) {
+    public boolean retirarPresupuesto(String idCuenta, String idPresupuesto, Double monto, 
+                                    String descripcion, String idCategoria) {
         Cuenta cuenta = buscarCuentaPorId(idCuenta);
-        if(cuenta != null && cuenta.getPresupuesto() != null) {
-            if(cuenta.getPresupuesto().reducirSaldo(monto)) {
-                
-                // Crear transacción de retiro
-                Transaccion transaccion = new Transaccion(
-                    UUID.randomUUID().toString(),
-                    LocalDateTime.now(),
-                    TransaccionConstantes.TIPO_RETIRO,
-                    monto,
-                    "Retiro de fondos",
-                    cuenta,
-                    null,
-                    null
-                );
-                listaTransacciones.add(transaccion);
-                
-                return true;
-            }
+        if (cuenta == null) return false;
+
+        Presupuesto presupuesto = cuenta.buscarPresupuestoPorId(idPresupuesto);
+        if (presupuesto == null || !presupuesto.reducirSaldo(monto)) {
+            return false;
         }
-        return false;
+
+        Categoria categoria = buscarCategoriaPorId(idCategoria);
+        
+        Transaccion transaccion = new Transaccion(
+            UUID.randomUUID().toString(),
+            LocalDateTime.now(),
+            "RETIRO_PRESUPUESTO",
+            monto,
+            descripcion + " (Presupuesto: " + presupuesto.getNombre() + ")",
+            cuenta,
+            null,
+            categoria
+        );
+        
+        return crearTransaccion(transaccion);
     }
 
     @Override
-    public boolean transferirFondos(String idCuentaOrigen, String idCuentaDestino, Double monto) {
+    public boolean realizarTransferencia(String idCuentaOrigen, String idCuentaDestino, 
+                                    Double monto, String descripcion, String idCategoria) {
+        // Validar que no sea la misma cuenta
+        if (idCuentaOrigen.equals(idCuentaDestino)) {
+            return false;
+        }
+
         Cuenta cuentaOrigen = buscarCuentaPorId(idCuentaOrigen);
         Cuenta cuentaDestino = buscarCuentaPorId(idCuentaDestino);
         
-        if(cuentaOrigen != null && cuentaDestino != null && 
-           cuentaOrigen.getPresupuesto() != null && cuentaDestino.getPresupuesto() != null) {
-            
-            if(cuentaOrigen.getPresupuesto().reducirSaldo(monto)) {
-                cuentaDestino.getPresupuesto().aumentarSaldo(monto);
-                
-                // Crear transacción de transferencia
-                Transaccion transaccion = new Transaccion(
-                    UUID.randomUUID().toString(),
-                    LocalDateTime.now(),
-                    TransaccionConstantes.TIPO_TRANSFERENCIA,
-                    monto,
-                    "Transferencia entre cuentas",
-                    cuentaOrigen,
-                    cuentaDestino,
-                    null
-                );
-                listaTransacciones.add(transaccion);
-                
-                return true;
-            }
+        // Validar cuentas y saldo suficiente
+        if (cuentaOrigen == null || cuentaDestino == null || 
+            !cuentaOrigen.reducirSaldoTotal(monto)) {
+            return false;
         }
-        return false;
+        
+        // Realizar transferencia
+        cuentaDestino.aumentarSaldoTotal(monto);
+        
+        // Registrar transacción
+        Transaccion transaccion = new Transaccion(
+            UUID.randomUUID().toString(),
+            LocalDateTime.now(),
+            TransaccionConstantes.TIPO_TRANSFERENCIA,
+            monto,
+            descripcion,
+            cuentaOrigen,
+            cuentaDestino,
+            buscarCategoriaPorId(idCategoria)
+        );
+        
+        return crearTransaccion(transaccion);
     }
 
     public List<Transaccion> obtenerTransaccionesPorUsuario(String idUsuario) {
@@ -427,6 +433,57 @@ public class BilleteraVirtual implements IUsuarioServices,IAdministradorServices
             .filter(a -> a.getIdAdmin().equals(idAdmin))
             .findFirst()
             .orElse(null);
+    }
+
+    @Override
+    public boolean depositoCuenta(String idCuenta, Double monto, String descripcion, String idCategoria) {
+        Cuenta cuenta = buscarCuentaPorId(idCuenta);
+        if (cuenta == null) return false;
+        
+        cuenta.aumentarSaldoTotal(monto);
+        
+        Transaccion transaccion = new Transaccion(
+            UUID.randomUUID().toString(),
+            LocalDateTime.now(),
+            TransaccionConstantes.TIPO_DEPOSITO_CUENTA,
+            monto,
+            descripcion,
+            null,  // No hay cuenta origen en depósito
+            cuenta,
+            buscarCategoriaPorId(idCategoria)
+        );
+        
+        return crearTransaccion(transaccion);
+    }
+
+    @Override
+    public boolean depositoPresupuesto(String idCuenta, String idPresupuesto, Double monto, 
+                                         String descripcion, String idCategoria) {
+        Cuenta cuenta = buscarCuentaPorId(idCuenta);
+        if (cuenta == null) return false;
+        
+        Presupuesto presupuesto = cuenta.buscarPresupuestoPorId(idPresupuesto);
+        if (presupuesto == null) return false;
+        
+        // Validar que la cuenta tenga saldo suficiente
+        if (cuenta.getSaldoTotal() < monto) return false;
+        
+        // Realizar operaciones
+        cuenta.reducirSaldoTotal(monto);  // Restar de la cuenta
+        presupuesto.aumentarSaldo(monto); // Añadir al presupuesto
+        
+        Transaccion transaccion = new Transaccion(
+            UUID.randomUUID().toString(),
+            LocalDateTime.now(),
+            TransaccionConstantes.TIPO_DEPOSITO_PRESUPUESTO,
+            monto,
+            descripcion + " (Presupuesto: " + presupuesto.getNombre() + ")",
+            cuenta,  // Origen: la cuenta
+            null,    // Destino: el presupuesto (no es una cuenta)
+            buscarCategoriaPorId(idCategoria)
+        );
+
+        return crearTransaccion(transaccion);
     }
 
 }

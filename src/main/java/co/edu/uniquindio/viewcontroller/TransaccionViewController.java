@@ -1,10 +1,10 @@
 package co.edu.uniquindio.viewcontroller;
 
-import co.edu.uniquindio.controller.CategoriaController;
-import co.edu.uniquindio.controller.CuentaController;
+import co.edu.uniquindio.controller.PresupuestoController;
 import co.edu.uniquindio.controller.TransaccionController;
 import co.edu.uniquindio.mapping.dto.CategoriaDto;
 import co.edu.uniquindio.mapping.dto.CuentaDto;
+import co.edu.uniquindio.mapping.dto.PresupuestoDto;
 import co.edu.uniquindio.mapping.dto.TransaccionDto;
 import co.edu.uniquindio.Util.TransaccionConstantes;
 import javafx.beans.property.SimpleStringProperty;
@@ -13,17 +13,18 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.util.StringConverter;
 
 import java.time.format.DateTimeFormatter;
 
 public class TransaccionViewController {
     
     private TransaccionController transaccionController;
-    private CuentaController cuentaController;
-    private CategoriaController categoriaController;
+    private PresupuestoController presupuestoController;
     private ObservableList<TransaccionDto> listaTransacciones = FXCollections.observableArrayList();
     private ObservableList<CuentaDto> listaCuentas = FXCollections.observableArrayList();
     private ObservableList<CategoriaDto> listaCategorias = FXCollections.observableArrayList();
+    private ObservableList<PresupuestoDto> listaPresupuestos = FXCollections.observableArrayList();
     private String idUsuarioActual;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     
@@ -41,12 +42,24 @@ public class TransaccionViewController {
     
     @FXML
     private TextField txtMonto;
+
+    @FXML
+    private Label lblCuentaDestino;
+
+    @FXML
+    private Label lblCuentaOrigen;
     
     @FXML
     private TextArea txtDescripcion;
     
     @FXML
     private Button btnRealizarTransaccion;
+
+    @FXML private Label lblPresupuesto;
+
+    @FXML private ComboBox<PresupuestoDto> cbPresupuesto;
+
+    @FXML private TableColumn<TransaccionDto, String> tcPresupuesto;
     
     @FXML
     private TableView<TransaccionDto> tableTransacciones;
@@ -75,19 +88,31 @@ public class TransaccionViewController {
     @FXML
     void initialize() {
         transaccionController = new TransaccionController();
-        cuentaController = new CuentaController();
-        categoriaController = new CategoriaController();
         
         // Inicializar tipos de transacción
         cbTipoTransaccion.getItems().addAll(
-            TransaccionConstantes.TIPO_DEPOSITO,
-            TransaccionConstantes.TIPO_RETIRO,
+            TransaccionConstantes.TIPO_DEPOSITO_CUENTA,
+            TransaccionConstantes.TIPO_DEPOSITO_PRESUPUESTO,
+            TransaccionConstantes.TIPO_RETIRO_CUENTA,
+            TransaccionConstantes.TIPO_RETIRO_PRESUPUESTO,
             TransaccionConstantes.TIPO_TRANSFERENCIA
         );
         
         // Configurar listener para tipo de transacción
         cbTipoTransaccion.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
             actualizarVisibilidadCampos(newValue);
+        });
+
+        cbPresupuesto.setItems(listaPresupuestos);
+        cbPresupuesto.setConverter(new StringConverter<PresupuestoDto>() {
+            @Override public String toString(PresupuestoDto p) {
+                return p != null ? p.nombre() + " (" + p.saldo() + ")" : "";
+            }
+            @Override public PresupuestoDto fromString(String s) { return null; }
+        });
+
+        cbTipoTransaccion.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            actualizarVisibilidadCampos(newVal);
         });
         
         initView();
@@ -152,18 +177,14 @@ public class TransaccionViewController {
     }
     
     private void cargarDatos() {
-        if(idUsuarioActual != null && !idUsuarioActual.isEmpty()) {
-            // Cargar transacciones del usuario
-            listaTransacciones.clear();
-            listaTransacciones.addAll(transaccionController.obtenerTransaccionesPorUsuario(idUsuarioActual));
+        if (idUsuarioActual != null) {
+            // Cargar cuentas, categorías y transacciones (existente)
             
-            // Cargar cuentas del usuario
-            listaCuentas.clear();
-            listaCuentas.addAll(cuentaController.obtenerCuentasPorUsuario(idUsuarioActual));
-            
-            // Cargar categorías
-            listaCategorias.clear();
-            listaCategorias.addAll(categoriaController.obtenerCategorias());
+            // Cargar presupuestos de las cuentas del usuario
+            listaPresupuestos.clear();
+            listaCuentas.forEach(cuenta -> {
+                listaPresupuestos.addAll(presupuestoController.obtenerPresupuestosPorCuenta(cuenta.idCuenta()));
+            });
         }
     }
     
@@ -212,23 +233,44 @@ public class TransaccionViewController {
     }
     
     private void actualizarVisibilidadCampos(String tipoTransaccion) {
-        if(tipoTransaccion == null) {
-            cbCuentaOrigen.setVisible(true);
-            cbCuentaDestino.setVisible(false);
-            return;
-        }
+        lblCuentaOrigen.setVisible(false);
+        cbCuentaOrigen.setVisible(false);
+        lblPresupuesto.setVisible(false);
+        cbPresupuesto.setVisible(false);
+        lblCuentaDestino.setVisible(false);
+        cbCuentaDestino.setVisible(false);
         
-        switch(tipoTransaccion) {
-            case TransaccionConstantes.TIPO_DEPOSITO:
-                cbCuentaOrigen.setVisible(false);
+        if (tipoTransaccion == null) return;
+        
+        switch (tipoTransaccion) {
+            case TransaccionConstantes.TIPO_DEPOSITO_CUENTA:
+                lblCuentaDestino.setVisible(true);
                 cbCuentaDestino.setVisible(true);
                 break;
-            case TransaccionConstantes.TIPO_RETIRO:
+                
+            case TransaccionConstantes.TIPO_DEPOSITO_PRESUPUESTO:
+                lblCuentaOrigen.setVisible(true);
                 cbCuentaOrigen.setVisible(true);
-                cbCuentaDestino.setVisible(false);
+                lblPresupuesto.setVisible(true);
+                cbPresupuesto.setVisible(true);
                 break;
-            case TransaccionConstantes.TIPO_TRANSFERENCIA:
+                
+            case TransaccionConstantes.TIPO_RETIRO_CUENTA:
+                lblCuentaOrigen.setVisible(true);
                 cbCuentaOrigen.setVisible(true);
+                break;
+                
+            case TransaccionConstantes.TIPO_RETIRO_PRESUPUESTO:
+                lblCuentaOrigen.setVisible(true);
+                cbCuentaOrigen.setVisible(true);
+                lblPresupuesto.setVisible(true);
+                cbPresupuesto.setVisible(true);
+                break;
+                
+            case TransaccionConstantes.TIPO_TRANSFERENCIA:
+                lblCuentaOrigen.setVisible(true);
+                cbCuentaOrigen.setVisible(true);
+                lblCuentaDestino.setVisible(true);
                 cbCuentaDestino.setVisible(true);
                 break;
         }
@@ -236,144 +278,93 @@ public class TransaccionViewController {
     
     @FXML
     void onRealizarTransaccion(ActionEvent event) {
-        String tipoTransaccion = cbTipoTransaccion.getValue();
-        if(tipoTransaccion == null || tipoTransaccion.isEmpty()) {
-            mostrarMensaje(
-                "Tipo requerido", 
-                "Seleccione tipo", 
-                "Debe seleccionar un tipo de transacción", 
-                Alert.AlertType.WARNING
-            );
+        String tipo = cbTipoTransaccion.getValue();
+        if (tipo == null) {
+            mostrarMensaje("Error", "Seleccione un tipo de operación" , "Seleccione un tipo de operación", Alert.AlertType.ERROR);
             return;
         }
         
-        Double monto;
         try {
-            monto = Double.parseDouble(txtMonto.getText());
-            if(monto <= 0) {
-                mostrarMensaje(
-                    "Monto inválido", 
-                    "Monto debe ser positivo", 
-                    "El monto debe ser mayor que cero", 
-                    Alert.AlertType.WARNING
-                );
-                return;
-            }
-        } catch(NumberFormatException e) {
-            mostrarMensaje(
-                "Monto inválido", 
-                "Formato incorrecto", 
-                "El monto debe ser un número válido", 
-                Alert.AlertType.WARNING
-            );
-            return;
-        }
-        
-        String descripcion = txtDescripcion.getText() != null ? txtDescripcion.getText() : "";
-        CategoriaDto categoriaSeleccionada = cbCategoria.getValue();
-        String idCategoria = categoriaSeleccionada != null ? categoriaSeleccionada.idCategoria() : "";
-        
-        boolean resultado = false;
-        
-        switch(tipoTransaccion) {
-            case TransaccionConstantes.TIPO_DEPOSITO:
-                CuentaDto cuentaDestino = cbCuentaDestino.getValue();
-                if(cuentaDestino == null) {
-                    mostrarMensaje(
-                        "Cuenta requerida", 
-                        "Seleccione cuenta", 
-                        "Debe seleccionar una cuenta destino", 
-                        Alert.AlertType.WARNING
-                    );
-                    return;
-                }
-                resultado = transaccionController.realizarDeposito(
-                    cuentaDestino.idCuenta(), 
-                    monto, 
-                    descripcion, 
-                    idCategoria
-                );
+            double monto = Double.parseDouble(txtMonto.getText());
+            String descripcion = txtDescripcion.getText();
+            CategoriaDto categoria = cbCategoria.getValue();
+            String idCategoria = categoria != null ? categoria.idCategoria() : null;
+            
+            boolean resultado = false;
+            
+            switch (tipo) {
+                case TransaccionConstantes.TIPO_DEPOSITO_CUENTA:
+                    CuentaDto cuentaDestino = cbCuentaDestino.getValue();
+                    if (cuentaDestino == null) {
+                        mostrarMensaje("Error", "Seleccione cuenta destino", "Seleccione cuenta destino para la operación", Alert.AlertType.ERROR);
+                        return;
+                    }
+                    resultado = transaccionController.depositoCuenta(
+                        cuentaDestino.idCuenta(), monto, descripcion, idCategoria);
                 break;
-                
-            case TransaccionConstantes.TIPO_RETIRO:
-                CuentaDto cuentaOrigen = cbCuentaOrigen.getValue();
-                if(cuentaOrigen == null) {
-                    mostrarMensaje(
-                        "Cuenta requerida", 
-                        "Seleccione cuenta", 
-                        "Debe seleccionar una cuenta origen", 
-                        Alert.AlertType.WARNING
-                    );
-                    return;
-                }
-                resultado = transaccionController.realizarRetiro(
-                    cuentaOrigen.idCuenta(), 
-                    monto, 
-                    descripcion, 
-                    idCategoria
-                );
-                break;
-                
-            case TransaccionConstantes.TIPO_TRANSFERENCIA:
-                CuentaDto cuentaOrigenTransf = cbCuentaOrigen.getValue();
-                CuentaDto cuentaDestinoTransf = cbCuentaDestino.getValue();
-                if(cuentaOrigenTransf == null || cuentaDestinoTransf == null) {
-                    mostrarMensaje(
-                        "Cuentas requeridas", 
-                        "Seleccione cuentas", 
-                        "Debe seleccionar cuentas origen y destino", 
-                        Alert.AlertType.WARNING
-                    );
-                    return;
-                }
-                if(cuentaOrigenTransf.idCuenta().equals(cuentaDestinoTransf.idCuenta())) {
-                    mostrarMensaje(
-                        "Cuentas iguales", 
-                        "Error de selección", 
-                        "Las cuentas origen y destino no pueden ser iguales", 
-                        Alert.AlertType.WARNING
-                    );
-                    return;
-                }
-                resultado = transaccionController.realizarTransferencia(
-                    cuentaOrigenTransf.idCuenta(), 
-                    cuentaDestinoTransf.idCuenta(), 
-                    monto, 
-                    descripcion, 
-                    idCategoria
-                );
-                break;
-        }
-        
-        if(resultado) {
-            cargarDatos();
-            limpiarCampos();
-            mostrarMensaje(
-                "Transacción realizada", 
-                "Éxito", 
-                "La transacción se realizó correctamente", 
-                Alert.AlertType.INFORMATION
-            );
-        } else {
-            String mensajeError = "";
-            switch(tipoTransaccion) {
-                case TransaccionConstantes.TIPO_DEPOSITO:
-                    mensajeError = TransaccionConstantes.ERROR_DEPOSITO;
+
+                case TransaccionConstantes.TIPO_DEPOSITO_PRESUPUESTO:
+                    CuentaDto cuentaOrigen = cbCuentaOrigen.getValue();
+                    PresupuestoDto presupuestoDestino = cbPresupuesto.getValue();
+                    if (cuentaOrigen == null || presupuestoDestino == null) {
+                        mostrarMensaje("Error", "Seleccione cuenta y presupuesto", "Seleccione cuenta y presupuesto", Alert.AlertType.ERROR);
+                        return;
+                    }
+                    resultado = transaccionController.depositoPresupuesto(
+                        cuentaOrigen.idCuenta(), presupuestoDestino.idPresupuesto(), monto, descripcion, idCategoria);
                     break;
-                case TransaccionConstantes.TIPO_RETIRO:
-                    mensajeError = TransaccionConstantes.ERROR_RETIRO;
+                    
+                case TransaccionConstantes.TIPO_RETIRO_CUENTA:
+                    cuentaOrigen = cbCuentaOrigen.getValue();
+                    if (cuentaOrigen == null) {
+                        mostrarMensaje("Error","Seleccione cuenta origen",  "Seleccione cuenta de origen para la operacion", Alert.AlertType.ERROR);
+                        return;
+                    }
+                    resultado = transaccionController.retiroPorCuenta(
+                        cuentaOrigen.idCuenta(), monto, descripcion, idCategoria);
                     break;
+                    
+                case TransaccionConstantes.TIPO_RETIRO_PRESUPUESTO:
+                    CuentaDto cuenta = cbCuentaOrigen.getValue();
+                    PresupuestoDto presupuesto = cbPresupuesto.getValue();
+                    if (cuenta == null || presupuesto == null) {
+                        mostrarMensaje("Error","Seleccione cuenta y presupuesto", "Seleccione cuenta y presupuesto", Alert.AlertType.ERROR);
+                        return;
+                    }
+                    resultado = transaccionController.retiroPorPresupuesto(
+                        cuenta.idCuenta(), presupuesto.idPresupuesto(), monto, descripcion, idCategoria);
+                    break;
+                    
                 case TransaccionConstantes.TIPO_TRANSFERENCIA:
-                    mensajeError = TransaccionConstantes.ERROR_TRANSFERENCIA;
+                    CuentaDto origen = cbCuentaOrigen.getValue();
+                    CuentaDto destino = cbCuentaDestino.getValue();
+                    if (origen == null || destino == null) {
+                        mostrarMensaje("Error", "Seleccione cuentas de origen y destino", "Seleccione cuentas de origen y destino", Alert.AlertType.ERROR);
+                        return;
+                    }
+                    if (origen.idCuenta().equals(destino.idCuenta())) {
+                        mostrarMensaje("Error", "Las cuentas de origen y destino no pueden ser iguales", "Seleccione cuentas diferentes", Alert.AlertType.ERROR);
+                        return;
+                    }
+                    resultado = transaccionController.realizarTransferencia(
+                        origen.idCuenta(), 
+                        destino.idCuenta(), 
+                        monto, 
+                        descripcion, 
+                        idCategoria);
                     break;
             }
             
-            mostrarMensaje(
-                "Error en transacción", 
-                "No se pudo realizar", 
-                mensajeError, 
-                Alert.AlertType.ERROR
-            );
+            if (resultado) {
+                mostrarMensaje("Éxito","Transacción realizada", "Operación realizada correctamente", Alert.AlertType.INFORMATION);
+                cargarDatos();
+                limpiarCampos();
+            } else {
+                mostrarMensaje("Error", "Error al realizar la operación", "No se pudo completar la operación", Alert.AlertType.ERROR);
+            }
+            
+        } catch (NumberFormatException e) {
+            mostrarMensaje("Error","Error en el formato del monto",  "Ingrese un monto válido", Alert.AlertType.ERROR);
         }
     }
     

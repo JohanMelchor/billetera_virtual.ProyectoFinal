@@ -4,7 +4,9 @@ import co.edu.uniquindio.model.Transaccion;
 
 public interface ITransaccionServices {
     boolean crearTransaccion(Transaccion transaccion);
-    boolean agregarFondos(String idCuenta, Double monto);
-    boolean retirarFondos(String idCuenta, Double monto);
-    boolean transferirFondos(String idCuentaOrigen, String idCuentaDestino, Double monto);
+    boolean depositoCuenta(String idCuenta, Double monto, String descripcion, String idCategoria);
+    boolean depositoPresupuesto(String idCuenta, String idPresupuesto, Double monto, String descripcion, String idCategoria);
+    boolean retirarCuenta(String idCuenta, Double monto, String descripcion, String idCategoria);
+    boolean retirarPresupuesto(String idCuenta, String idPresupuesto, Double monto, String descripcion, String idCategoria);
+    boolean realizarTransferencia(String idCuentaOrigen, String idCuentaDestino, Double monto, String descripcion, String idCategoria);
 }

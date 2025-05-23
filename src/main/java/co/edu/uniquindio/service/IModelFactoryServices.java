@@ -23,8 +23,10 @@ public interface IModelFactoryServices {
     List<TransaccionDto> obtenerTransaccionesPorUsuario(String idUsuario);
     List<TransaccionDto> obtenerTransaccionesPorCuenta(String idCuenta);
     boolean agregarTransaccion(TransaccionDto transaccionDto);
-    boolean realizarDeposito(String idCuenta, Double monto, String descripcion, String idCategoria);
-    boolean realizarRetiro(String idCuenta, Double monto, String descripcion, String idCategoria);
+    boolean retirarCuenta(String idCuenta, Double monto, String descripcion, String idCategoria);
+    boolean retirarPresupuesto(String idCuenta, String idPresupuesto, Double monto, String descripcion, String idCategoria);
+    boolean depositoCuenta(String idCuenta, Double monto, String descripcion, String idCategoria);
+    boolean depositoPresupuesto(String idCuenta, String idPresupuesto, Double monto, String descripcion, String idCategoria);
     boolean realizarTransferencia(String idCuentaOrigen, String idCuentaDestino, Double monto, String descripcion, String idCategoria);
     
     // Presupuesto

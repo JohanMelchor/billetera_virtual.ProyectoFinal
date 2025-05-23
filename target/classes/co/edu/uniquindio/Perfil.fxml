@@ -35,7 +35,7 @@
             <TextField fx:id="txtPasswordVisible" layoutX="259.0" layoutY="325.0" />
          </children>
       </Pane>
-      <VBox fx:id="VbCambioPassword" alignment="TOP_RIGHT" layoutX="142.0" layoutY="126.0" prefHeight="248.0" prefWidth="366.0" visible="false">
+      <VBox fx:id="VbCambioPassword" alignment="TOP_RIGHT" layoutX="142.0" layoutY="126.0" prefHeight="248.0" prefWidth="366.0" style="-fx-border-color: black; -fx-border-radius: 5;" visible="false">
          <children>
             <Button fx:id="btnCerrar" contentDisplay="CENTER" mnemonicParsing="false" onAction="#onCerrar" style="-fx-background-color: #f44336; -fx-text-fill: white;" text="X">
                <font>
@@ -47,11 +47,11 @@
                   <Pane prefHeight="200.0" prefWidth="309.0">
                      <children>
                         <Label layoutX="72.0" layoutY="43.0" text="Contraseña Actual:" />
-                        <TextField fx:id="txtPasswordActual" layoutX="183.0" layoutY="39.0" promptText="Ingrese contraseña actual" />
+                        <TextField fx:id="txtPasswordActual" layoutX="183.0" layoutY="39.0" prefHeight="25.0" prefWidth="167.0" promptText="Ingrese contraseña actual" />
                         <Label layoutX="72.0" layoutY="77.0" text="Contraseña nueva:" />
                         <Label layoutX="54.0" layoutY="109.0" text="Confirmar contraseña:" />
-                        <TextField fx:id="txtPasswordConfirm" layoutX="183.0" layoutY="105.0" promptText="Confirmar contraseña" />
-                        <TextField fx:id="txtPasswordNew" layoutX="183.0" layoutY="73.0" promptText="Ingrese nueva contraseña" />
+                        <TextField fx:id="txtPasswordConfirm" layoutX="183.0" layoutY="105.0" prefHeight="25.0" prefWidth="167.0" promptText="Confirmar nueva contraseña" />
+                        <TextField fx:id="txtPasswordNew" layoutX="183.0" layoutY="73.0" prefHeight="25.0" prefWidth="167.0" promptText="Ingrese nueva contraseña" />
                         <Button fx:id="btnGuardarPassword" layoutX="122.0" layoutY="153.0" mnemonicParsing="false" onAction="#OnGuardarPassword" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Guardar Contraseña" />
                         <Label alignment="CENTER" layoutX="77.0" layoutY="-1.0" text="Cambio de Contraseña">
                            <font>

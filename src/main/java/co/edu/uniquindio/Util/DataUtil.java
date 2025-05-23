@@ -17,63 +17,180 @@ public class DataUtil {
         billeteraVirtual.getListaUsuarios().add(Usuario3);
         billeteraVirtual.getListaUsuarios().add(Usuario4);
 
-        billeteraVirtual.getListaCategorias().add(new Categoria("CAT01", "Mercado", "Gastos de alimentación y hogar"));
-        billeteraVirtual.getListaCategorias().add(new Categoria("CAT02", "Transporte", "Gastos de movilidad"));
-        billeteraVirtual.getListaCategorias().add(new Categoria("CAT03", "Ocio", "Entretenimiento y actividades recreativas"));
+        billeteraVirtual.getListaCategorias().add(new Categoria("CAT01", "Hogar", "Gastos de hogar"));
+        billeteraVirtual.getListaCategorias().add(new Categoria("CAT02", "Transporte", "Gastos de transporte"));
+        billeteraVirtual.getListaCategorias().add(new Categoria("CAT03", "Ocio", "actividades recreativas"));
         billeteraVirtual.getListaCategorias().add(new Categoria("CAT04", "Servicios", "Pagos de servicios públicos"));
+        billeteraVirtual.getListaCategorias().add(new Categoria("CAT05", "Salud", "Gastos médicos y de salud"));
+        billeteraVirtual.getListaCategorias().add(new Categoria("CAT06", "Educacion", "Gastos de educación"));
+        billeteraVirtual.getListaCategorias().add(new Categoria("CAT07", "Entretenimiento", "Gastos de entretenimiento"));
+        billeteraVirtual.getListaCategorias().add(new Categoria("CAT08", "Alimentacion", "Gastos de alimentación"));
 
         billeteraVirtual.getListaAdministradores().add(new Administrador("ADM01", "Admin Principal", "admin@billeteravirtual.com", "admin123"));
+
 
         billeteraVirtual.getListaCuentas().add(Cuenta.builder().idCuenta("CUE01").nombreBanco("Banco Popular").numeroCuenta("100001").tipoCuenta("Ahorro").usuario(Usuario1).build());
         billeteraVirtual.getListaCuentas().add(Cuenta.builder().idCuenta("CUE02").nombreBanco("Banco de Bogotá").numeroCuenta("200001").tipoCuenta("Corriente").usuario(Usuario1).build());
         billeteraVirtual.getListaCuentas().add(Cuenta.builder().idCuenta("CUE03").nombreBanco("Bancolombia").numeroCuenta("300001").tipoCuenta("Ahorro").usuario(Usuario2).build());
         billeteraVirtual.getListaCuentas().add(Cuenta.builder().idCuenta("CUE04").nombreBanco("Davivienda").numeroCuenta("400001").tipoCuenta("Ahorro").usuario(Usuario3).build());
         billeteraVirtual.getListaCuentas().add(Cuenta.builder().idCuenta("CUE05").nombreBanco("LuloBank").numeroCuenta("500001").tipoCuenta("Corriente").usuario(Usuario4).build());
+        billeteraVirtual.getListaCuentas().add(Cuenta.builder().idCuenta("CUE06").nombreBanco("Banco Popular").numeroCuenta("600001").tipoCuenta("Ahorro").usuario(Usuario4).build());
+        billeteraVirtual.getListaCuentas().add(Cuenta.builder().idCuenta("CUE07").nombreBanco("Banco de Bogotá").numeroCuenta("700001").tipoCuenta("Corriente").usuario(Usuario3).build());
 
         billeteraVirtual.getListaPresupuestos().add(new Presupuesto("PRE01", "Gastos Mensuales", 1500.0, 200.0, billeteraVirtual.getListaCategorias().get(0), Usuario1, 1000.0));
         billeteraVirtual.getListaPresupuestos().add(new Presupuesto("PRE02", "Ahorros", 2000.0, 0.0, null, Usuario1, 2000.0));
         billeteraVirtual.getListaPresupuestos().add(new Presupuesto("PRE03", "Gastos Diarios", 1000.0, 300.0, billeteraVirtual.getListaCategorias().get(1), Usuario2, 2000.0));
         billeteraVirtual.getListaPresupuestos().add(new Presupuesto("PRE04", "Entretenimiento", 500.0, 100.0, billeteraVirtual.getListaCategorias().get(2), Usuario3, 3000.0));
 
-
-        billeteraVirtual.getListaCuentas().get(0).setPresupuesto(billeteraVirtual.getListaPresupuestos().get(0));
-        billeteraVirtual.getListaCuentas().get(1).setPresupuesto(billeteraVirtual.getListaPresupuestos().get(1));
-        billeteraVirtual.getListaCuentas().get(2).setPresupuesto(billeteraVirtual.getListaPresupuestos().get(2));
-        billeteraVirtual.getListaCuentas().get(3).setPresupuesto(billeteraVirtual.getListaPresupuestos().get(3));
+        billeteraVirtual.getListaCuentas().get(0).agregarPresupuesto(billeteraVirtual.getListaPresupuestos().get(0));
+        billeteraVirtual.getListaCuentas().get(1).agregarPresupuesto(billeteraVirtual.getListaPresupuestos().get(1));
+        billeteraVirtual.getListaCuentas().get(2).agregarPresupuesto(billeteraVirtual.getListaPresupuestos().get(2));
+        billeteraVirtual.getListaCuentas().get(3).agregarPresupuesto(billeteraVirtual.getListaPresupuestos().get(3));
 
         billeteraVirtual.getListaTransacciones().add(new Transaccion(
             "TRA01", 
-            LocalDateTime.now().minusDays(5), 
-            TransaccionConstantes.TIPO_DEPOSITO, 
-            500.0, 
-            "Depósito inicial", 
+            LocalDateTime.now().minusDays(10), 
+            TransaccionConstantes.TIPO_DEPOSITO_CUENTA, 
+            1000.0, 
+            "Depósito inicial cuenta principal", 
             null, 
-            billeteraVirtual.getListaCuentas().get(0), 
-            billeteraVirtual.getListaCategorias().get(0)
+            billeteraVirtual.getListaCuentas().get(0), // CUE01 - Banco Popular
+            billeteraVirtual.getListaCategorias().get(0) // Hogar
         ));
 
         billeteraVirtual.getListaTransacciones().add(new Transaccion(
             "TRA02", 
-            LocalDateTime.now().minusDays(3), 
-            TransaccionConstantes.TIPO_RETIRO, 
-            200.0, 
-            "Retiro para compras", 
-            billeteraVirtual.getListaCuentas().get(0), 
+            LocalDateTime.now().minusDays(8), 
+            TransaccionConstantes.TIPO_DEPOSITO_CUENTA, 
+            500.0, 
+            "Pago de nómina", 
             null, 
-            billeteraVirtual.getListaCategorias().get(0)
+            billeteraVirtual.getListaCuentas().get(1), // CUE02 - Banco de Bogotá
+            billeteraVirtual.getListaCategorias().get(5) // Educación
+        ));
+
+        // 2. Depósitos a presupuestos
+        billeteraVirtual.getListaTransacciones().add(new Transaccion(
+            "TRA03", 
+            LocalDateTime.now().minusDays(7), 
+            TransaccionConstantes.TIPO_DEPOSITO_PRESUPUESTO, 
+            300.0, 
+            "Asignación a gastos mensuales", 
+            billeteraVirtual.getListaCuentas().get(0), // CUE01
+            null, 
+            billeteraVirtual.getListaCategorias().get(0) // Hogar
         ));
 
         billeteraVirtual.getListaTransacciones().add(new Transaccion(
-            "TRA03", 
+            "TRA04", 
+            LocalDateTime.now().minusDays(6), 
+            TransaccionConstantes.TIPO_DEPOSITO_PRESUPUESTO, 
+            200.0, 
+            "Asignación a entretenimiento", 
+            billeteraVirtual.getListaCuentas().get(3), // CUE04
+            null, 
+            billeteraVirtual.getListaCategorias().get(2) // Ocio
+        ));
+
+        // 3. Retiros de cuentas
+        billeteraVirtual.getListaTransacciones().add(new Transaccion(
+            "TRA05", 
+            LocalDateTime.now().minusDays(5), 
+            TransaccionConstantes.TIPO_RETIRO_CUENTA, 
+            150.0, 
+            "Retiro para compras", 
+            billeteraVirtual.getListaCuentas().get(0), // CUE01
+            null, 
+            billeteraVirtual.getListaCategorias().get(0) // Hogar
+        ));
+
+        billeteraVirtual.getListaTransacciones().add(new Transaccion(
+            "TRA06", 
+            LocalDateTime.now().minusDays(4), 
+            TransaccionConstantes.TIPO_RETIRO_CUENTA, 
+            100.0, 
+            "Retiro para transporte", 
+            billeteraVirtual.getListaCuentas().get(2), // CUE03
+            null, 
+            billeteraVirtual.getListaCategorias().get(1) // Transporte
+        ));
+
+        // 4. Retiros de presupuestos
+        billeteraVirtual.getListaTransacciones().add(new Transaccion(
+            "TRA07", 
+            LocalDateTime.now().minusDays(3), 
+            TransaccionConstantes.TIPO_RETIRO_PRESUPUESTO, 
+            80.0, 
+            "Supermercado", 
+            billeteraVirtual.getListaCuentas().get(0), // CUE01
+            null, 
+            billeteraVirtual.getListaCategorias().get(7) // Alimentación
+        ));
+
+        billeteraVirtual.getListaTransacciones().add(new Transaccion(
+            "TRA08", 
+            LocalDateTime.now().minusDays(2), 
+            TransaccionConstantes.TIPO_RETIRO_PRESUPUESTO, 
+            50.0, 
+            "Cine", 
+            billeteraVirtual.getListaCuentas().get(3), // CUE04
+            null, 
+            billeteraVirtual.getListaCategorias().get(2) // Ocio
+        ));
+
+        // 5. Transferencias entre cuentas
+        billeteraVirtual.getListaTransacciones().add(new Transaccion(
+            "TRA09", 
             LocalDateTime.now().minusDays(1), 
             TransaccionConstantes.TIPO_TRANSFERENCIA, 
-            300.0, 
-            "Transferencia entre cuentas", 
-            billeteraVirtual.getListaCuentas().get(0), 
-            billeteraVirtual.getListaCuentas().get(1), 
+            200.0, 
+            "Transferencia a ahorros", 
+            billeteraVirtual.getListaCuentas().get(0), // CUE01
+            billeteraVirtual.getListaCuentas().get(1), // CUE02
             null
         ));
 
+        billeteraVirtual.getListaTransacciones().add(new Transaccion(
+            "TRA10", 
+            LocalDateTime.now().minusHours(6), 
+            TransaccionConstantes.TIPO_TRANSFERENCIA, 
+            100.0, 
+            "Pago a amigo", 
+            billeteraVirtual.getListaCuentas().get(2), // CUE03
+            billeteraVirtual.getListaCuentas().get(4), // CUE05
+            null
+        ));
+
+        // Actualizar saldos de cuentas según transacciones
+        actualizarSaldosCuentas(billeteraVirtual);
+
         return billeteraVirtual;
+    }
+
+    private static void actualizarSaldosCuentas(BilleteraVirtual billeteraVirtual) {
+        for (Transaccion transaccion : billeteraVirtual.getListaTransacciones()) {
+            switch (transaccion.getTipoTransaccion()) {
+                case TransaccionConstantes.TIPO_DEPOSITO_CUENTA:
+                    transaccion.getCuentaDestino().aumentarSaldoTotal(transaccion.getMonto());
+                    break;
+                    
+                case TransaccionConstantes.TIPO_DEPOSITO_PRESUPUESTO:
+                    transaccion.getCuentaOrigen().reducirSaldoTotal(transaccion.getMonto());
+                    break;
+                    
+                case TransaccionConstantes.TIPO_RETIRO_CUENTA:
+                    transaccion.getCuentaOrigen().reducirSaldoTotal(transaccion.getMonto());
+                    break;
+                    
+                case TransaccionConstantes.TIPO_RETIRO_PRESUPUESTO:
+                    // El saldo del presupuesto se maneja internamente en la clase Presupuesto
+                    break;
+                    
+                case TransaccionConstantes.TIPO_TRANSFERENCIA:
+                    transaccion.getCuentaOrigen().reducirSaldoTotal(transaccion.getMonto());
+                    transaccion.getCuentaDestino().aumentarSaldoTotal(transaccion.getMonto());
+                    break;
+            }
+        }
     }
 }

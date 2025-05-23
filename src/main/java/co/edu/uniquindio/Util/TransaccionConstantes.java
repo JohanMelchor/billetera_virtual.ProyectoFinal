@@ -1,8 +1,12 @@
 package co.edu.uniquindio.Util;
 
 public class TransaccionConstantes {
-    public static final String TIPO_DEPOSITO = "DEPOSITO";
-    public static final String TIPO_RETIRO = "RETIRO";
+    public static final String TIPO_DEPOSITO_CUENTA = "Depósito a Cuenta";
+    public static final String TIPO_DEPOSITO_PRESUPUESTO = "Depósito a Presupuesto";
+    public static final String TIPO_RETIRO_CUENTA = "RETIRO DE CUENTA";
+    public static final String TIPO_RETIRO_PRESUPUESTO = "RETIRO DE PRESUPUESTO";
+    public static final String TIPO_PRESUPUESTO = "PRESUPUESTO";
+    public static final String TIPO_CATEGORIA = "CATEGORIA";
     public static final String TIPO_TRANSFERENCIA = "TRANSFERENCIA";
 
     // Mensajes de validación

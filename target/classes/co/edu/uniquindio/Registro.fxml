@@ -13,14 +13,21 @@
             <Font name="System Bold" size="31.0" />
          </font>
       </Label>
-      <TextField fx:id="txtIdUsuario" layoutX="220.0" layoutY="124.0" prefHeight="25.0" prefWidth="209.0" promptText="Id de usuario" />
-      <TextField fx:id="txtDireccion" layoutX="220.0" layoutY="258.0" prefHeight="25.0" prefWidth="209.0" promptText="Direccion" />
-      <TextField fx:id="txtNombre" layoutX="220.0" layoutY="160.0" prefHeight="25.0" prefWidth="209.0" promptText="Nombre completo" />
-      <TextField fx:id="txtCorreo" layoutX="220.0" layoutY="193.0" prefHeight="25.0" prefWidth="209.0" promptText="Correo" />
-      <TextField fx:id="txtTelefono" layoutX="220.0" layoutY="226.0" prefHeight="25.0" prefWidth="209.0" promptText="Telefono" />
-      <TextField fx:id="txtPassword" layoutX="220.0" layoutY="292.0" prefHeight="25.0" prefWidth="209.0" promptText="Contraseña" />
+      <TextField fx:id="txtIdUsuario" layoutX="272.0" layoutY="123.0" prefHeight="25.0" prefWidth="209.0" promptText="Ingrese Id de usuario" />
+      <TextField fx:id="txtDireccion" layoutX="272.0" layoutY="257.0" prefHeight="25.0" prefWidth="209.0" promptText="Ingrese Direccion" />
+      <TextField fx:id="txtNombre" layoutX="272.0" layoutY="159.0" prefHeight="25.0" prefWidth="209.0" promptText="Ingrese Nombre completo" />
+      <TextField fx:id="txtCorreo" layoutX="272.0" layoutY="192.0" prefHeight="25.0" prefWidth="209.0" promptText="Ingrese Correo" />
+      <TextField fx:id="txtTelefono" layoutX="272.0" layoutY="225.0" prefHeight="25.0" prefWidth="209.0" promptText="Ingrese Telefono" />
+      <TextField fx:id="txtPassword" layoutX="272.0" layoutY="291.0" prefHeight="25.0" prefWidth="209.0" promptText="Ingrese Contraseña" />
       <Button fx:id="btnRegister" alignment="CENTER" layoutX="287.0" layoutY="381.0" mnemonicParsing="false" onAction="#onRegister" text="Registrarse" />
       <Button fx:id="btnVolver" alignment="CENTER" layoutX="299.0" layoutY="424.0" mnemonicParsing="false" onAction="#onVolver" text="Volver" />
-      <TextField fx:id="txtConfirmPassword" layoutX="220.0" layoutY="328.0" prefHeight="25.0" prefWidth="209.0" promptText="Confirmar Contraseña" />
+      <TextField fx:id="txtConfirmPassword" layoutX="272.0" layoutY="327.0" prefHeight="25.0" prefWidth="209.0" promptText="Confirmar Contraseña" />
+      <Label layoutX="194.0" layoutY="127.0" text="Id de usuario:" />
+      <Label layoutX="166.0" layoutY="163.0" text="Nombre completo:" />
+      <Label layoutX="221.0" layoutY="196.0" text="Correo:" />
+      <Label layoutX="216.0" layoutY="229.0" text="Telefono:" />
+      <Label layoutX="214.0" layoutY="261.0" text="Dirección:" />
+      <Label layoutX="199.0" layoutY="295.0" text="Contraseña:" />
+      <Label layoutX="148.0" layoutY="331.0" text="Confirmar contraseña:" />
    </children>
 </AnchorPane>

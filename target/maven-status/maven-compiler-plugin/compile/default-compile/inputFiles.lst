@@ -14,12 +14,14 @@ A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\co
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\mapping\mappers\TransaccionMappingImpl.java
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\service\IPresupuestoMapping.java
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\model\Cuenta.java
+A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\viewcontroller\PerfilViewController.java
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\service\IUsuarioMapping.java
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\service\ITransaccionMapping.java
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\mapping\mappers\PresupuestoMappingImpl.java
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\mapping\dto\CuentaDto.java
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\model\Reporte.java
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\mapping\mappers\CuentaMappingImpl.java
+A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\service\IAdministradorServices.java
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\service\IModelFactoryServices.java
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\service\IUsuarioServices.java
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\Util\PresupuestoConstantes.java
@@ -34,7 +36,6 @@ A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\mo
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\Util\TransaccionConstantes.java
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\service\ICategoriaMapping.java
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\viewcontroller\EstadisticasViewController.java
-A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\viewcontroller\UsuarioViewController.java
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\mapping\dto\CategoriaDto.java
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\mapping\mappers\CategoriaMappingImpl.java
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\service\ITransaccionServices.java
@@ -45,8 +46,10 @@ A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\se
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\viewcontroller\BilleteraVirtualAppViewController.java
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\Util\DataUtil.java
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\mapping\dto\UsuarioDto.java
+A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\service\Prototype\IUsuarioPrototype.java
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\viewcontroller\TransaccionViewController.java
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\model\Builder\CuentaBuilder.java
+A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\viewcontroller\UsuariosViewController.java
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\model\BilleteraVirtual.java
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\controller\CategoriaController.java
 A:\PROGRAMING\billetera_virtual.ProyectoFinal\src\main\java\co\edu\uniquindio\controller\UsuarioController.java
