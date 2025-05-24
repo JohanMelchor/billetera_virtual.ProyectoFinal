@@ -17,8 +17,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.util.StringConverter;
 
-import java.time.format.DateTimeFormatter;
-
 public class TransaccionViewController {
     
     private TransaccionController transaccionController;
@@ -30,7 +28,6 @@ public class TransaccionViewController {
     private ObservableList<CategoriaDto> listaCategorias = FXCollections.observableArrayList();
     private ObservableList<PresupuestoDto> listaPresupuestos = FXCollections.observableArrayList();
     private String idUsuarioActual;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     
     @FXML
     private ComboBox<String> cbTipoTransaccion;

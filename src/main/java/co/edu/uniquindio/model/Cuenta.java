@@ -1,6 +1,4 @@
 package co.edu.uniquindio.model;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import co.edu.uniquindio.model.Builder.CuentaBuilder;
