@@ -1,5 +1,7 @@
 package co.edu.uniquindio.viewcontroller;
 
+import co.edu.uniquindio.controller.CategoriaController;
+import co.edu.uniquindio.controller.CuentaController;
 import co.edu.uniquindio.controller.PresupuestoController;
 import co.edu.uniquindio.controller.TransaccionController;
 import co.edu.uniquindio.mapping.dto.CategoriaDto;
@@ -21,6 +23,8 @@ public class TransaccionViewController {
     
     private TransaccionController transaccionController;
     private PresupuestoController presupuestoController;
+    private CategoriaController categoriaController;
+    private CuentaController cuentaController;
     private ObservableList<TransaccionDto> listaTransacciones = FXCollections.observableArrayList();
     private ObservableList<CuentaDto> listaCuentas = FXCollections.observableArrayList();
     private ObservableList<CategoriaDto> listaCategorias = FXCollections.observableArrayList();
@@ -53,7 +57,7 @@ public class TransaccionViewController {
     private TextArea txtDescripcion;
     
     @FXML
-    private Button btnRealizarTransaccion;
+    private Button btnTransaccion;
 
     @FXML private Label lblPresupuesto;
 
@@ -88,6 +92,9 @@ public class TransaccionViewController {
     @FXML
     void initialize() {
         transaccionController = new TransaccionController();
+        presupuestoController = new PresupuestoController();
+        categoriaController = new CategoriaController();
+        cuentaController = new CuentaController();
         
         // Inicializar tipos de transacción
         cbTipoTransaccion.getItems().addAll(
@@ -178,13 +185,17 @@ public class TransaccionViewController {
     
     private void cargarDatos() {
         if (idUsuarioActual != null) {
-            // Cargar cuentas, categorías y transacciones (existente)
-            
+            // Cargar cuentas del usuario
+            listaCuentas.setAll(cuentaController.obtenerCuentasPorUsuario(idUsuarioActual));
+            // Cargar categorías (todas)
+            listaCategorias.setAll(categoriaController.obtenerCategorias());
+            // Cargar transacciones del usuario
+            listaTransacciones.setAll(transaccionController.obtenerTransaccionesPorUsuario(idUsuarioActual));
             // Cargar presupuestos de las cuentas del usuario
             listaPresupuestos.clear();
-            listaCuentas.forEach(cuenta -> {
+            for (CuentaDto cuenta : listaCuentas) {
                 listaPresupuestos.addAll(presupuestoController.obtenerPresupuestosPorCuenta(cuenta.idCuenta()));
-            });
+            }  
         }
     }
     
@@ -261,8 +272,6 @@ public class TransaccionViewController {
                 break;
                 
             case TransaccionConstantes.TIPO_RETIRO_PRESUPUESTO:
-                lblCuentaOrigen.setVisible(true);
-                cbCuentaOrigen.setVisible(true);
                 lblPresupuesto.setVisible(true);
                 cbPresupuesto.setVisible(true);
                 break;
@@ -277,7 +286,7 @@ public class TransaccionViewController {
     }
     
     @FXML
-    void onRealizarTransaccion(ActionEvent event) {
+    void onTransaccion(ActionEvent event) {
         String tipo = cbTipoTransaccion.getValue();
         if (tipo == null) {
             mostrarMensaje("Error", "Seleccione un tipo de operación" , "Seleccione un tipo de operación", Alert.AlertType.ERROR);

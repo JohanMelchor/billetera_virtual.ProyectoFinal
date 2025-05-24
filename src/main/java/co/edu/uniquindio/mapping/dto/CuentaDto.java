@@ -4,5 +4,6 @@ public record CuentaDto(String idCuenta,
                         String nombreBanco,
                         String numeroCuenta,
                         String tipoCuenta,
-                        String idUsuario) {
+                        String idUsuario,
+                        Double saldoTotal) {
 }

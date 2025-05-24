@@ -59,6 +59,12 @@ public class CuentaViewController {
     
     @FXML
     private TableColumn<CuentaDto, String> tcTipoCuenta;
+
+    @FXML
+    private TableColumn<CuentaDto, String> tcSaldoTotal;
+    
+    @FXML
+    private Label lblUsuarioActual;
     
     @FXML
     void initialize() {
@@ -98,6 +104,7 @@ public class CuentaViewController {
         tcNombreBanco.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().nombreBanco()));
         tcNumeroCuenta.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().numeroCuenta()));
         tcTipoCuenta.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().tipoCuenta()));
+        tcSaldoTotal.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().saldoTotal())));
     }
     
     private void listenerSeleccion() {
@@ -231,7 +238,8 @@ public class CuentaViewController {
             txtNombreBanco.getText(),
             txtNumeroCuenta.getText(),
             tipoCuenta,
-            idUsuarioActual
+            idUsuarioActual,
+            0.0
         );
     }
     
@@ -272,12 +280,4 @@ public class CuentaViewController {
         Optional<ButtonType> action = alert.showAndWait();
         return action.isPresent() && action.get() == ButtonType.OK;
     }
-
-/*@FXML
-    void onGestionarPresupuestos(ActionEvent event) {
-        if (cuentaSeleccionada != null) {
-            // Abrir la vista de presupuestos pasando el ID de la cuenta
-            abrirVistaPresupuestos(cuentaSeleccionada.idCuenta());
-        }
-    }*/
 }

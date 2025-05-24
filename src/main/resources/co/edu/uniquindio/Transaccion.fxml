@@ -1,75 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 <?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
 
-<VBox spacing="10" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.viewcontroller.TransaccionViewController">
-
-    <!-- Título -->
-    <Label text="Gestión Completa de Transacciones" style="-fx-font-weight: bold; -fx-font-size: 18;"/>
-
-    <!-- Panel de Configuración -->
-    <GridPane hgap="10" vgap="10" style="-fx-padding: 10; -fx-background-color: #f5f5f5; -fx-border-color: #ddd; -fx-border-radius: 5;">
-        <columnConstraints>
-            <ColumnConstraints prefWidth="150" halignment="RIGHT"/>
-            <ColumnConstraints prefWidth="250"/>
-            <ColumnConstraints prefWidth="150" halignment="RIGHT"/>
-            <ColumnConstraints prefWidth="250"/>
-        </columnConstraints>
-
-        <!-- Fila 1: Tipo de Operación -->
-        <Label text="Tipo de Operación:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <ComboBox fx:id="cbTipoTransaccion" GridPane.rowIndex="0" GridPane.columnIndex="1">
-            <items>
-                <FXCollections fx:factory="observableArrayList">
-                </FXCollections>
-            </items>
-        </ComboBox>
-
-        <!-- Fila 2: Cuenta Origen/Presupuesto -->
-        <Label text="Cuenta Origen:" fx:id="lblCuentaOrigen" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-        <ComboBox fx:id="cbCuentaOrigen" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-        
-        <Label text="Presupuesto:" fx:id="lblPresupuesto" GridPane.rowIndex="1" GridPane.columnIndex="2" visible="false"/>
-        <ComboBox fx:id="cbPresupuesto" GridPane.rowIndex="1" GridPane.columnIndex="3" visible="false"/>
-
-        <!-- Fila 3: Cuenta Destino -->
-        <Label text="Cuenta Destino:" fx:id="lblCuentaDestino" GridPane.rowIndex="2" GridPane.columnIndex="0" visible="false"/>
-        <ComboBox fx:id="cbCuentaDestino" GridPane.rowIndex="2" GridPane.columnIndex="1" visible="false"/>
-
-        <!-- Fila 4: Monto y Categoría -->
-        <Label text="Monto:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtMonto" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
-        
-        <Label text="Categoría:" GridPane.rowIndex="3" GridPane.columnIndex="2"/>
-        <ComboBox fx:id="cbCategoria" GridPane.rowIndex="3" GridPane.columnIndex="3"/>
-
-        <!-- Fila 5: Descripción -->
-        <Label text="Descripción:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-        <TextArea fx:id="txtDescripcion" wrapText="true" GridPane.rowIndex="4" GridPane.columnIndex="1" 
-                 GridPane.columnSpan="3" prefHeight="60"/>
-    </GridPane>
-
-    <!-- Botón de Acción -->
-    <Button fx:id="btnRealizarTransaccion" text="Realizar Operación" 
-            style="-fx-font-weight: bold; -fx-background-color: #4CAF50; -fx-text-fill: white;"
-            onAction="#onRealizarTransaccion"/>
-
-    <!-- Historial de Transacciones -->
-    <Label text="Historial de Transacciones" style="-fx-font-weight: bold; -fx-font-size: 14;"/>
-    <TableView fx:id="tableTransacciones" prefHeight="250">
-        <columns>
-            <TableColumn fx:id="tcFecha" text="Fecha" prefWidth="120"/>
-            <TableColumn fx:id="tcTipo" text="Tipo" prefWidth="120"/>
-            <TableColumn fx:id="tcMonto" text="Monto" prefWidth="80"/>
-            <TableColumn fx:id="tcDescripcion" text="Descripción" prefWidth="180"/>
-            <TableColumn fx:id="tcCuentaOrigen" text="Cuenta Origen" prefWidth="120"/>
-            <TableColumn fx:id="tcPresupuesto" text="Presupuesto" prefWidth="120"/>
-            <TableColumn fx:id="tcCuentaDestino" text="Cuenta Destino" prefWidth="120"/>
-            <TableColumn fx:id="tcCategoria" text="Categoría" prefWidth="100"/>
-        </columns>
-    </TableView>
-</VBox>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.viewcontroller.TransaccionViewController">
+   <children>
+      <Label layoutX="5.0" layoutY="1.0" style="-fx-font-weight: bold; -fx-font-size: 18;" text="Gestión Completa de Transacciones" />
+      <Label layoutX="21.0" layoutY="69.0" text="Tipo de Operación:" />
+      <ComboBox fx:id="cbTipoTransaccion" layoutX="136.0" layoutY="65.0" prefHeight="25.0" prefWidth="122.0">
+         <items>
+            <FXCollections fx:factory="observableArrayList" />
+         </items>
+      </ComboBox>
+      <Label fx:id="lblCuentaOrigen" layoutX="42.0" layoutY="104.0" text="Cuenta Origen:" visible="false" />
+      <ComboBox fx:id="cbCuentaOrigen" layoutX="136.0" layoutY="100.0" prefHeight="25.0" prefWidth="122.0" visible="false" />
+      <Label fx:id="lblPresupuesto" layoutX="53.0" layoutY="139.0" text="Presupuesto:" visible="false" />
+      <ComboBox fx:id="cbPresupuesto" layoutX="135.0" layoutY="135.0" prefHeight="25.0" prefWidth="122.0" visible="false" />
+      <Label fx:id="lblCuentaDestino" layoutX="40.0" layoutY="139.0" text="Cuenta Destino:" visible="false" />
+      <ComboBox fx:id="cbCuentaDestino" layoutX="136.0" layoutY="134.0" prefHeight="25.0" prefWidth="122.0" visible="false" />
+      <Label layoutX="403.0" layoutY="69.0" text="Monto:" />
+      <TextField fx:id="txtMonto" layoutX="458.0" layoutY="65.0" prefHeight="25.0" prefWidth="122.0" />
+      <Label layoutX="388.0" layoutY="104.0" text="Categoría:" />
+      <ComboBox fx:id="cbCategoria" layoutX="458.0" layoutY="100.0" prefHeight="25.0" prefWidth="122.0" />
+      <Label layoutX="371.0" layoutY="139.0" text="Descripción:" />
+      <TextArea fx:id="txtDescripcion" layoutX="458.0" layoutY="136.0" prefHeight="75.0" prefWidth="122.0" wrapText="true" />
+      <Label layoutX="8.0" layoutY="230.0" style="-fx-font-weight: bold; -fx-font-size: 14;" text="Historial de Transacciones" />
+      <Button fx:id="btnTransaccion" layoutX="264.0" layoutY="211.0" mnemonicParsing="false" onAction="#onTransaccion" style="-fx-font-weight: bold; -fx-background-color: #4CAF50; -fx-text-fill: white;" text="Realizar Operación" />
+      <TableView fx:id="tableTransacciones" layoutX="5.0" layoutY="251.0" prefHeight="245.0" prefWidth="641.0">
+         <columns>
+            <TableColumn fx:id="tcFecha" prefWidth="30.0" text="Fecha" />
+            <TableColumn fx:id="tcTipo" prefWidth="47.0" text="Tipo" />
+            <TableColumn fx:id="tcMonto" prefWidth="97.0" text="Monto" />
+            <TableColumn fx:id="tcDescripcion" prefWidth="93.0" text="Descripción" />
+            <TableColumn fx:id="tcCuentaOrigen" prefWidth="64.0" text="Cuenta Origen" />
+            <TableColumn fx:id="tcPresupuesto" prefWidth="94.0" text="Presupuesto" />
+            <TableColumn fx:id="tcCuentaDestino" prefWidth="121.0" text="Cuenta Destino" />
+            <TableColumn fx:id="tcCategoria" prefWidth="94.0" text="Categoría" />
+         </columns>
+      </TableView>
+   </children>
+</AnchorPane>

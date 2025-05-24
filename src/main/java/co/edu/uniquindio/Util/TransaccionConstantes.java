@@ -1,8 +1,8 @@
 package co.edu.uniquindio.Util;
 
 public class TransaccionConstantes {
-    public static final String TIPO_DEPOSITO_CUENTA = "Depósito a Cuenta";
-    public static final String TIPO_DEPOSITO_PRESUPUESTO = "Depósito a Presupuesto";
+    public static final String TIPO_DEPOSITO_CUENTA = "DEPÓSITO A CUENTA";
+    public static final String TIPO_DEPOSITO_PRESUPUESTO = "DEPÓSITO A PRESUPUESTO";
     public static final String TIPO_RETIRO_CUENTA = "RETIRO DE CUENTA";
     public static final String TIPO_RETIRO_PRESUPUESTO = "RETIRO DE PRESUPUESTO";
     public static final String TIPO_PRESUPUESTO = "PRESUPUESTO";
