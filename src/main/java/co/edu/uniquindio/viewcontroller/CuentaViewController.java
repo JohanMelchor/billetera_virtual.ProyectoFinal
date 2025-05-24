@@ -32,6 +32,9 @@ public class CuentaViewController {
     
     @FXML
     private TextField txtNumeroCuenta;
+
+    @FXML
+    private TextField txtSaldo;
     
     @FXML
     private Button btnAgregarCuenta;
@@ -120,6 +123,7 @@ public class CuentaViewController {
             txtNombreBanco.setText(cuentaDto.nombreBanco());
             txtNumeroCuenta.setText(cuentaDto.numeroCuenta());
             cbTipoCuenta.setValue(cuentaDto.tipoCuenta());
+            txtSaldo.setText(String.valueOf(cuentaDto.saldoTotal()));
         }
     }
     

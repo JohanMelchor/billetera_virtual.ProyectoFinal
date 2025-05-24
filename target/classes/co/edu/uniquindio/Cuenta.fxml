@@ -53,6 +53,12 @@
                               <ComboBox fx:id="cbTipoCuenta" prefHeight="25.0" prefWidth="180.0" />
                            </children>
                         </HBox>
+                        <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                           <children>
+                              <Label prefWidth="100.0" text="Saldo:" />
+                              <TextField fx:id="txtSaldo" editable="false" prefHeight="25.0" prefWidth="180.0" />
+                           </children>
+                        </HBox>
                         <HBox alignment="CENTER" prefHeight="40.0" prefWidth="200.0" spacing="20.0">
                            <children>
                               <Button fx:id="btnAgregarCuenta" mnemonicParsing="false" onAction="#onAgregarCuenta" text="Agregar" />

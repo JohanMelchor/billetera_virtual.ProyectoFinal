@@ -39,6 +39,9 @@ public class PresupuestoViewController {
     
     @FXML
     private TextField txtSaldo;
+
+    @FXML
+    private TextField txtCuenta;
     
     @FXML
     private ComboBox<CategoriaDto> cbCategoria;
@@ -174,6 +177,7 @@ public class PresupuestoViewController {
             txtMontoAsignado.setText(presupuestoDto.montoAsignado());
             txtMontoGastado.setText(presupuestoDto.montoGastado());
             txtSaldo.setText(presupuestoDto.saldo());
+            txtCuenta.setText(presupuestoDto.idCuenta());
             
             // Seleccionar categoría en el ComboBox
             String idCategoria = presupuestoDto.idCategoria();
