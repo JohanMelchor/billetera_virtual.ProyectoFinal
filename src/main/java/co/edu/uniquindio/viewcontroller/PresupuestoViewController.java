@@ -72,6 +72,9 @@ public class PresupuestoViewController {
     
     @FXML
     private TableColumn<PresupuestoDto, String> tcCategoria;
+
+    @FXML
+    private TableColumn<PresupuestoDto, String> tcCuenta;
     
     @FXML
     void initialize() {
@@ -142,7 +145,8 @@ public class PresupuestoViewController {
         tcMontoAsignado.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().montoAsignado()));
         tcMontoGastado.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().montoGastado()));
         tcSaldo.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().saldo()));
-        
+        tcCuenta.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().idCuenta()));
+
         tcCategoria.setCellValueFactory(cellData -> {
             String idCategoria = cellData.getValue().idCategoria();
             if(idCategoria != null && !idCategoria.isEmpty()) {
@@ -309,7 +313,8 @@ public class PresupuestoViewController {
             montoGastado,
             idCategoria,
             idUsuarioActual,
-            saldo
+            saldo,
+            idCuentaActual
         );
     }
     

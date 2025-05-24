@@ -6,5 +6,6 @@ public record PresupuestoDto(String idPresupuesto,
                             String montoGastado,
                             String idCategoria,
                             String idUsuario,
-                            String saldo) {
+                            String saldo,
+                            String idCuenta) {
 }

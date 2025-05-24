@@ -7,10 +7,11 @@ public class Presupuesto {
     private Double montoGastado;
     private Categoria categoria;
     private Usuario usuario;
-    private Double saldo;
+    private Double saldo;   
+    private Cuenta Cuenta;
 
     public Presupuesto(String idPresupuesto, String nombre, Double montoAsignado, Double montoGastado, 
-                      Categoria categoria, Usuario usuario, Double saldo) {
+                      Categoria categoria, Usuario usuario, Double saldo, Cuenta cuenta) {
         this.idPresupuesto = idPresupuesto;
         this.nombre = nombre;
         this.montoAsignado = montoAsignado;
@@ -18,6 +19,7 @@ public class Presupuesto {
         this.categoria = categoria;
         this.usuario = usuario;
         this.saldo = saldo;
+        this.Cuenta = cuenta;
     }
 
     public String getIdPresupuesto() {
@@ -76,6 +78,14 @@ public class Presupuesto {
         this.saldo = saldo;
     }
 
+    public Cuenta getCuenta() {
+        return Cuenta;
+    }
+
+    public void setCuenta(Cuenta cuenta) {
+        Cuenta = cuenta;
+    }
+
     public void aumentarSaldo(Double monto) {
         this.saldo += monto;
     }
@@ -87,4 +97,5 @@ public class Presupuesto {
         }
         return false;
     }
+
 }
