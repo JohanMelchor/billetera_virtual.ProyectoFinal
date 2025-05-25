@@ -275,15 +275,14 @@ public class PresupuestoViewController {
             return;
         }
 
-        PresupuestoDto nuevoPresupuesto = crearPresupuestoDto();
+        PresupuestoDto nuevoPresupuesto = crearPresupuestoDto(true);
         if (datosValidos(nuevoPresupuesto)) {
-            // Usar el ID de la cuenta seleccionada en lugar de idCuentaActual
             if (presupuestoController.agregarPresupuestoACuenta(cuentaSeleccionada.idCuenta(), nuevoPresupuesto)) {
-                cargarPresupuestosDeCuenta();
+                // CAMBIO: Siempre cargar todos los presupuestos del usuario
+                cargarDatos(false);
                 mostrarMensaje("Éxito", "Presupuesto agregado", "Presupuesto creado correctamente", Alert.AlertType.INFORMATION);
                 limpiarCampos();
             } else {
-                // Mensaje más detallado
                 double monto = Double.parseDouble(nuevoPresupuesto.montoAsignado());
                 mostrarMensaje("Error", "No se pudo agregar", 
                     "Saldo insuficiente o error al crear. Monto solicitado: " + monto, 
@@ -296,9 +295,10 @@ public class PresupuestoViewController {
     @FXML
     void onActualizarPresupuesto(ActionEvent event) {
         if(presupuestoSeleccionado != null) {
-            PresupuestoDto presupuestoActualizado = crearPresupuestoDto();
+            PresupuestoDto presupuestoActualizado = crearPresupuestoDto(false);
             if(datosValidos(presupuestoActualizado)) {
                 if(presupuestoController.actualizarPresupuesto(presupuestoActualizado)) {
+                    // CAMBIO: Solo una llamada para recargar datos
                     cargarDatos(false);
                     limpiarCampos();
                     mostrarMensaje(
@@ -307,8 +307,6 @@ public class PresupuestoViewController {
                         PresupuestoConstantes.EXITO_ACTUALIZAR_PRESUPUESTO, 
                         Alert.AlertType.INFORMATION
                     );
-                    
-                    // Generar nuevo ID único para el siguiente presupuesto
                     generarIdUnico();
                 } else {
                     mostrarMensaje(
@@ -345,7 +343,8 @@ public class PresupuestoViewController {
             
             if(confirmacion) {
                 if(presupuestoController.eliminarPresupuesto(presupuestoSeleccionado.idPresupuesto())) {
-                    listaPresupuestos.remove(presupuestoSeleccionado);
+                    // CAMBIO: Solo cargar todos los presupuestos del usuario
+                    cargarDatos(false);
                     limpiarCampos();
                     mostrarMensaje(
                         "Presupuesto eliminado", 
@@ -353,8 +352,6 @@ public class PresupuestoViewController {
                         PresupuestoConstantes.EXITO_ELIMINAR_PRESUPUESTO, 
                         Alert.AlertType.INFORMATION
                     );
-                    
-                    // Generar nuevo ID único para el siguiente presupuesto
                     generarIdUnico();
                     txtCuenta.setVisible(false);
                 } else {
@@ -376,12 +373,17 @@ public class PresupuestoViewController {
         }
     }
     
-    private PresupuestoDto crearPresupuestoDto() {
+    private PresupuestoDto crearPresupuestoDto(boolean esCreacion) {
         CategoriaDto categoriaSeleccionada = cbCategoria.getValue();
         String idCategoria = categoriaSeleccionada != null ? categoriaSeleccionada.idCategoria() : "";
         
-        CuentaDto cuentaSeleccionada = cbCuenta.getValue();
-        String idCuenta = cuentaSeleccionada != null ? cuentaSeleccionada.idCuenta() : "";
+        String idCuenta;
+        if (esCreacion) {
+            CuentaDto cuentaSeleccionada = cbCuenta.getValue();
+            idCuenta = cuentaSeleccionada != null ? cuentaSeleccionada.idCuenta() : "";
+        } else {
+            idCuenta = presupuestoSeleccionado != null ? presupuestoSeleccionado.idCuenta() : "";
+        }
         
         // Validar y formatear montos
         String montoAsignado = txtMontoAsignado.getText();
@@ -452,8 +454,8 @@ public class PresupuestoViewController {
         txtSaldo.setText("0.0");
         txtCuenta.setText("");
         cbCategoria.setValue(null);
-        cbCuenta.setDisable(false); // Habilitar ComboBox al crear nuevo
-        cbCuenta.getSelectionModel().clearSelection();
+        cbCuenta.setDisable(false);
+        // cbCuenta.getSelectionModel().clearSelection(); // <-- comenta o elimina esta línea
         presupuestoSeleccionado = null;
     }
     

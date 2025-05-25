@@ -234,7 +234,12 @@ public class ModelFactory implements IModelFactoryServices {
         if (cuenta != null) {
             Presupuesto presupuesto = presupuestoMapping.presupuestoDtoToPresupuesto(presupuestoDto);
             if (cuenta.getSaldoTotal() >= presupuesto.getMontoAsignado()) {
-                return cuenta.agregarPresupuesto(presupuesto);
+                boolean agregadoACuenta = cuenta.agregarPresupuesto(presupuesto);
+            
+                if (agregadoACuenta) {
+                    // CORRECTO: Usar el método existente de BilleteraVirtual
+                    return billeteraVirtual.crearPresupuesto(presupuesto);
+                }
             }
         }
         return false;
