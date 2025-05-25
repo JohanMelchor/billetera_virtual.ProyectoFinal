@@ -1,8 +1,10 @@
 package co.edu.uniquindio.viewcontroller;
 
 import co.edu.uniquindio.controller.CategoriaController;
+import co.edu.uniquindio.controller.CuentaController;
 import co.edu.uniquindio.controller.PresupuestoController;
 import co.edu.uniquindio.mapping.dto.CategoriaDto;
+import co.edu.uniquindio.mapping.dto.CuentaDto;
 import co.edu.uniquindio.mapping.dto.PresupuestoDto;
 import co.edu.uniquindio.Util.PresupuestoConstantes;
 import javafx.beans.property.SimpleStringProperty;
@@ -11,6 +13,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.Pane;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -19,8 +22,10 @@ public class PresupuestoViewController {
     
     private PresupuestoController presupuestoController;
     private CategoriaController categoriaController;
+    private CuentaController cuentaController;
     private ObservableList<PresupuestoDto> listaPresupuestos = FXCollections.observableArrayList();
     private ObservableList<CategoriaDto> listaCategorias = FXCollections.observableArrayList();
+    private ObservableList<CuentaDto> listaCuentas = FXCollections.observableArrayList();
     private PresupuestoDto presupuestoSeleccionado;
     private String idUsuarioActual;
     private String idCuentaActual;
@@ -42,6 +47,12 @@ public class PresupuestoViewController {
 
     @FXML
     private TextField txtCuenta;
+
+    @FXML
+    private Pane pnCuenta;
+
+    @FXML
+    private ComboBox<CuentaDto> cbCuenta;
     
     @FXML
     private ComboBox<CategoriaDto> cbCategoria;
@@ -54,6 +65,9 @@ public class PresupuestoViewController {
     
     @FXML
     private Button btnEliminarPresupuesto;
+
+    @FXML
+    private Button btnLimpiar;
     
     @FXML
     private TableView<PresupuestoDto> tablePresupuestos;
@@ -83,13 +97,28 @@ public class PresupuestoViewController {
     void initialize() {
         presupuestoController = new PresupuestoController();
         categoriaController = new CategoriaController();
+        cuentaController = new CuentaController();
         
         initView();
     }
     
-    public void inicializarConUsuario(String idUsuario) {
-        this.idUsuarioActual = idUsuario;
-        cargarDatos();
+    public void inicializarVista(String idUsuario, boolean esAdmin) {
+        if (esAdmin) {
+            cargarTodosPresupuestos();
+            habilitarVistaAdministrador();
+            cargarDatos(true);
+        } else {
+            this.idUsuarioActual = idUsuario;
+            listaCuentas.clear();
+            listaCuentas.addAll(cuentaController.obtenerCuentasPorUsuario(idUsuario));
+            habilitarVistaUsuario();
+            cargarDatos(false);
+        }
+    }
+
+    private void cargarTodosPresupuestos() {
+        listaPresupuestos.clear();
+        listaPresupuestos.addAll(presupuestoController.obtenerTodosPresupuestos());
     }
 
     public void inicializarConCuenta(String idCuenta) {
@@ -105,40 +134,79 @@ public class PresupuestoViewController {
         
         // Configurar ComboBox de categorías
         cbCategoria.setItems(listaCategorias);
-        
         // Configurar converter para mostrar nombre de categoría en ComboBox
         cbCategoria.setConverter(new javafx.util.StringConverter<CategoriaDto>() {
             @Override
             public String toString(CategoriaDto categoria) {
                 return categoria != null ? categoria.nombre() : "";
             }
-            
             @Override
             public CategoriaDto fromString(String string) {
                 return null; // No se necesita conversión inversa
             }
         });
-        
+
+        cbCuenta.setItems(listaCuentas);
+        cbCuenta.setConverter(new javafx.util.StringConverter<CuentaDto>() {
+            @Override
+            public String toString(CuentaDto cuenta) {
+                return cuenta != null ? cuenta.idCuenta() : "";
+            }
+            
+            @Override
+            public CuentaDto fromString(String string) {
+                return null;
+            }
+        });
         // Generar automáticamente ID único al abrir la vista
         generarIdUnico();
     }
+
+    public void habilitarVistaAdministrador() {
+        // Habilitar vista para administrador
+        btnAgregarPresupuesto.setVisible(false);
+        btnActualizarPresupuesto.setVisible(false);
+        btnEliminarPresupuesto.setVisible(false);
+        txtIdPresupuesto.setEditable(false);
+        cbCategoria.setDisable(true);
+        txtNombre.setEditable(false);
+        txtMontoAsignado.setEditable(false);
+        txtMontoGastado.setEditable(false);
+        txtSaldo.setEditable(false);
+        pnCuenta.setVisible(false);
+        btnLimpiar.setVisible(false);
+    }
     
-    private void cargarDatos() {
-        if(idUsuarioActual != null && !idUsuarioActual.isEmpty()) {
-            // Cargar presupuestos del usuario
-            listaPresupuestos.clear();
+    public void habilitarVistaUsuario() {
+        // Habilitar vista para usuario
+        btnAgregarPresupuesto.setDisable(false);
+        btnActualizarPresupuesto.setDisable(false);
+        btnEliminarPresupuesto.setDisable(false);
+        cbCategoria.setDisable(false);
+        txtIdPresupuesto.setEditable(false);
+        txtNombre.setDisable(false);
+        txtMontoAsignado.setDisable(false);
+        txtMontoGastado.setDisable(false);
+        txtSaldo.setDisable(false);
+    }
+    
+    private void cargarDatos(boolean esAdmin) {
+        listaPresupuestos.clear();
+        if (esAdmin) {
+            listaPresupuestos.addAll(presupuestoController.obtenerTodosPresupuestos());
+        } else if (idUsuarioActual != null && !idUsuarioActual.isEmpty()) {
             listaPresupuestos.addAll(presupuestoController.obtenerPresupuestosPorUsuario(idUsuarioActual));
-            
-            // Cargar categorías
-            listaCategorias.clear();
-            listaCategorias.addAll(categoriaController.obtenerCategorias());
         }
+        // Siempre cargar categorías
+        listaCategorias.clear();
+        listaCategorias.addAll(categoriaController.obtenerCategorias());
     }
 
     private void cargarPresupuestosDeCuenta() {
         if (idCuentaActual != null) {
             listaPresupuestos.clear();
             listaPresupuestos.addAll(presupuestoController.obtenerPresupuestosPorCuenta(idCuentaActual));
+            
         }
     }
     
@@ -178,6 +246,11 @@ public class PresupuestoViewController {
             txtMontoGastado.setText(presupuestoDto.montoGastado());
             txtSaldo.setText(presupuestoDto.saldo());
             txtCuenta.setText(presupuestoDto.idCuenta());
+            txtCuenta.setVisible(true);
+            txtCuenta.setEditable(false);
+
+            // No mostrar cuenta en el ComboBox al actualizar (solo lectura)
+            cbCuenta.setDisable(true);
             
             // Seleccionar categoría en el ComboBox
             String idCategoria = presupuestoDto.idCategoria();
@@ -196,15 +269,28 @@ public class PresupuestoViewController {
     
     @FXML
     void onAgregarPresupuesto(ActionEvent event) {
+        CuentaDto cuentaSeleccionada = cbCuenta.getValue();
+        if (cuentaSeleccionada == null) {
+            mostrarMensaje("Error", "Selección requerida", "Debe seleccionar una cuenta", Alert.AlertType.WARNING);
+            return;
+        }
+
         PresupuestoDto nuevoPresupuesto = crearPresupuestoDto();
         if (datosValidos(nuevoPresupuesto)) {
-            if (presupuestoController.agregarPresupuestoACuenta(idCuentaActual, nuevoPresupuesto)) {
+            // Usar el ID de la cuenta seleccionada en lugar de idCuentaActual
+            if (presupuestoController.agregarPresupuestoACuenta(cuentaSeleccionada.idCuenta(), nuevoPresupuesto)) {
                 cargarPresupuestosDeCuenta();
-                mostrarMensaje("Éxito", "Presupuesto agregado","Presupuesto agregado al bolsillo", Alert.AlertType.INFORMATION);
+                mostrarMensaje("Éxito", "Presupuesto agregado", "Presupuesto creado correctamente", Alert.AlertType.INFORMATION);
+                limpiarCampos();
             } else {
-                mostrarMensaje("Error", "No se pudo agregar el presupuesto" ,"No hay saldo suficiente en la cuenta", Alert.AlertType.ERROR);
+                // Mensaje más detallado
+                double monto = Double.parseDouble(nuevoPresupuesto.montoAsignado());
+                mostrarMensaje("Error", "No se pudo agregar", 
+                    "Saldo insuficiente o error al crear. Monto solicitado: " + monto, 
+                    Alert.AlertType.ERROR);
             }
         }
+        txtCuenta.setVisible(false);
     }
     
     @FXML
@@ -213,7 +299,7 @@ public class PresupuestoViewController {
             PresupuestoDto presupuestoActualizado = crearPresupuestoDto();
             if(datosValidos(presupuestoActualizado)) {
                 if(presupuestoController.actualizarPresupuesto(presupuestoActualizado)) {
-                    cargarDatos();
+                    cargarDatos(false);
                     limpiarCampos();
                     mostrarMensaje(
                         "Presupuesto actualizado", 
@@ -270,6 +356,7 @@ public class PresupuestoViewController {
                     
                     // Generar nuevo ID único para el siguiente presupuesto
                     generarIdUnico();
+                    txtCuenta.setVisible(false);
                 } else {
                     mostrarMensaje(
                         "Error", 
@@ -293,21 +380,36 @@ public class PresupuestoViewController {
         CategoriaDto categoriaSeleccionada = cbCategoria.getValue();
         String idCategoria = categoriaSeleccionada != null ? categoriaSeleccionada.idCategoria() : "";
         
-        // Asegurar que los valores numéricos sean válidos
+        CuentaDto cuentaSeleccionada = cbCuenta.getValue();
+        String idCuenta = cuentaSeleccionada != null ? cuentaSeleccionada.idCuenta() : "";
+        
+        // Validar y formatear montos
         String montoAsignado = txtMontoAsignado.getText();
         String montoGastado = txtMontoGastado.getText();
         String saldo = txtSaldo.getText();
         
-        if(montoAsignado == null || montoAsignado.isEmpty()) {
-            montoAsignado = "0.0";
-        }
-        
-        if(montoGastado == null || montoGastado.isEmpty()) {
-            montoGastado = "0.0";
-        }
-        
-        if(saldo == null || saldo.isEmpty()) {
-            saldo = "0.0";
+        try {
+            // Forzar formato correcto
+            if(montoAsignado == null || montoAsignado.isEmpty()) {
+                montoAsignado = "0.00";
+            } else {
+                Double.parseDouble(montoAsignado); // Validar que sea número
+            }
+            
+            if(montoGastado == null || montoGastado.isEmpty()) {
+                montoGastado = "0.00";
+            } else {
+                Double.parseDouble(montoGastado);
+            }
+            
+            if(saldo == null || saldo.isEmpty()) {
+                saldo = "0.00";
+            } else {
+                Double.parseDouble(saldo);
+            }
+        } catch (NumberFormatException e) {
+            mostrarMensaje("Error", "Valor inválido", "Los montos deben ser números válidos", Alert.AlertType.ERROR);
+            return null;
         }
         
         return new PresupuestoDto(
@@ -318,7 +420,7 @@ public class PresupuestoViewController {
             idCategoria,
             idUsuarioActual,
             saldo,
-            idCuentaActual
+            idCuenta
         );
     }
     
@@ -348,7 +450,10 @@ public class PresupuestoViewController {
         txtMontoAsignado.setText("0.0");
         txtMontoGastado.setText("0.0");
         txtSaldo.setText("0.0");
+        txtCuenta.setText("");
         cbCategoria.setValue(null);
+        cbCuenta.setDisable(false); // Habilitar ComboBox al crear nuevo
+        cbCuenta.getSelectionModel().clearSelection();
         presupuestoSeleccionado = null;
     }
     
@@ -373,4 +478,14 @@ public class PresupuestoViewController {
         Optional<ButtonType> action = alert.showAndWait();
         return action.isPresent() && action.get() == ButtonType.OK;
     }
+
+    @FXML
+    void onLimpiar(ActionEvent event) {
+        limpiarCampos();
+        tablePresupuestos.getSelectionModel().clearSelection();
+        cbCuenta.getSelectionModel().clearSelection();
+        cbCategoria.getSelectionModel().clearSelection();
+        txtCuenta.setVisible(false);
+    }
+        
 }

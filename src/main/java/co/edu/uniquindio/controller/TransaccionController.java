@@ -51,4 +51,8 @@ public class TransaccionController {
         return modelFactory.realizarTransferencia(idCuentaOrigen, idCuentaDestino, 
                                             monto, descripcion, idCategoria);
     }
+
+    public List<TransaccionDto> obtenerTodasTransacciones() {
+        return modelFactory.obtenerTodasTransacciones();
+    }
 }

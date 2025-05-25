@@ -59,6 +59,12 @@
                               <TextField fx:id="txtSaldo" editable="false" prefHeight="25.0" prefWidth="180.0" />
                            </children>
                         </HBox>
+                        <HBox fx:id="hbUsuario" alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                           <children>
+                              <Label prefWidth="100.0" text="Usuario: " />
+                              <ComboBox fx:id="cbUsuarios" prefHeight="25.0" prefWidth="180.0" />
+                           </children>
+                        </HBox>
                         <HBox alignment="CENTER" prefHeight="40.0" prefWidth="200.0" spacing="20.0">
                            <children>
                               <Button fx:id="btnAgregarCuenta" mnemonicParsing="false" onAction="#onAgregarCuenta" text="Agregar" />
@@ -72,6 +78,7 @@
                     <columns>
                       <TableColumn fx:id="tcIdCuenta" prefWidth="60.0" text="ID" />
                       <TableColumn fx:id="tcNombreBanco" prefWidth="100.0" text="Banco" />
+                        <TableColumn fx:id="tcUsuarioAsignado" prefWidth="60.0" text="Usuario" />
                       <TableColumn fx:id="tcNumeroCuenta" prefWidth="80.0" text="Número" />
                       <TableColumn fx:id="tcTipoCuenta" prefWidth="70.0" text="Tipo" />
                         <TableColumn fx:id="tcSaldoTotal" prefWidth="60.0" text="Saldo" />

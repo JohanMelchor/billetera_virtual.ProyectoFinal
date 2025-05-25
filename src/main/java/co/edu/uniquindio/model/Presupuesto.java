@@ -98,4 +98,12 @@ public class Presupuesto {
         return false;
     }
 
+    public boolean verificarSaldoSuficiente(Double monto) {
+        return this.saldo >= monto;
+    }
+
+    public void actualizarsaldo() {
+        this.saldo = this.montoAsignado - this.montoGastado;
+    }
+
 }

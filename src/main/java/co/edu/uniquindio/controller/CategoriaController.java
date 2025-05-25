@@ -27,4 +27,8 @@ public class CategoriaController {
     public boolean eliminarCategoria(String idCategoria) {
         return modelFactory.eliminarCategoria(idCategoria);
     }
+
+    public CategoriaDto buscarCategoriaPorId(String idCategoria) {
+        return modelFactory.obtenerCategoriaPorId(idCategoria);
+    }
 }

@@ -89,10 +89,15 @@ public class Cuenta {
     }
 
     public boolean agregarPresupuesto(Presupuesto presupuesto) {
-        // Validar que el saldo total sea suficiente
-        if (saldoTotal >= presupuesto.getMontoAsignado()) {
-            presupuestos.add(presupuesto);
-            saldoTotal -= presupuesto.getMontoAsignado(); // Restar del saldo total
+        if (presupuesto == null || presupuesto.getMontoAsignado() <= 0) {
+            return false;
+        }
+        
+        // Usar comparación con tolerancia para decimales
+        double diferencia = this.saldoTotal - presupuesto.getMontoAsignado();
+        if (diferencia >= -0.001) { // Tolerancia para errores de redondeo
+            this.saldoTotal -= presupuesto.getMontoAsignado();
+            this.presupuestos.add(presupuesto);
             return true;
         }
         return false;

@@ -39,4 +39,9 @@ public class PresupuestoController {
     public List<PresupuestoDto> obtenerPresupuestosPorCuenta(String idCuenta) {
         return modelFactory.obtenerPresupuestosPorCuenta(idCuenta);
     }
+
+    public List<PresupuestoDto> obtenerTodosPresupuestos() {
+        return modelFactory.obtenerTodosPresupuestos();
+    }
+    
 }

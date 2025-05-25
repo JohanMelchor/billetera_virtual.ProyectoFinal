@@ -18,9 +18,9 @@
                   <Font name="System Bold" size="24.0" />
                </font>
             </Label>
-            <Label fx:id="lblUsuarioActualA" contentDisplay="CENTER" text="Usuario: No identificado">
+            <Label fx:id="lblUsuarioActualA" contentDisplay="CENTER" text="Usuario: No identificado" textAlignment="CENTER">
                <font>
-                  <Font size="14.0" />
+                  <Font size="18.0" />
                </font>
             </Label>
          </children>

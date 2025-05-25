@@ -165,6 +165,11 @@ public class ModelFactory implements IModelFactoryServices {
     }
 
     @Override
+    public CategoriaDto obtenerCategoriaPorId(String idCategoria) {
+        return categoriaMapping.categoriaToCategoriaDto(billeteraVirtual.buscarCategoriaPorId(idCategoria));
+    }
+
+    @Override
     public boolean agregarCategoria(CategoriaDto categoriaDto) {
         return billeteraVirtual.crearCategoria(categoriaMapping.categoriaDtoToCategoria(categoriaDto));
     }
@@ -228,7 +233,9 @@ public class ModelFactory implements IModelFactoryServices {
         Cuenta cuenta = billeteraVirtual.buscarCuentaPorId(idCuenta);
         if (cuenta != null) {
             Presupuesto presupuesto = presupuestoMapping.presupuestoDtoToPresupuesto(presupuestoDto);
-            return cuenta.agregarPresupuesto(presupuesto);
+            if (cuenta.getSaldoTotal() >= presupuesto.getMontoAsignado()) {
+                return cuenta.agregarPresupuesto(presupuesto);
+            }
         }
         return false;
     }
@@ -239,6 +246,18 @@ public class ModelFactory implements IModelFactoryServices {
             return presupuestoMapping.getPresupuestoDto(cuenta.getPresupuestos());
         }
         return new ArrayList<>();
+    }
+
+    public List<PresupuestoDto> obtenerTodosPresupuestos() {
+        return presupuestoMapping.getPresupuestoDto(billeteraVirtual.getListaPresupuestos());
+    }
+
+    public List<TransaccionDto> obtenerTodasTransacciones() {
+        return transaccionMapping.getTransaccionDto(billeteraVirtual.getListaTransacciones());
+    }
+
+    public List<CuentaDto> obtenerTodasCuentas() {
+        return cuentaMapping.getCuentaDto(billeteraVirtual.getListaCuentas());
     }
 
 }

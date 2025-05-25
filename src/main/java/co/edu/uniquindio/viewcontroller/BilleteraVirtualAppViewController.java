@@ -93,7 +93,7 @@ public class BilleteraVirtualAppViewController {
         
         if(cargarDatosUsuario()) {
             lblUsuarioActual.setText("Usuario : " + usuarioActual.nombreCompleto());
-            lblUsuarioActualA.setText("Usuario : " + usuarioActual.nombreCompleto());
+            lblUsuarioActualA.setText("Bienvenido: " + usuarioActual.nombreCompleto());
             configurarVistaUsuario();
         }
     }
@@ -104,7 +104,7 @@ public class BilleteraVirtualAppViewController {
         
         String nombreAdmin = usuarioController.obtenerNombreAdmin(idAdmin);
         lblUsuarioActual.setText("Administrador : " + nombreAdmin);
-        lblUsuarioActualA.setText("Administrador : " + nombreAdmin);
+        lblUsuarioActualA.setText("Bienvenido : " + nombreAdmin);
         configurarVistaAdmin();
     }
 
@@ -125,13 +125,12 @@ public class BilleteraVirtualAppViewController {
         // Ocultar funciones de administrador
         btnUsuarios.setVisible(false);
         btnEstadisticas.setVisible(false);
-        
+        btnCategorias.setVisible(false);
         // Mostrar funciones de usuario normal
         btnPerfil.setVisible(true);
         btnCuentas.setVisible(true);
         btnTransacciones.setVisible(true);
         btnPresupuestos.setVisible(true);
-        btnCategorias.setVisible(true);
     }
 
     private void configurarVistaAdmin() {
@@ -234,11 +233,11 @@ public class BilleteraVirtualAppViewController {
             if(controller instanceof UsuariosViewController) {
                 // No hace falta pasar nada, la vista gestiona todos los usuarios
             } else if(controller instanceof CuentaViewController) {
-                ((CuentaViewController) controller).inicializarConUsuario(idUsuarioActual);
+                ((CuentaViewController) controller).inicializarVista(idUsuarioActual, esAdmin);
             } else if(controller instanceof TransaccionViewController) {
-                ((TransaccionViewController) controller).inicializarConUsuario(idUsuarioActual);
+                ((TransaccionViewController) controller).inicializarVista(idUsuarioActual, esAdmin);
             } else if(controller instanceof PresupuestoViewController) {
-                ((PresupuestoViewController) controller).inicializarConUsuario(idUsuarioActual);
+                ((PresupuestoViewController) controller).inicializarVista(idUsuarioActual, esAdmin);
             }else if(controller instanceof PerfilViewController) {
                 ((PerfilViewController) controller).inicializarConUsuario(idUsuarioActual);
             } else if(controller instanceof CategoriaViewController) {

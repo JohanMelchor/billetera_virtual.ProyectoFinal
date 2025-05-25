@@ -31,4 +31,8 @@ public class CuentaController {
     public boolean eliminarCuenta(String idCuenta) {
         return modelFactory.eliminarCuenta(idCuenta);
     }
+
+    public List<CuentaDto> obtenerTodasCuentas() {
+        return modelFactory.obtenerTodasCuentas();
+    }
 }

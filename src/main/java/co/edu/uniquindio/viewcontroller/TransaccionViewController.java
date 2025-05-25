@@ -122,11 +122,19 @@ public class TransaccionViewController {
         initView();
     }
     
-    public void inicializarConUsuario(String idUsuario) {
-        this.idUsuarioActual = idUsuario;
-        cargarDatos();
+    public void inicializarVista(String idUsuario, boolean esAdmin) {
+        if (esAdmin) {
+            cargarTodasTransacciones();
+        } else {
+            this.idUsuarioActual = idUsuario;
+            cargarDatos();
+        }
     }
-    
+
+    private void cargarTodasTransacciones() {
+        listaTransacciones.clear();
+        listaTransacciones.addAll(transaccionController.obtenerTodasTransacciones());
+    }
     private void initView() {
         initDataBinding();
         tableTransacciones.getItems().clear();
