@@ -217,7 +217,7 @@ public class BilleteraVirtual implements IUsuarioServices,IAdministradorServices
         Cuenta cuenta = buscarCuentaPorId(idCuenta);
         if (cuenta == null) return false;
 
-        Presupuesto presupuesto = cuenta.buscarPresupuestoPorId(idPresupuesto);
+        Presupuesto presupuesto = buscarPresupuestoPorId(idPresupuesto);
         if (presupuesto == null || !presupuesto.reducirSaldo(monto)) {
             return false;
         }
@@ -368,6 +368,17 @@ public class BilleteraVirtual implements IUsuarioServices,IAdministradorServices
         return presupuestosUsuario;
     }
 
+    public List<Presupuesto> obtenerPresupuestosPorCuenta(String idCuenta) {
+        List<Presupuesto> presupuestosCuenta = new ArrayList<>();
+        for(Presupuesto presupuesto : listaPresupuestos) {
+            if(presupuesto.getCuenta() != null && 
+            presupuesto.getCuenta().getIdCuenta().equals(idCuenta)) {
+                presupuestosCuenta.add(presupuesto);
+            }
+        }
+        return presupuestosCuenta;
+    }
+
     // Métodos para Categoría
     @Override
     public boolean crearCategoria(Categoria categoria) {
@@ -462,7 +473,7 @@ public class BilleteraVirtual implements IUsuarioServices,IAdministradorServices
         Cuenta cuenta = buscarCuentaPorId(idCuenta);
         if (cuenta == null) return false;
         
-        Presupuesto presupuesto = cuenta.buscarPresupuestoPorId(idPresupuesto);
+        Presupuesto presupuesto = buscarPresupuestoPorId(idPresupuesto);
         if (presupuesto == null) return false;
         
         // Validar que la cuenta tenga saldo suficiente

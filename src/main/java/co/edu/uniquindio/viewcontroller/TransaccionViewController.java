@@ -8,6 +8,9 @@ import co.edu.uniquindio.mapping.dto.CategoriaDto;
 import co.edu.uniquindio.mapping.dto.CuentaDto;
 import co.edu.uniquindio.mapping.dto.PresupuestoDto;
 import co.edu.uniquindio.mapping.dto.TransaccionDto;
+
+import java.util.List;
+
 import co.edu.uniquindio.Util.TransaccionConstantes;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -115,6 +118,14 @@ public class TransaccionViewController {
             @Override public PresupuestoDto fromString(String s) { return null; }
         });
 
+        cbCuentaOrigen.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                cargarPresupuestosDeCuenta(newVal.idCuenta());
+            } else {
+                listaPresupuestos.clear();
+            }
+        });
+
         cbTipoTransaccion.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             actualizarVisibilidadCampos(newVal);
         });
@@ -196,11 +207,7 @@ public class TransaccionViewController {
             listaCategorias.setAll(categoriaController.obtenerCategorias());
             // Cargar transacciones del usuario
             listaTransacciones.setAll(transaccionController.obtenerTransaccionesPorUsuario(idUsuarioActual));
-            // Cargar presupuestos de las cuentas del usuario
-            listaPresupuestos.clear();
-            for (CuentaDto cuenta : listaCuentas) {
-                listaPresupuestos.addAll(presupuestoController.obtenerPresupuestosPorCuenta(cuenta.idCuenta()));
-            }  
+            // Cargar presupuestos de las cuentas del usuario  
         }
     }
     
@@ -246,6 +253,19 @@ public class TransaccionViewController {
             }
             return new SimpleStringProperty("");
         });
+        if (tcPresupuesto != null) {
+            tcPresupuesto.setCellValueFactory(cellData -> {
+                String descripcion = cellData.getValue().descripcion();
+                if (descripcion != null && descripcion.contains("(Presupuesto: ")) {
+                    int start = descripcion.indexOf("(Presupuesto: ") + 14;
+                    int end = descripcion.indexOf(")", start);
+                    if (end > start) {
+                        return new SimpleStringProperty(descripcion.substring(start, end));
+                    }
+                }
+                return new SimpleStringProperty("");
+            });
+        }
     }
     
     private void actualizarVisibilidadCampos(String tipoTransaccion) {
@@ -277,6 +297,8 @@ public class TransaccionViewController {
                 break;
                 
             case TransaccionConstantes.TIPO_RETIRO_PRESUPUESTO:
+                lblCuentaOrigen.setVisible(true);
+                cbCuentaOrigen.setVisible(true);
                 lblPresupuesto.setVisible(true);
                 cbPresupuesto.setVisible(true);
                 break;
@@ -339,14 +361,14 @@ public class TransaccionViewController {
                     break;
                     
                 case TransaccionConstantes.TIPO_RETIRO_PRESUPUESTO:
-                    CuentaDto cuenta = cbCuentaOrigen.getValue();
+                    cuentaOrigen = cbCuentaOrigen.getValue();
                     PresupuestoDto presupuesto = cbPresupuesto.getValue();
-                    if (cuenta == null || presupuesto == null) {
+                    if (cuentaOrigen == null || presupuesto == null) {
                         mostrarMensaje("Error","Seleccione cuenta y presupuesto", "Seleccione cuenta y presupuesto", Alert.AlertType.ERROR);
                         return;
                     }
                     resultado = transaccionController.retiroPorPresupuesto(
-                        cuenta.idCuenta(), presupuesto.idPresupuesto(), monto, descripcion, idCategoria);
+                        cuentaOrigen.idCuenta(), presupuesto.idPresupuesto(), monto, descripcion, idCategoria);
                     break;
                     
                 case TransaccionConstantes.TIPO_TRANSFERENCIA:
@@ -398,4 +420,10 @@ public class TransaccionViewController {
         alert.setContentText(contenido);
         alert.showAndWait();
     }
+
+    private void cargarPresupuestosDeCuenta(String idCuenta) {
+        listaPresupuestos.clear();
+        listaPresupuestos.addAll(presupuestoController.obtenerPresupuestosPorCuenta(idCuenta));
+    }
+    
 }

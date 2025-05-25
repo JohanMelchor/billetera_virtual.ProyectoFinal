@@ -47,7 +47,7 @@ public class DataUtil {
         billeteraVirtual.getListaPresupuestos().add(new Presupuesto("PRE07", "Gastos de educación", 1200.0, 300.0, billeteraVirtual.getListaCategorias().get(5), Usuario2, 900.0, billeteraVirtual.getListaCuentas().get(6)));
         billeteraVirtual.getListaPresupuestos().add(new Presupuesto("PRE08", "Gastos de ocio", 600.0, 100.0, billeteraVirtual.getListaCategorias().get(3), Usuario3, 500.0, billeteraVirtual.getListaCuentas().get(7)));
         billeteraVirtual.getListaPresupuestos().add(new Presupuesto("PRE09", "Gastos de alimentación", 700.0, 150.0, billeteraVirtual.getListaCategorias().get(7), Usuario1, 550.0, billeteraVirtual.getListaCuentas().get(0)));
-        billeteraVirtual.getListaPresupuestos().add(new Presupuesto("PRE10", "Gastos de transporte", 400.0, 50.0, billeteraVirtual.getListaCategorias().get(6), Usuario2, 350.0, billeteraVirtual.getListaCuentas().get(1)));
+        billeteraVirtual.getListaPresupuestos().add(new Presupuesto("PRE10", "Gastos de transporte", 400.0, 50.0, billeteraVirtual.getListaCategorias().get(6), Usuario1, 350.0, billeteraVirtual.getListaCuentas().get(1)));
         billeteraVirtual.getListaPresupuestos().add(new Presupuesto("PRE11", "Gastos de entretenimiento", 500.0, 100.0, billeteraVirtual.getListaCategorias().get(2), Usuario3, 400.0, billeteraVirtual.getListaCuentas().get(2)));
         billeteraVirtual.getListaPresupuestos().add(new Presupuesto("PRE12", "Gastos de ocio", 600.0, 100.0, billeteraVirtual.getListaCategorias().get(3), Usuario4, 500.0, billeteraVirtual.getListaCuentas().get(3)));
 

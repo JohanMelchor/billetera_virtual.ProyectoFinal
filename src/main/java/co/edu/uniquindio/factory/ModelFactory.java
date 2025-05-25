@@ -246,11 +246,7 @@ public class ModelFactory implements IModelFactoryServices {
     }
 
     public List<PresupuestoDto> obtenerPresupuestosPorCuenta(String idCuenta) {
-        Cuenta cuenta = billeteraVirtual.buscarCuentaPorId(idCuenta);
-        if (cuenta != null) {
-            return presupuestoMapping.getPresupuestoDto(cuenta.getPresupuestos());
-        }
-        return new ArrayList<>();
+        return presupuestoMapping.getPresupuestoDto(billeteraVirtual.obtenerPresupuestosPorCuenta(idCuenta));
     }
 
     public List<PresupuestoDto> obtenerTodosPresupuestos() {
