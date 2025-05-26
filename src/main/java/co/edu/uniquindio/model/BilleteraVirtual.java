@@ -3,6 +3,13 @@ package co.edu.uniquindio.model;
 import co.edu.uniquindio.service.*;
 import co.edu.uniquindio.Util.TransaccionConstantes;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
+
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +22,6 @@ public class BilleteraVirtual implements IUsuarioServices,IAdministradorServices
     private ArrayList<Presupuesto>listaPresupuestos= new ArrayList<>();
     private ArrayList<Categoria>listaCategorias= new ArrayList<>();
     private ArrayList<Administrador>listaAdministradores= new ArrayList<>();
-    private ArrayList<Reporte>listaReportes= new ArrayList<>();
 
     public BilleteraVirtual(){
         this.listaUsuarios = new ArrayList<>();
@@ -24,15 +30,10 @@ public class BilleteraVirtual implements IUsuarioServices,IAdministradorServices
         this.listaPresupuestos = new ArrayList<>();
         this.listaCategorias = new ArrayList<>();
         this.listaAdministradores = new ArrayList<>();
-        this.listaReportes = new ArrayList<>();
     }
 
     public ArrayList<Cuenta> getListaCuentas() {
         return listaCuentas;
-    }
-
-    public ArrayList<Reporte> getListaReportes() {
-        return listaReportes;
     }
 
     public ArrayList<Administrador> getListaAdministradores() {
@@ -496,6 +497,209 @@ public class BilleteraVirtual implements IUsuarioServices,IAdministradorServices
         );
 
         return crearTransaccion(transaccion);
+    }
+
+    public boolean generarReporteUsuario(String idUsuario, String rutaArchivo) {
+        try {
+            Usuario usuario = buscarUsuarioPorId(idUsuario);
+            if (usuario == null) return false;
+            
+            List<Transaccion> transacciones = obtenerTransaccionesPorUsuario(idUsuario);
+            List<Cuenta> cuentas = obtenerCuentasPorUsuario(idUsuario);
+            
+            return crearPDFUsuario(rutaArchivo, usuario, transacciones, cuentas);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean generarReporteAdmin(String rutaArchivo) {
+        try {
+            return crearPDFAdmin(rutaArchivo, listaUsuarios, listaTransacciones, listaCuentas);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean crearPDFUsuario(String rutaArchivo, Usuario usuario, 
+                                List<Transaccion> transacciones, 
+                                List<Cuenta> cuentas) {
+        try {
+            PDDocument document = new PDDocument();
+            PDPage page = new PDPage();
+            document.addPage(page);
+            
+            PDPageContentStream contentStream = new PDPageContentStream(document, page);
+            
+            // Título
+            contentStream.beginText();
+            contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 16);
+            contentStream.newLineAtOffset(100, 700);
+            contentStream.showText("REPORTE FINANCIERO PERSONAL");
+            contentStream.endText();
+            
+            // Info usuario
+            contentStream.beginText();
+            contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 12);
+            contentStream.newLineAtOffset(100, 650);
+            contentStream.showText("Usuario: " + usuario.getNombreCompleto());
+            contentStream.newLineAtOffset(0, -20);
+            contentStream.showText("Email: " + usuario.getCorreo());
+            contentStream.newLineAtOffset(0, -20);
+            contentStream.showText("Saldo Total: $" + usuario.getSaldo());
+            contentStream.endText();
+            
+            // Resumen financiero
+            double totalIngresos = transacciones.stream()
+                .filter(t -> t.getTipoTransaccion().contains("DEPÓSITO"))
+                .mapToDouble(t -> t.getMonto()).sum();
+            double totalGastos = transacciones.stream()
+                .filter(t -> t.getTipoTransaccion().contains("RETIRO"))
+                .mapToDouble(t -> t.getMonto()).sum();
+            
+            contentStream.beginText();
+            contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 14);
+            contentStream.newLineAtOffset(100, 550);
+            contentStream.showText("RESUMEN FINANCIERO");
+            contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 12);
+            contentStream.newLineAtOffset(0, -25);
+            contentStream.showText("Total Ingresos: $" + String.format("%.2f", totalIngresos));
+            contentStream.newLineAtOffset(0, -20);
+            contentStream.showText("Total Gastos: $" + String.format("%.2f", totalGastos));
+            contentStream.newLineAtOffset(0, -20);
+            contentStream.showText("Balance: $" + String.format("%.2f", totalIngresos - totalGastos));
+            contentStream.endText();
+            
+            // Mis cuentas
+            contentStream.beginText();
+            contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 14);
+            contentStream.newLineAtOffset(100, 450);
+            contentStream.showText("MIS CUENTAS");
+            contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 12);
+            
+            int yPosition = 420;
+            for(Cuenta cuenta : cuentas) {
+                contentStream.newLineAtOffset(0, -25);
+                contentStream.showText("• " + cuenta.getNombreBanco() + " - " + 
+                    cuenta.getNumeroCuenta() + ": $" + cuenta.getSaldoTotal());
+                yPosition -= 25;
+            }
+            contentStream.endText();
+            
+            // Transacciones (últimas 10)
+            contentStream.beginText();
+            contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 14);
+            contentStream.newLineAtOffset(100, yPosition - 30);
+            contentStream.showText("MIS TRANSACCIONES (Últimas 10)");
+            contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 10);
+            
+            int contador = 0;
+            yPosition -= 55;
+            for(Transaccion transaccion : transacciones) {
+                if(contador >= 10) break;
+                if(yPosition < 100) break; // No salirse de la página
+                
+                String nombreCategoria = "Sin categoría";
+                if(transaccion.getCategoria() != null) {
+                    nombreCategoria = transaccion.getCategoria().getNombre();
+                }
+                
+                contentStream.newLineAtOffset(0, -15);
+                contentStream.showText(String.format("• %s - %s: $%.2f (%s)", 
+                    transaccion.getFecha().toString().substring(0, 10), 
+                    transaccion.getTipoTransaccion(), 
+                    transaccion.getMonto(), nombreCategoria));
+                yPosition -= 15;
+                contador++;
+            }
+            contentStream.endText();
+            
+            contentStream.close();
+            document.save(rutaArchivo);
+            document.close();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean crearPDFAdmin(String rutaArchivo, List<Usuario> usuarios, 
+                                List<Transaccion> transacciones, 
+                                List<Cuenta> cuentas) {
+        try {
+            PDDocument document = new PDDocument();
+            PDPage page = new PDPage();
+            document.addPage(page);
+            
+            PDPageContentStream contentStream = new PDPageContentStream(document, page);
+            
+            // Título
+            contentStream.beginText();
+            contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 16);
+            contentStream.newLineAtOffset(100, 700);
+            contentStream.showText("REPORTE ADMINISTRATIVO - SISTEMA COMPLETO");
+            contentStream.endText();
+            
+            // Estadísticas del sistema
+            double saldoTotal = usuarios.stream().mapToDouble(u -> u.getSaldo()).sum();
+            double totalIngresos = transacciones.stream()
+                .filter(t -> t.getTipoTransaccion().contains("DEPÓSITO"))
+                .mapToDouble(t -> t.getMonto()).sum();
+            double totalGastos = transacciones.stream()
+                .filter(t -> t.getTipoTransaccion().contains("RETIRO"))
+                .mapToDouble(t -> t.getMonto()).sum();
+            
+            contentStream.beginText();
+            contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 14);
+            contentStream.newLineAtOffset(100, 650);
+            contentStream.showText("ESTADÍSTICAS DEL SISTEMA");
+            contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 12);
+            contentStream.newLineAtOffset(0, -25);
+            contentStream.showText("Usuarios registrados: " + usuarios.size());
+            contentStream.newLineAtOffset(0, -20);
+            contentStream.showText("Cuentas activas: " + cuentas.size());
+            contentStream.newLineAtOffset(0, -20);
+            contentStream.showText("Transacciones totales: " + transacciones.size());
+            contentStream.newLineAtOffset(0, -20);
+            contentStream.showText("Saldo total sistema: $" + String.format("%.2f", saldoTotal));
+            contentStream.newLineAtOffset(0, -20);
+            contentStream.showText("Total ingresos: $" + String.format("%.2f", totalIngresos));
+            contentStream.newLineAtOffset(0, -20);
+            contentStream.showText("Total gastos: $" + String.format("%.2f", totalGastos));
+            contentStream.endText();
+            
+            // Lista de usuarios
+            contentStream.beginText();
+            contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 14);
+            contentStream.newLineAtOffset(100, 500);
+            contentStream.showText("USUARIOS DEL SISTEMA");
+            contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 12);
+            
+            int yPosition = 470;
+            for(Usuario usuario : usuarios) {
+                if(yPosition < 100) break;
+                long numCuentas = cuentas.stream()
+                    .filter(c -> c.getUsuario().getIdUsuario().equals(usuario.getIdUsuario()))
+                    .count();
+                contentStream.newLineAtOffset(0, -25);
+                contentStream.showText(String.format("• %s (%s): $%.2f - %d cuentas", 
+                    usuario.getNombreCompleto(), usuario.getIdUsuario(), 
+                    usuario.getSaldo(), numCuentas));
+                yPosition -= 25;
+            }
+            contentStream.endText();
+            
+            contentStream.close();
+            document.save(rutaArchivo);
+            document.close();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 }

@@ -37,6 +37,9 @@ public class BilleteraVirtualAppViewController {
     
     @FXML
     private Button btnUsuarios;
+
+    @FXML
+    private Button btnReportes;
     
     @FXML
     private Button btnCuentas;
@@ -131,6 +134,7 @@ public class BilleteraVirtualAppViewController {
         btnCuentas.setVisible(true);
         btnTransacciones.setVisible(true);
         btnPresupuestos.setVisible(true);
+        btnReportes.setVisible(true);
     }
 
     private void configurarVistaAdmin() {
@@ -142,7 +146,7 @@ public class BilleteraVirtualAppViewController {
         btnTransacciones.setVisible(true);
         btnPresupuestos.setVisible(true);
         btnCategorias.setVisible(true);
-        
+        btnReportes.setVisible(true);
         // Cambiar estilo para indicar que es admin
         lblUsuarioActual.setStyle("-fx-text-fill: red;");
         lblUsuarioActualA.setStyle("-fx-text-fill: red;");
@@ -183,6 +187,11 @@ public class BilleteraVirtualAppViewController {
     @FXML
     void onPerfil(ActionEvent event) {
         cargarVista("/co/edu/uniquindio/perfil.fxml", "Perfil");
+    }
+
+    @FXML
+    void onReportes(ActionEvent event) {
+        cargarVista("/co/edu/uniquindio/reporte.fxml", "Reportes PDF");
     }
     
     @FXML
@@ -244,6 +253,8 @@ public class BilleteraVirtualAppViewController {
                 // No hace falta pasar nada, las categorías son globales
             } else if(controller instanceof EstadisticasViewController) {
                 // Para estadísticas, no necesita un usuario específico pero se puede
+            } else if(controller instanceof ReporteViewController) {
+                ((ReporteViewController) controller).inicializarVista(idUsuarioActual, esAdmin);
             }
             
             mainBorderPane.setCenter(vista);

@@ -4,6 +4,12 @@ module co.edu.uniquindio {
     requires javafx.fxml;
     requires javafx.base;
     requires transitive javafx.graphics;
+    requires org.apache.pdfbox;
+    requires java.desktop;
+    requires java.logging;
+    requires java.base;
+    requires org.apache.fontbox;
+    requires org.apache.pdfbox.io;
 
     opens co.edu.uniquindio to javafx.fxml;
     exports co.edu.uniquindio;

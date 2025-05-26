@@ -261,4 +261,12 @@ public class ModelFactory implements IModelFactoryServices {
         return cuentaMapping.getCuentaDto(billeteraVirtual.getListaCuentas());
     }
 
+    public boolean generarReporteUsuario(String idUsuario, String rutaArchivo) {
+        return billeteraVirtual.generarReporteUsuario(idUsuario, rutaArchivo);
+    }
+
+    public boolean generarReporteAdmin(String rutaArchivo) {
+        return billeteraVirtual.generarReporteAdmin(rutaArchivo);
+    }
+
 }
