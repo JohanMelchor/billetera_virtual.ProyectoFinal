@@ -1,5 +1,6 @@
 package co.edu.uniquindio.viewcontroller;
 
+import co.edu.uniquindio.Util.TransaccionConstantes;
 import co.edu.uniquindio.controller.*;
 import co.edu.uniquindio.mapping.dto.*;
 import javafx.collections.FXCollections;
@@ -37,6 +38,18 @@ public class EstadisticasViewController {
     
     @FXML
     private Label lblUsuarioMasTransacciones;
+
+    @FXML
+    private Label lblCategoriaMasUsada;
+
+    @FXML
+    private Label lblTransaccionMasGrande;
+
+    @FXML
+    private Label lblPromedioTransacciones;
+
+    @FXML
+    private Label lblDiaMasActivo;
     
     @FXML
     void initialize() {
@@ -48,7 +61,10 @@ public class EstadisticasViewController {
         cbTipoEstadistica.getItems().addAll(
             "Transacciones por Categoría",
             "Saldo por Usuario",
-            "Gastos vs Ingresos"
+            "Gastos vs Ingresos",
+            "Categorías Más Usadas",
+            "Evolución por Días",      
+            "Distribución de Montos"
         );
         
         cargarDatos();
@@ -72,39 +88,34 @@ public class EstadisticasViewController {
         double promedio = listaUsuarios.isEmpty() ? 0.0 : sumaTotal / listaUsuarios.size();
         lblPromedioSaldo.setText(String.format("%.2f", promedio));
         
-        // Usuario con más transacciones
-        Map<String, Integer> contadorTransacciones = new HashMap<>();
+        Map<String, Integer> contadorPorUsuario = new HashMap<>();
+        CuentaController cuentaController = new CuentaController();
+        
         for(TransaccionDto transaccion : listaTransacciones) {
-            String idCuentaOrigen = transaccion.idCuentaOrigen();
-            String idCuentaDestino = transaccion.idCuentaDestino();
-            
-            // Contar transacciones por usuario (origen y destino)
-            if(idCuentaOrigen != null && !idCuentaOrigen.isEmpty()) {
-                // Buscar el usuario dueño de la cuenta
+            // Contar transacciones por cuenta origen
+            if(transaccion.idCuentaOrigen() != null && !transaccion.idCuentaOrigen().isEmpty()) {
+                // Buscar el dueño de esta cuenta
                 for(UsuarioDto usuario : listaUsuarios) {
-                    List<CuentaDto> cuentasUsuario = obtenerCuentasPorUsuario(usuario.idUsuario());
+                    List<CuentaDto> cuentasUsuario = cuentaController.obtenerCuentasPorUsuario(usuario.idUsuario());
                     for(CuentaDto cuenta : cuentasUsuario) {
-                        if(cuenta.idCuenta().equals(idCuentaOrigen)) {
-                            contadorTransacciones.put(
-                                usuario.nombreCompleto(),
-                                contadorTransacciones.getOrDefault(usuario.nombreCompleto(), 0) + 1
-                            );
+                        if(cuenta.idCuenta().equals(transaccion.idCuentaOrigen())) {
+                            contadorPorUsuario.merge(usuario.nombreCompleto(), 1, Integer::sum);
                             break;
                         }
                     }
                 }
             }
             
-            if(idCuentaDestino != null && !idCuentaDestino.isEmpty()) {
-                // Buscar el usuario dueño de la cuenta
+            // Contar transacciones por cuenta destino (solo si es diferente)
+            if(transaccion.idCuentaDestino() != null && 
+            !transaccion.idCuentaDestino().isEmpty() &&
+            !transaccion.idCuentaDestino().equals(transaccion.idCuentaOrigen())) {
+                
                 for(UsuarioDto usuario : listaUsuarios) {
-                    List<CuentaDto> cuentasUsuario = obtenerCuentasPorUsuario(usuario.idUsuario());
+                    List<CuentaDto> cuentasUsuario = cuentaController.obtenerCuentasPorUsuario(usuario.idUsuario());
                     for(CuentaDto cuenta : cuentasUsuario) {
-                        if(cuenta.idCuenta().equals(idCuentaDestino)) {
-                            contadorTransacciones.put(
-                                usuario.nombreCompleto(),
-                                contadorTransacciones.getOrDefault(usuario.nombreCompleto(), 0) + 1
-                            );
+                        if(cuenta.idCuenta().equals(transaccion.idCuentaDestino())) {
+                            contadorPorUsuario.merge(usuario.nombreCompleto(), 1, Integer::sum);
                             break;
                         }
                     }
@@ -115,7 +126,7 @@ public class EstadisticasViewController {
         // Encontrar el usuario con más transacciones
         String usuarioMasTransacciones = "Ninguno";
         int maxTransacciones = 0;
-        for(Map.Entry<String, Integer> entry : contadorTransacciones.entrySet()) {
+        for(Map.Entry<String, Integer> entry : contadorPorUsuario.entrySet()) {
             if(entry.getValue() > maxTransacciones) {
                 maxTransacciones = entry.getValue();
                 usuarioMasTransacciones = entry.getKey();
@@ -123,6 +134,11 @@ public class EstadisticasViewController {
         }
         
         lblUsuarioMasTransacciones.setText(usuarioMasTransacciones + " (" + maxTransacciones + ")");
+        
+        calcularCategoriaMasUsada();
+        calcularTransaccionMasGrande();
+        calcularPromedioTransaccionPorUsuario();
+        calcularDiaMasActivo();
     }
     
     @FXML
@@ -144,6 +160,15 @@ public class EstadisticasViewController {
                 break;
             case "Gastos vs Ingresos":
                 generarGraficaGastosVsIngresos();
+                break;
+            case "Categorías Más Usadas":           
+                generarGraficaCategoriasMasUsadas();
+                break;
+            case "Evolución por Días":              
+                generarGraficaEvolucionPorDias();
+                break;
+            case "Distribución de Montos":          
+                generarGraficaDistribucionMontos();
                 break;
         }
     }
@@ -204,29 +229,36 @@ public class EstadisticasViewController {
         
         barChart.getData().add(series);
         
-        // Agregar gráfico al contenedor
+        
         contenedorGraficas.getChildren().add(barChart);
     }
     
     private void generarGraficaGastosVsIngresos() {
-        // Calcular totales de gastos e ingresos
+
         double totalIngresos = 0.0;
         double totalGastos = 0.0;
         
         for(TransaccionDto transaccion : listaTransacciones) {
             double monto = Double.parseDouble(transaccion.monto());
+            String tipo = transaccion.tipoTransaccion();
             
-            switch(transaccion.tipoTransaccion()) {
-                case "DEPOSITO":
-                    totalIngresos += monto;
-                    break;
-                case "RETIRO":
-                    totalGastos += monto;
-                    break;
-                case "TRANSFERENCIA":
-                    // Las transferencias no se cuentan como gasto ni ingreso
-                    break;
+
+            if (tipo.equals(TransaccionConstantes.TIPO_DEPOSITO_CUENTA) ||
+                tipo.equals(TransaccionConstantes.TIPO_DEPOSITO_PRESUPUESTO) ||
+                tipo.equals(TransaccionConstantes.TIPO_AJUSTE_POSITIVO) ||
+                tipo.equals(TransaccionConstantes.TIPO_DEPOSITO_INICIAL) ||
+                tipo.equals(TransaccionConstantes.TIPO_BONIFICACION)) {
+                
+                totalIngresos += monto;
+                
+            } else if (tipo.equals(TransaccionConstantes.TIPO_RETIRO_CUENTA) ||
+                    tipo.equals(TransaccionConstantes.TIPO_RETIRO_PRESUPUESTO) ||
+                    tipo.equals(TransaccionConstantes.TIPO_AJUSTE_NEGATIVO) ||
+                    tipo.equals(TransaccionConstantes.TIPO_PENALIZACION)) {
+                
+                totalGastos += monto;
             }
+            // Las transferencias no se cuentan como ingreso ni gasto
         }
         
         // Crear datos para el gráfico de barras
@@ -246,7 +278,6 @@ public class EstadisticasViewController {
         
         barChart.getData().add(series);
         
-        // Agregar gráfico al contenedor
         contenedorGraficas.getChildren().add(barChart);
     }
     
@@ -258,10 +289,220 @@ public class EstadisticasViewController {
         }
         return "Desconocida";
     }
-    
-    private List<CuentaDto> obtenerCuentasPorUsuario(String idUsuario) {
-        // Para simplificar, creamos una lista vacía
-        // En un sistema real, usaríamos el controlador de cuentas
-        return new ArrayList<>();
+
+    private void generarGraficaCategoriasMasUsadas() {
+        Map<String, Integer> contadorCategorias = new HashMap<>();
+        
+        for(TransaccionDto transaccion : listaTransacciones) {
+            String idCategoria = transaccion.idCategoria();
+            String nombreCategoria = idCategoria != null && !idCategoria.isEmpty() ? 
+                obtenerNombreCategoria(idCategoria) : "Sin Categoría";
+            contadorCategorias.merge(nombreCategoria, 1, Integer::sum);
+        }
+        
+        // Crear gráfico de barras horizontal
+        CategoryAxis yAxis = new CategoryAxis();
+        NumberAxis xAxis = new NumberAxis();
+        BarChart<Number, String> barChart = new BarChart<>(xAxis, yAxis);
+        barChart.setTitle("Categorías Más Usadas");
+        xAxis.setLabel("Número de Transacciones");
+        yAxis.setLabel("Categoría");
+        
+        XYChart.Series<Number, String> series = new XYChart.Series<>();
+        series.setName("Uso de Categorías");
+        
+        // Ordenar por más usadas
+        contadorCategorias.entrySet().stream()
+            .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+            .limit(10) // Solo las top 10
+            .forEach(entry -> {
+                series.getData().add(new XYChart.Data<>(entry.getValue(), entry.getKey()));
+            });
+        
+        barChart.getData().add(series);
+        contenedorGraficas.getChildren().add(barChart);
     }
+
+    private void generarGraficaEvolucionPorDias() {
+        Map<String, Integer> transaccionesPorDia = new TreeMap<>();
+        
+        for(TransaccionDto transaccion : listaTransacciones) {
+            try {
+                String fecha = transaccion.fecha();
+                String dia = fecha.substring(0, 10); // YYYY-MM-DD
+                transaccionesPorDia.merge(dia, 1, Integer::sum);
+            } catch (Exception e) {
+                // Ignorar fechas mal formateadas
+            }
+        }
+
+        // Crear gráfico de líneas
+        CategoryAxis xAxis = new CategoryAxis();
+        NumberAxis yAxis = new NumberAxis();
+        LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
+        lineChart.setTitle("Evolución de Transacciones por Día");
+        xAxis.setLabel("Fecha");
+        yAxis.setLabel("Número de Transacciones");
+        
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Transacciones Diarias");
+        
+        // Tomar solo los últimos 30 días o menos
+        transaccionesPorDia.entrySet().stream()
+            .sorted(Map.Entry.comparingByKey())
+            .limit(30)
+            .forEach(entry -> {
+                series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
+            });
+        
+        lineChart.getData().add(series);
+        contenedorGraficas.getChildren().add(lineChart);
+    }
+
+    private void generarGraficaDistribucionMontos() {
+        // Categorizar montos en rangos
+        Map<String, Integer> rangoMontos = new LinkedHashMap<>();
+        rangoMontos.put("$0 - $50", 0);
+        rangoMontos.put("$50 - $100", 0);
+        rangoMontos.put("$100 - $500", 0);
+        rangoMontos.put("$500 - $1000", 0);
+        rangoMontos.put("$1000+", 0);
+        
+        for(TransaccionDto transaccion : listaTransacciones) {
+            double monto = Double.parseDouble(transaccion.monto());
+            
+            if(monto <= 50) {
+                rangoMontos.merge("$0 - $50", 1, Integer::sum);
+            } else if(monto <= 100) {
+                rangoMontos.merge("$50 - $100", 1, Integer::sum);
+            } else if(monto <= 500) {
+                rangoMontos.merge("$100 - $500", 1, Integer::sum);
+            } else if(monto <= 1000) {
+                rangoMontos.merge("$500 - $1000", 1, Integer::sum);
+            } else {
+                rangoMontos.merge("$1000+", 1, Integer::sum);
+            }
+        }
+
+        // Crear gráfico de pastel
+        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+        for(Map.Entry<String, Integer> entry : rangoMontos.entrySet()) {
+            if(entry.getValue() > 0) { // Solo mostrar rangos con datos
+                pieChartData.add(new PieChart.Data(
+                    entry.getKey() + " (" + entry.getValue() + ")", 
+                    entry.getValue()));
+            }
+        }
+        
+        PieChart pieChart = new PieChart(pieChartData);
+        pieChart.setTitle("Distribución de Transacciones por Monto");
+        pieChart.setLabelsVisible(true);
+        
+        contenedorGraficas.getChildren().add(pieChart);
+    }
+
+    private void calcularCategoriaMasUsada() {
+        Map<String, Integer> contadorCategorias = new HashMap<>();
+    
+        for(TransaccionDto transaccion : listaTransacciones) {
+            String idCategoria = transaccion.idCategoria();
+            String nombreCategoria;
+            
+            if(idCategoria != null && !idCategoria.isEmpty()) {
+                nombreCategoria = obtenerNombreCategoria(idCategoria);
+            } else {
+                nombreCategoria = "Sin Categoría";
+            }
+            
+            contadorCategorias.merge(nombreCategoria, 1, Integer::sum);
+        }
+        
+        // Encontrar la categoría más usada
+        String categoriaMasUsada = "Ninguna";
+        int maxUsos = 0;
+        for(Map.Entry<String, Integer> entry : contadorCategorias.entrySet()) {
+            if(entry.getValue() > maxUsos) {
+                maxUsos = entry.getValue();
+                categoriaMasUsada = entry.getKey();
+            }
+        }
+        
+        // Actualizar label
+        if (lblCategoriaMasUsada != null) {
+            lblCategoriaMasUsada.setText(categoriaMasUsada + " (" + maxUsos + ")");
+        }
+    }
+
+    private void calcularTransaccionMasGrande() {
+        double montoMayor = 0.0;
+        String tipoTransaccionMayor = "Ninguna";
+        
+        for(TransaccionDto transaccion : listaTransacciones) {
+            double monto = Double.parseDouble(transaccion.monto());
+            if(monto > montoMayor) {
+                montoMayor = monto;
+                tipoTransaccionMayor = simplificarTipoTransaccion(transaccion.tipoTransaccion());
+            }
+        }
+        
+        // Actualizar label
+        if (lblTransaccionMasGrande != null) {
+            lblTransaccionMasGrande.setText(String.format("$%.2f (%s)", montoMayor, tipoTransaccionMayor));
+        }
+    }
+
+    private void calcularPromedioTransaccionPorUsuario() {
+        if(listaUsuarios.isEmpty()) {
+            if (lblPromedioTransacciones != null) {
+                lblPromedioTransacciones.setText("0");
+            }
+            return;
+        }
+        
+        double promedio = (double) listaTransacciones.size() / listaUsuarios.size();
+        
+        if (lblPromedioTransacciones != null) {
+            lblPromedioTransacciones.setText(String.format("%.1f", promedio));
+        }
+    }
+
+    private void calcularDiaMasActivo() {
+        Map<String, Integer> transaccionesPorDia = new HashMap<>();
+        
+        for(TransaccionDto transaccion : listaTransacciones) {
+            try {
+                // Extraer fecha de la transacción (formato: "yyyy-MM-dd HH:mm:ss")
+                String fecha = transaccion.fecha();
+                String dia = fecha.substring(0, 10); // Solo la parte de la fecha
+                transaccionesPorDia.merge(dia, 1, Integer::sum);
+            } catch (Exception e) {
+                // Si hay error con el formato, ignorar esta transacción
+            }
+        }
+        
+        String diaMasActivo = "Ninguno";
+        int maxTransacciones = 0;
+        for(Map.Entry<String, Integer> entry : transaccionesPorDia.entrySet()) {
+            if(entry.getValue() > maxTransacciones) {
+                maxTransacciones = entry.getValue();
+                diaMasActivo = entry.getKey();
+            }
+        }
+        
+        if (lblDiaMasActivo != null) {
+            lblDiaMasActivo.setText(diaMasActivo + " (" + maxTransacciones + ")");
+        }
+    }
+
+    private String simplificarTipoTransaccion(String tipoCompleto) {
+        if (tipoCompleto.contains("DEPÓSITO")) return "Depósito";
+        if (tipoCompleto.contains("RETIRO")) return "Retiro";
+        if (tipoCompleto.contains("TRANSFERENCIA")) return "Transferencia";
+        if (tipoCompleto.contains("AJUSTE")) return "Ajuste";
+        if (tipoCompleto.contains("BONIFICACIÓN")) return "Bonificación";
+        if (tipoCompleto.contains("PENALIZACIÓN")) return "Penalización";
+        return tipoCompleto;
+    }
+
+
 }
