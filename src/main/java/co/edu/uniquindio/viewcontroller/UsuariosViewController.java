@@ -25,6 +25,9 @@ public class UsuariosViewController {
     private Button btnEliminarUsuario;
 
     @FXML
+    private Button btnLimpiarCampos;
+
+    @FXML
     private TableView<UsuarioDto> tableUsuario;
 
     @FXML
@@ -61,7 +64,7 @@ public class UsuariosViewController {
     private TextField txtTelefonoUsuario;
 
     @FXML
-    private Label lblSaldo;
+    private TextField txtSaldo;
 
     @FXML
     void onActualizarUsuario(ActionEvent event) {
@@ -119,11 +122,10 @@ public class UsuariosViewController {
     }
 
     private UsuarioDto crearUsuarioDto() {
-        return new UsuarioDto(txtNombreUsuario.getText(),
-                txtIdUsuario.getText(),txtCorreoUsuario.getText(),
+        return new UsuarioDto(txtIdUsuario.getText(),
+                txtNombreUsuario.getText(),txtCorreoUsuario.getText(),
                 txtTelefonoUsuario.getText(),txtDireccionUsuario.getText(),
-                lblSaldo.getText(), "****");
-    //password
+                txtSaldo.getText(), "****");
     }
 
 
@@ -133,7 +135,7 @@ public class UsuariosViewController {
         txtIdUsuario.setText("");
         txtNombreUsuario.setText("");
         txtTelefonoUsuario.setText("");
-        lblSaldo.setText("0.0");
+        txtSaldo.setText("");
     }
 
     private boolean datosValidos(UsuarioDto usuarioDto) {
@@ -204,7 +206,7 @@ public class UsuariosViewController {
             txtCorreoUsuario.setText(usuarioSeleccionado.correo());
             txtDireccionUsuario.setText(usuarioSeleccionado.direccion());
             txtTelefonoUsuario.setText(usuarioSeleccionado.telefono());
-            lblSaldo.setText(usuarioSeleccionado.saldo());
+            txtSaldo.setText(usuarioSeleccionado.saldo());
         }
     }
 
@@ -215,5 +217,12 @@ public class UsuariosViewController {
         tcTelefonoUsuario.setCellValueFactory(cellData-> new SimpleStringProperty(cellData.getValue().telefono()));
         tcDireccionUsuario.setCellValueFactory(cellData-> new SimpleStringProperty(cellData.getValue().direccion()));
         tcSaldoUsuario.setCellValueFactory(cellData-> new SimpleStringProperty(String.valueOf(cellData.getValue().saldo())));
+    }
+
+    @FXML
+    void onLimpiarCampos(ActionEvent event) {
+        limpiarCampos();
+        usuarioSeleccionado = null;
+        tableUsuario.getSelectionModel().clearSelection();
     }
 }

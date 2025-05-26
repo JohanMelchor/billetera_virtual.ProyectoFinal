@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
@@ -12,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.viewcontroller.CategoriaViewController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.viewcontroller.CategoriaViewController">
    <children>
       <VBox layoutX="14.0" layoutY="14.0" prefHeight="472.0" prefWidth="622.0">
          <children>
@@ -23,7 +22,7 @@
             </Label>
             <HBox prefHeight="450.0" prefWidth="622.0" spacing="10.0">
                <children>
-                  <VBox prefHeight="450.0" prefWidth="300.0" spacing="10.0">
+                  <VBox alignment="TOP_CENTER" prefHeight="450.0" prefWidth="300.0" spacing="10.0">
                      <children>
                         <Label text="Información de la Categoría">
                            <font>
@@ -55,6 +54,7 @@
                               <Button fx:id="btnEliminarCategoria" mnemonicParsing="false" onAction="#onEliminarCategoria" text="Eliminar" />
                            </children>
                         </HBox>
+                        <Button fx:id="btnLimpiarCampos" mnemonicParsing="false" onAction="#onLimpiarCampos" text="Nueva Categoría" />
                      </children>
                   </VBox>
                   <TableView fx:id="tableCategorias" prefHeight="450.0" prefWidth="312.0">

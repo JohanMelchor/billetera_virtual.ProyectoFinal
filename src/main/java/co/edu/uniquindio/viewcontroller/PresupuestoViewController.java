@@ -449,9 +449,9 @@ public class PresupuestoViewController {
     private void limpiarCampos() {
         generarIdUnico();
         txtNombre.setText("");
-        txtMontoAsignado.setText("0.0");
-        txtMontoGastado.setText("0.0");
-        txtSaldo.setText("0.0");
+        txtMontoAsignado.setText("");
+        txtMontoGastado.setText("");
+        txtSaldo.setText("");
         txtCuenta.setText("");
         cbCategoria.setValue(null);
         cbCuenta.setDisable(false);

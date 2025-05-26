@@ -80,7 +80,7 @@
                               <Button fx:id="btnEliminarPresupuesto" mnemonicParsing="false" onAction="#onEliminarPresupuesto" text="Eliminar" />
                            </children>
                         </HBox>
-                        <Button fx:id="btnLimpiar" mnemonicParsing="false" onAction="#onLimpiar" text=" Limpiar Campos" />
+                        <Button fx:id="btnLimpiar" mnemonicParsing="false" onAction="#onLimpiar" text="Nuevo Presupuesto" />
                      </children>
                   </VBox>
                   <TableView fx:id="tablePresupuestos" prefHeight="450.0" prefWidth="312.0">

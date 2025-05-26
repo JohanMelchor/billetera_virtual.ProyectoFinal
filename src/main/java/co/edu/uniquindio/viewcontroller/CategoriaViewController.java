@@ -36,6 +36,9 @@ public class CategoriaViewController {
     
     @FXML
     private Button btnEliminarCategoria;
+
+    @FXML
+    private Button btnLimpiarCampos;
     
     @FXML
     private TableView<CategoriaDto> tableCategorias;
@@ -252,5 +255,11 @@ public class CategoriaViewController {
 
         Optional<ButtonType> action = alert.showAndWait();
         return action.isPresent() && action.get() == ButtonType.OK;
+    }
+
+    @FXML
+    void onLimpiarCampos(ActionEvent event) {
+        limpiarCampos();
+        tableCategorias.getSelectionModel().clearSelection();
     }
 }

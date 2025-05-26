@@ -148,6 +148,7 @@ public class BilleteraVirtual implements IUsuarioServices,IAdministradorServices
             cuentaActualizar.setNombreBanco(cuenta.getNombreBanco());
             cuentaActualizar.setNumeroCuenta(cuenta.getNumeroCuenta());
             cuentaActualizar.setTipoCuenta(cuenta.getTipoCuenta());
+            cuentaActualizar.setUsuario(cuenta.getUsuario());
             return true;
         }
         return false;

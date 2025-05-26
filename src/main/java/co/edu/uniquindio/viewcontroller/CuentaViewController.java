@@ -52,6 +52,9 @@ public class CuentaViewController {
 
     @FXML
     private Button btnPresupuesto;
+
+    @FXML
+    private Button btnLimpiarCampos;
     
     @FXML
     private TableView<CuentaDto> tableCuentas;
@@ -227,7 +230,11 @@ public class CuentaViewController {
             CuentaDto cuentaActualizada = crearCuentaDto();
             if(datosValidos(cuentaActualizada)) {
                 if(cuentaController.actualizarCuenta(cuentaActualizada)) {
-                    cargarCuentasUsuario();
+                    if (esAdmin) {
+                        cargarTodasCuentas();    // ← Para admin: todas las cuentas
+                    } else {
+                        cargarCuentasUsuario();  // ← Para usuario: solo sus cuentas
+                    }
                     limpiarCampos();
                     mostrarMensaje(
                         "Cuenta actualizada", 
@@ -270,7 +277,11 @@ public class CuentaViewController {
             
             if(confirmacion) {
                 if(cuentaController.eliminarCuenta(cuentaSeleccionada.idCuenta())) {
-                    listaCuentas.remove(cuentaSeleccionada);
+                    if (esAdmin) {
+                        cargarTodasCuentas();    // ← Para admin: todas las cuentas
+                    } else {
+                        cargarCuentasUsuario();  // ← Para usuario: solo sus cuentas
+                    }
                     limpiarCampos();
                     mostrarMensaje(
                         "Cuenta eliminada", 
@@ -330,6 +341,8 @@ public class CuentaViewController {
         txtNumeroCuenta.setText("");
         cbTipoCuenta.setValue(null);
         cuentaSeleccionada = null;
+        txtSaldo.setText("");
+        cbUsuarios.setValue(null);
     }
     
     private void generarIdUnico() {
@@ -352,5 +365,11 @@ public class CuentaViewController {
 
         Optional<ButtonType> action = alert.showAndWait();
         return action.isPresent() && action.get() == ButtonType.OK;
+    }
+
+    @FXML
+    void onLimpiarCampos(ActionEvent event) {
+        limpiarCampos();
+        tableCuentas.getSelectionModel().clearSelection();
     }
 }
