@@ -8,9 +8,6 @@ import co.edu.uniquindio.mapping.dto.CategoriaDto;
 import co.edu.uniquindio.mapping.dto.CuentaDto;
 import co.edu.uniquindio.mapping.dto.PresupuestoDto;
 import co.edu.uniquindio.mapping.dto.TransaccionDto;
-
-import java.util.List;
-
 import co.edu.uniquindio.Util.TransaccionConstantes;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -31,6 +28,7 @@ public class TransaccionViewController {
     private ObservableList<CategoriaDto> listaCategorias = FXCollections.observableArrayList();
     private ObservableList<PresupuestoDto> listaPresupuestos = FXCollections.observableArrayList();
     private String idUsuarioActual;
+    private boolean esAdmin = false;
     
     @FXML
     private ComboBox<String> cbTipoTransaccion;
@@ -52,6 +50,18 @@ public class TransaccionViewController {
 
     @FXML
     private Label lblCuentaOrigen;
+
+    @FXML
+    private Label lblMontoUsuario;
+
+    @FXML
+    private Label lbltipoUsuario;
+
+    @FXML
+    private Label lblCategoriaUsuario;
+
+    @FXML
+    private Label lblDescripcionUsuario;
     
     @FXML
     private TextArea txtDescripcion;
@@ -59,11 +69,14 @@ public class TransaccionViewController {
     @FXML
     private Button btnTransaccion;
 
-    @FXML private Label lblPresupuesto;
+    @FXML 
+    private Label lblPresupuesto;
 
-    @FXML private ComboBox<PresupuestoDto> cbPresupuesto;
+    @FXML 
+    private ComboBox<PresupuestoDto> cbPresupuesto;
 
-    @FXML private TableColumn<TransaccionDto, String> tcPresupuesto;
+    @FXML 
+    private TableColumn<TransaccionDto, String> tcPresupuesto;
     
     @FXML
     private TableView<TransaccionDto> tableTransacciones;
@@ -88,6 +101,36 @@ public class TransaccionViewController {
     
     @FXML
     private TableColumn<TransaccionDto, String> tcCategoria;
+
+    @FXML
+    private Label lblTransaccionesAdmin;
+
+    @FXML
+    private ComboBox<String> cbTipoAdmin;
+
+    @FXML
+    private Label lblTipoAdmin;
+
+    @FXML
+    private Label lblCuentaAfectada;
+
+    @FXML
+    private Label lblMontoAdmin;
+
+    @FXML
+    private Label lblJustificacion;
+
+    @FXML
+    private ComboBox<CuentaDto> cbCuentaAfectada;
+
+    @FXML
+    private TextField txtMontoAdmin;
+
+    @FXML
+    private TextArea txtJustificacion;
+
+    @FXML
+    private Button btnCrearTransaccionAdmin;
     
     @FXML
     void initialize() {
@@ -134,12 +177,102 @@ public class TransaccionViewController {
     }
     
     public void inicializarVista(String idUsuario, boolean esAdmin) {
+        this.esAdmin = esAdmin;
         if (esAdmin) {
             cargarTodasTransacciones();
+            habilitarVistaAdministrador();
         } else {
             this.idUsuarioActual = idUsuario;
             cargarDatos();
+            habilitarVistaUsuario();
         }
+    }
+
+    private void habilitarVistaAdministrador() {
+        // Cargar todas las cuentas para el admin
+        listaCuentas.setAll(cuentaController.obtenerTodasCuentas());
+        listaCategorias.setAll(categoriaController.obtenerCategorias());
+        
+        // Configurar elementos administrativos
+        if (lblTransaccionesAdmin != null) {
+            lblTransaccionesAdmin.setVisible(true);
+        }
+        
+        if (cbTipoAdmin != null) {
+            cbTipoAdmin.setVisible(true);
+            cbTipoAdmin.getItems().addAll(
+                TransaccionConstantes.TIPO_AJUSTE_POSITIVO,
+                TransaccionConstantes.TIPO_AJUSTE_NEGATIVO,
+                TransaccionConstantes.TIPO_DEPOSITO_INICIAL,
+                TransaccionConstantes.TIPO_BONIFICACION,
+                TransaccionConstantes.TIPO_PENALIZACION
+            );
+        }
+        
+        if (cbCuentaAfectada != null) {
+            cbCuentaAfectada.setVisible(true);
+            cbCuentaAfectada.setItems(FXCollections.observableArrayList(listaCuentas));
+            cbCuentaAfectada.setConverter(new javafx.util.StringConverter<CuentaDto>() {
+                @Override
+                public String toString(CuentaDto cuenta) {
+                    if (cuenta != null) {
+                        // Buscar el usuario de la cuenta para mostrarlo
+                        String nombreUsuario = "Desconocido";
+                        try {
+                            co.edu.uniquindio.controller.UsuarioController usuarioController = 
+                                new co.edu.uniquindio.controller.UsuarioController();
+                            co.edu.uniquindio.mapping.dto.UsuarioDto usuario = 
+                                usuarioController.buscarUsuarioPorId(cuenta.idUsuario());
+                            if (usuario != null) {
+                                nombreUsuario = usuario.nombreCompleto();
+                            }
+                        } catch (Exception e) {
+                            nombreUsuario = "Error al cargar";
+                        }
+                        return cuenta.nombreBanco() + " - " + cuenta.numeroCuenta() + 
+                            " (" + nombreUsuario + ")";
+                    }
+                    return "";
+                }
+                
+                @Override
+                public CuentaDto fromString(String string) {
+                    return null;
+                }
+            });
+        }
+        txtMontoAdmin.setVisible(true);
+        txtJustificacion.setVisible(true);
+        btnCrearTransaccionAdmin.setVisible(true);
+        lblTipoAdmin.setVisible(true);
+        lblCuentaAfectada.setVisible(true);
+        lblMontoAdmin.setVisible(true);
+        lblJustificacion.setVisible(true);
+        //desactivar campos de usuario
+        lblCuentaOrigen.setVisible(false);
+        cbCuentaOrigen.setVisible(false);
+        lblCuentaDestino.setVisible(false);
+        cbCuentaDestino.setVisible(false);
+        lblPresupuesto.setVisible(false);
+        cbPresupuesto.setVisible(false);
+        lblMontoUsuario.setVisible(false);
+        txtMonto.setVisible(false);
+        lbltipoUsuario.setVisible(false);
+        cbTipoTransaccion.setVisible(false);
+        lblCategoriaUsuario.setVisible(false);
+        cbCategoria.setVisible(false);
+        lblDescripcionUsuario.setVisible(false);
+        txtDescripcion.setVisible(false);
+        btnTransaccion.setVisible(false);
+    }
+
+    private void habilitarVistaUsuario() {
+        lblTransaccionesAdmin.setVisible(false);
+        cbTipoAdmin.setVisible(false);
+        cbCuentaAfectada.setVisible(false);
+        txtMontoAdmin.setVisible(false);
+        txtJustificacion.setVisible(false);
+        btnCrearTransaccionAdmin.setVisible(false);
     }
 
     private void cargarTodasTransacciones() {
@@ -200,14 +333,16 @@ public class TransaccionViewController {
     }
     
     private void cargarDatos() {
-        if (idUsuarioActual != null) {
-            // Cargar cuentas del usuario
-            listaCuentas.setAll(cuentaController.obtenerCuentasPorUsuario(idUsuarioActual));
-            // Cargar categorías (todas)
+        if (esAdmin) {
+            // Admin: cargar todas las cuentas y transacciones
+            listaCuentas.setAll(cuentaController.obtenerTodasCuentas());
             listaCategorias.setAll(categoriaController.obtenerCategorias());
-            // Cargar transacciones del usuario
+            listaTransacciones.setAll(transaccionController.obtenerTodasTransacciones());
+        } else if (idUsuarioActual != null) {
+            // Usuario: cargar solo sus datos
+            listaCuentas.setAll(cuentaController.obtenerCuentasPorUsuario(idUsuarioActual));
+            listaCategorias.setAll(categoriaController.obtenerCategorias());
             listaTransacciones.setAll(transaccionController.obtenerTransaccionesPorUsuario(idUsuarioActual));
-            // Cargar presupuestos de las cuentas del usuario  
         }
     }
     
@@ -424,6 +559,81 @@ public class TransaccionViewController {
     private void cargarPresupuestosDeCuenta(String idCuenta) {
         listaPresupuestos.clear();
         listaPresupuestos.addAll(presupuestoController.obtenerPresupuestosPorCuenta(idCuenta));
+    }
+
+    @FXML
+    void onCrearTransaccionAdmin(ActionEvent event) {
+        String tipoTransaccion = cbTipoAdmin.getValue();
+        CuentaDto cuentaAfectada = cbCuentaAfectada.getValue();
+        String montoStr = txtMontoAdmin.getText();
+        String justificacion = txtJustificacion.getText();
+        
+        // Validaciones
+        if (tipoTransaccion == null || cuentaAfectada == null || 
+            montoStr == null || montoStr.isEmpty() || 
+            justificacion == null || justificacion.trim().isEmpty()) {
+            mostrarMensaje("Error", "Campos incompletos", 
+                TransaccionConstantes.ERROR_CAMPOS_VACIOS, Alert.AlertType.WARNING);
+            return;
+        }
+        
+        try {
+            double monto = Double.parseDouble(montoStr);
+            
+            if (monto <= 0) {
+                mostrarMensaje("Error", "Monto inválido", 
+                    "El monto debe ser mayor a cero", Alert.AlertType.ERROR);
+                return;
+            }
+            
+            // Crear descripción detallada
+            String descripcionCompleta = String.format(
+                "%s - Justificación: %s", 
+                tipoTransaccion, justificacion.trim()
+            );
+            
+            boolean resultado = false;
+            
+            switch (tipoTransaccion) {
+                case TransaccionConstantes.TIPO_AJUSTE_POSITIVO:
+                case TransaccionConstantes.TIPO_DEPOSITO_INICIAL:
+                case TransaccionConstantes.TIPO_BONIFICACION:
+                    // Agregar dinero a la cuenta
+                    resultado = transaccionController.depositoCuenta(
+                        cuentaAfectada.idCuenta(), monto, descripcionCompleta, null
+                    );
+                    break;
+                    
+                case TransaccionConstantes.TIPO_AJUSTE_NEGATIVO:
+                case TransaccionConstantes.TIPO_PENALIZACION:
+                    // Quitar dinero de la cuenta
+                    resultado = transaccionController.retiroPorCuenta(
+                        cuentaAfectada.idCuenta(), monto, descripcionCompleta, null
+                    );
+                    break;
+            }
+            
+            if (resultado) {
+                mostrarMensaje("Éxito", "Transacción administrativa creada", 
+                    TransaccionConstantes.EXITO_TRANSACCION_ADMIN, Alert.AlertType.INFORMATION);
+                cargarTodasTransacciones(); // Recargar tabla
+                limpiarCamposAdmin();
+            } else {
+                mostrarMensaje("Error", "No se pudo crear la transacción", 
+                    TransaccionConstantes.ERROR_TRANSACCION_ADMIN, Alert.AlertType.ERROR);
+            }
+            
+        } catch (NumberFormatException e) {
+            mostrarMensaje("Error", "Monto inválido", 
+                "Ingrese un monto válido (solo números)", Alert.AlertType.ERROR);
+        }
+    }
+
+    private void limpiarCamposAdmin() {
+        cbTipoAdmin.setValue(null);
+        cbCuentaAfectada.setValue(null);
+        txtMontoAdmin.setText("");
+        txtJustificacion.setText("");
     }
     
 }

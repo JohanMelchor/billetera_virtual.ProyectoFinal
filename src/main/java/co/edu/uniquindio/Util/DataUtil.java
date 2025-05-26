@@ -189,6 +189,10 @@ public class DataUtil {
         for (Transaccion transaccion : billeteraVirtual.getListaTransacciones()) {
             switch (transaccion.getTipoTransaccion()) {
                 case TransaccionConstantes.TIPO_DEPOSITO_CUENTA:
+                // AGREGADO: Casos administrativos que agregan dinero
+                case TransaccionConstantes.TIPO_AJUSTE_POSITIVO:
+                case TransaccionConstantes.TIPO_DEPOSITO_INICIAL:
+                case TransaccionConstantes.TIPO_BONIFICACION:
                     transaccion.getCuentaDestino().aumentarSaldoTotal(transaccion.getMonto());
                     break;
                     
@@ -197,6 +201,9 @@ public class DataUtil {
                     break;
                     
                 case TransaccionConstantes.TIPO_RETIRO_CUENTA:
+                // AGREGADO: Casos administrativos que quitan dinero
+                case TransaccionConstantes.TIPO_AJUSTE_NEGATIVO:
+                case TransaccionConstantes.TIPO_PENALIZACION:
                     transaccion.getCuentaOrigen().reducirSaldoTotal(transaccion.getMonto());
                     break;
                     

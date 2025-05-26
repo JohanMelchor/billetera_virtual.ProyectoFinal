@@ -13,7 +13,7 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.viewcontroller.TransaccionViewController">
    <children>
       <Label layoutX="5.0" layoutY="1.0" style="-fx-font-weight: bold; -fx-font-size: 18;" text="Gestión Completa de Transacciones" />
-      <Label layoutX="21.0" layoutY="69.0" text="Tipo de Operación:" />
+      <Label fx:id="lbltipoUsuario" layoutX="21.0" layoutY="69.0" text="Tipo de Operación:" />
       <ComboBox fx:id="cbTipoTransaccion" layoutX="136.0" layoutY="65.0" prefHeight="25.0" prefWidth="160.0">
          <items>
             <FXCollections fx:factory="observableArrayList" />
@@ -25,14 +25,24 @@
       <ComboBox fx:id="cbPresupuesto" layoutX="135.0" layoutY="135.0" prefHeight="25.0" prefWidth="160.0" visible="false" />
       <Label fx:id="lblCuentaDestino" layoutX="40.0" layoutY="139.0" text="Cuenta Destino:" visible="false" />
       <ComboBox fx:id="cbCuentaDestino" layoutX="136.0" layoutY="134.0" prefHeight="25.0" prefWidth="160.0" visible="false" />
-      <Label layoutX="374.0" layoutY="66.0" text="Monto:" />
+      <Label fx:id="lblMontoUsuario" layoutX="374.0" layoutY="66.0" text="Monto:" />
       <TextField fx:id="txtMonto" layoutX="429.0" layoutY="62.0" prefHeight="25.0" prefWidth="160.0" />
-      <Label layoutX="359.0" layoutY="101.0" text="Categoría:" />
+      <Label fx:id="lblCategoriaUsuario" layoutX="359.0" layoutY="101.0" text="Categoría:" />
       <ComboBox fx:id="cbCategoria" layoutX="429.0" layoutY="97.0" prefHeight="25.0" prefWidth="160.0" />
-      <Label layoutX="342.0" layoutY="136.0" text="Descripción:" />
+      <Label fx:id="lblDescripcionUsuario" layoutX="342.0" layoutY="136.0" text="Descripción:" />
       <TextArea fx:id="txtDescripcion" layoutX="429.0" layoutY="133.0" prefHeight="75.0" prefWidth="160.0" wrapText="true" />
       <Label layoutX="8.0" layoutY="230.0" style="-fx-font-weight: bold; -fx-font-size: 14;" text="Historial de Transacciones" />
-      <Button fx:id="btnTransaccion" layoutX="264.0" layoutY="211.0" mnemonicParsing="false" onAction="#onTransaccion" style="-fx-font-weight: bold; -fx-background-color: #4CAF50; -fx-text-fill: white;" text="Realizar Operación" />
+      <Button fx:id="btnTransaccion" layoutX="264.0" layoutY="211.0" mnemonicParsing="false" onAction="#onTransaccion" style="-fx-font-weight: bold; -fx-background-color: #4CAF50; -fx-text-fill: white;" text="Realizar Operación" visible="false" />
+      <Label fx:id="lblTransaccionesAdmin" layoutX="5.0" layoutY="26.0" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-text-fill: #d32f2f;" text="Transacciones Administrativas" visible="false" />
+      <Label fx:id="lblTipoAdmin" layoutX="46.0" layoutY="69.0" text="Tipo de Ajuste:" visible="false" />
+      <ComboBox fx:id="cbTipoAdmin" layoutX="136.0" layoutY="68.0" prefHeight="25.0" prefWidth="157.0" visible="false" />
+      <Label fx:id="lblCuentaAfectada" layoutX="40.0" layoutY="120.0" text="Cuenta Afectada:" visible="false" />
+      <ComboBox fx:id="cbCuentaAfectada" layoutX="136.0" layoutY="116.0" prefHeight="25.0" prefWidth="157.0" visible="false" />
+      <Label fx:id="lblMontoAdmin" layoutX="352.0" layoutY="69.0" text="Monto:" visible="false" />
+      <TextField fx:id="txtMontoAdmin" layoutX="398.0" layoutY="65.0" prefHeight="25.0" prefWidth="157.0" visible="false" />
+      <Label fx:id="lblJustificacion" layoutX="326.0" layoutY="117.0" text="Justificación:" visible="false" />
+      <TextArea fx:id="txtJustificacion" layoutX="398.0" layoutY="118.0" prefHeight="75.0" prefWidth="157.0" promptText="Explique el motivo..." visible="false" wrapText="true" />
+      <Button fx:id="btnCrearTransaccionAdmin" layoutX="247.0" layoutY="218.0" mnemonicParsing="false" onAction="#onCrearTransaccionAdmin" style="-fx-font-weight: bold; -fx-background-color: #d32f2f; -fx-text-fill: white;" text="Crear Transacción Admin" visible="false" />
       <TableView fx:id="tableTransacciones" layoutX="5.0" layoutY="251.0" prefHeight="245.0" prefWidth="641.0">
          <columns>
             <TableColumn fx:id="tcFecha" prefWidth="53.0" text="Fecha" />
