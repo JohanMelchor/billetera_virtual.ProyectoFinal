@@ -148,8 +148,8 @@ public class BilleteraVirtualAppViewController {
         btnCategorias.setVisible(true);
         btnReportes.setVisible(true);
         // Cambiar estilo para indicar que es admin
-        lblUsuarioActual.setStyle("-fx-text-fill: red;");
-        lblUsuarioActualA.setStyle("-fx-text-fill: red;");
+        lblUsuarioActual.setStyle("");
+        lblUsuarioActualA.setStyle("");
     }
     
     

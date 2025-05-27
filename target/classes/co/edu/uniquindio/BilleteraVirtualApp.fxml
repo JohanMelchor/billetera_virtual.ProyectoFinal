@@ -39,7 +39,7 @@
             <Button fx:id="btnCuentas" mnemonicParsing="false" onAction="#onCuentas" prefHeight="30.0" prefWidth="120.0" text="Cuentas" />
             <Button fx:id="btnTransacciones" mnemonicParsing="false" onAction="#onTransacciones" prefHeight="30.0" prefWidth="120.0" text="Transacciones" />
             <Button fx:id="btnPresupuestos" mnemonicParsing="false" onAction="#onPresupuestos" prefHeight="30.0" prefWidth="120.0" text="Presupuestos" />
-            <Button fx:id="btnReportes" mnemonicParsing="false" onAction="#onReportes" prefHeight="30.0" prefWidth="120.0" style="-fx-background-color: #2196F3; -fx-text-fill: white;" text="Reportes" />
+            <Button fx:id="btnReportes" mnemonicParsing="false" onAction="#onReportes" prefHeight="30.0" prefWidth="120.0" text="Reportes" />
             <Button fx:id="btnCategorias" mnemonicParsing="false" onAction="#onCategorias" prefHeight="30.0" prefWidth="120.0" text="Categorías" />
             <Button fx:id="btnEstadisticas" mnemonicParsing="false" onAction="#onEstadisticas" prefHeight="30.0" prefWidth="120.0" text="Estadísticas" />
             <Button fx:id="btnUsuarios" mnemonicParsing="false" onAction="#onUsuarios" prefHeight="30.0" prefWidth="120.0" text="Usuarios" />
