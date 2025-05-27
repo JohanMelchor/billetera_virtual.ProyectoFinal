@@ -5,8 +5,10 @@ import co.edu.uniquindio.mapping.dto.CategoriaDto;
 import co.edu.uniquindio.mapping.dto.CuentaDto;
 import co.edu.uniquindio.mapping.dto.PresupuestoDto;
 import co.edu.uniquindio.mapping.dto.TransaccionDto;
+import co.edu.uniquindio.service.IAlertaManager;
 import co.edu.uniquindio.Util.TransaccionConstantes;
 import co.edu.uniquindio.facade.BilleteraFacade;
+import co.edu.uniquindio.factory.AlertaManagerFactory;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,6 +26,7 @@ public class TransaccionViewController {
     private String idUsuarioActual;
     private boolean esAdmin = false;
     private BilleteraFacade facade;
+    private IAlertaManager alertaManager;
     
     @FXML
     private ComboBox<String> cbTipoTransaccion;
@@ -130,6 +133,7 @@ public class TransaccionViewController {
     @FXML
     void initialize() {
         facade = new BilleteraFacade();
+        alertaManager = AlertaManagerFactory.crearManagerCompleto();
         
         // Inicializar tipos de transacción
         cbTipoTransaccion.getItems().addAll(
@@ -443,7 +447,7 @@ public class TransaccionViewController {
     void onTransaccion(ActionEvent event) {
         String tipo = cbTipoTransaccion.getValue();
         if (tipo == null) {
-            mostrarMensaje("Error", "Seleccione un tipo de operación" , "Seleccione un tipo de operación", Alert.AlertType.ERROR);
+            mostrarAlerta("Error", "Seleccione un tipo de operación" , "Seleccione un tipo de operación", Alert.AlertType.ERROR);
             return;
         }
         
@@ -459,7 +463,7 @@ public class TransaccionViewController {
                 case TransaccionConstantes.TIPO_DEPOSITO_CUENTA:
                     CuentaDto cuentaDestino = cbCuentaDestino.getValue();
                     if (cuentaDestino == null) {
-                        mostrarMensaje("Error", "Seleccione cuenta destino", "Seleccione cuenta destino para la operación", Alert.AlertType.ERROR);
+                        mostrarAlerta("Error", "Seleccione cuenta destino", "Seleccione cuenta destino para la operación", Alert.AlertType.ERROR);
                         return;
                     }
                     resultado = facade.depositoCuenta(
@@ -470,7 +474,7 @@ public class TransaccionViewController {
                     CuentaDto cuentaOrigen = cbCuentaOrigen.getValue();
                     PresupuestoDto presupuestoDestino = cbPresupuesto.getValue();
                     if (cuentaOrigen == null || presupuestoDestino == null) {
-                        mostrarMensaje("Error", "Seleccione cuenta y presupuesto", "Seleccione cuenta y presupuesto", Alert.AlertType.ERROR);
+                        mostrarAlerta("Error", "Seleccione cuenta y presupuesto", "Seleccione cuenta y presupuesto", Alert.AlertType.ERROR);
                         return;
                     }
                     resultado = facade.depositoPresupuesto(
@@ -480,7 +484,7 @@ public class TransaccionViewController {
                 case TransaccionConstantes.TIPO_RETIRO_CUENTA:
                     cuentaOrigen = cbCuentaOrigen.getValue();
                     if (cuentaOrigen == null) {
-                        mostrarMensaje("Error","Seleccione cuenta origen",  "Seleccione cuenta de origen para la operacion", Alert.AlertType.ERROR);
+                        mostrarAlerta("Error","Seleccione cuenta origen",  "Seleccione cuenta de origen para la operacion", Alert.AlertType.ERROR);
                         return;
                     }
                     resultado = facade.retiroPorCuenta(
@@ -491,7 +495,7 @@ public class TransaccionViewController {
                     cuentaOrigen = cbCuentaOrigen.getValue();
                     PresupuestoDto presupuesto = cbPresupuesto.getValue();
                     if (cuentaOrigen == null || presupuesto == null) {
-                        mostrarMensaje("Error","Seleccione cuenta y presupuesto", "Seleccione cuenta y presupuesto", Alert.AlertType.ERROR);
+                        mostrarAlerta("Error","Seleccione cuenta y presupuesto", "Seleccione cuenta y presupuesto", Alert.AlertType.ERROR);
                         return;
                     }
                     resultado = facade.retiroPorPresupuesto(
@@ -502,11 +506,11 @@ public class TransaccionViewController {
                     CuentaDto origen = cbCuentaOrigen.getValue();
                     CuentaDto destino = cbCuentaDestino.getValue();
                     if (origen == null || destino == null) {
-                        mostrarMensaje("Error", "Seleccione cuentas de origen y destino", "Seleccione cuentas de origen y destino", Alert.AlertType.ERROR);
+                        mostrarAlerta("Error", "Seleccione cuentas de origen y destino", "Seleccione cuentas de origen y destino", Alert.AlertType.ERROR);
                         return;
                     }
                     if (origen.idCuenta().equals(destino.idCuenta())) {
-                        mostrarMensaje("Error", "Las cuentas de origen y destino no pueden ser iguales", "Seleccione cuentas diferentes", Alert.AlertType.ERROR);
+                        mostrarAlerta("Error", "Las cuentas de origen y destino no pueden ser iguales", "Seleccione cuentas diferentes", Alert.AlertType.ERROR);
                         return;
                     }
                     resultado = facade.realizarTransferencia(
@@ -519,15 +523,15 @@ public class TransaccionViewController {
             }
             
             if (resultado) {
-                mostrarMensaje("Éxito","Transacción realizada", "Operación realizada correctamente", Alert.AlertType.INFORMATION);
+                mostrarAlerta("Éxito","Transacción realizada", "Operación realizada correctamente", Alert.AlertType.INFORMATION);
                 cargarDatos();
                 limpiarCampos();
             } else {
-                mostrarMensaje("Error", "Error al realizar la operación", "No se pudo completar la operación", Alert.AlertType.ERROR);
+                mostrarAlerta("Error", "Error al realizar la operación", "No se pudo completar la operación", Alert.AlertType.ERROR);
             }
             
         } catch (NumberFormatException e) {
-            mostrarMensaje("Error","Error en el formato del monto",  "Ingrese un monto válido", Alert.AlertType.ERROR);
+            mostrarAlerta("Error","Error en el formato del monto",  "Ingrese un monto válido", Alert.AlertType.ERROR);
         }
     }
     
@@ -540,12 +544,8 @@ public class TransaccionViewController {
         txtDescripcion.setText("");
     }
     
-    private void mostrarMensaje(String titulo, String header, String contenido, Alert.AlertType alertType) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(titulo);
-        alert.setHeaderText(header);
-        alert.setContentText(contenido);
-        alert.showAndWait();
+    private void mostrarAlerta(String titulo, String header, String contenido, Alert.AlertType tipo) {
+        alertaManager.mostrarAlerta(titulo, header, contenido, tipo);
     }
 
     private void cargarPresupuestosDeCuenta(String idCuenta) {
@@ -564,7 +564,7 @@ public class TransaccionViewController {
         if (tipoTransaccion == null || cuentaAfectada == null || 
             montoStr == null || montoStr.isEmpty() || 
             justificacion == null || justificacion.trim().isEmpty()) {
-            mostrarMensaje("Error", "Campos incompletos", 
+            mostrarAlerta("Error", "Campos incompletos", 
                 TransaccionConstantes.ERROR_CAMPOS_VACIOS, Alert.AlertType.WARNING);
             return;
         }
@@ -573,7 +573,7 @@ public class TransaccionViewController {
             double monto = Double.parseDouble(montoStr);
             
             if (monto <= 0) {
-                mostrarMensaje("Error", "Monto inválido", 
+                mostrarAlerta("Error", "Monto inválido", 
                     "El monto debe ser mayor a cero", Alert.AlertType.ERROR);
                 return;
             }
@@ -606,17 +606,17 @@ public class TransaccionViewController {
             }
             
             if (resultado) {
-                mostrarMensaje("Éxito", "Transacción administrativa creada", 
+                mostrarAlerta("Éxito", "Transacción administrativa creada", 
                     TransaccionConstantes.EXITO_TRANSACCION_ADMIN, Alert.AlertType.INFORMATION);
                 cargarTodasTransacciones(); // Recargar tabla
                 limpiarCamposAdmin();
             } else {
-                mostrarMensaje("Error", "No se pudo crear la transacción", 
+                mostrarAlerta("Error", "No se pudo crear la transacción", 
                     TransaccionConstantes.ERROR_TRANSACCION_ADMIN, Alert.AlertType.ERROR);
             }
             
         } catch (NumberFormatException e) {
-            mostrarMensaje("Error", "Monto inválido", 
+            mostrarAlerta("Error", "Monto inválido", 
                 "Ingrese un monto válido (solo números)", Alert.AlertType.ERROR);
         }
     }

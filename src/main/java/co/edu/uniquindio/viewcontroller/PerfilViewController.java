@@ -4,7 +4,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import co.edu.uniquindio.facade.BilleteraFacade;
+import co.edu.uniquindio.factory.AlertaManagerFactory;
 import co.edu.uniquindio.mapping.dto.UsuarioDto;
+import co.edu.uniquindio.service.IAlertaManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -21,6 +23,7 @@ public class PerfilViewController {
     private UsuarioDto usuarioOriginal;
     private UsuarioDto usuarioCopia;
     private BilleteraFacade facade;
+    private IAlertaManager alertaManager;
 
     @FXML
     private ResourceBundle resources;
@@ -85,6 +88,7 @@ public class PerfilViewController {
     @FXML
     void initialize() {
         facade = new BilleteraFacade();
+        alertaManager = AlertaManagerFactory.crearManagerCompleto();
         if (txtPasswordVisible != null) {
             txtPasswordVisible.setVisible(false);
         }
@@ -229,11 +233,7 @@ public class PerfilViewController {
     }
 
     private void mostrarAlerta(String titulo, String header, String contenido, Alert.AlertType tipo) {
-        Alert alert = new Alert(tipo);
-        alert.setTitle(titulo);
-        alert.setHeaderText(header);
-        alert.setContentText(contenido);
-        alert.showAndWait();
+        alertaManager.mostrarAlerta(titulo, header, contenido, tipo);
     }
 
     private boolean validarContrasenas() {

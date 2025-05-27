@@ -2,7 +2,9 @@ package co.edu.uniquindio.viewcontroller;
 
 
 import co.edu.uniquindio.facade.BilleteraFacade;
+import co.edu.uniquindio.factory.AlertaManagerFactory;
 import co.edu.uniquindio.mapping.dto.UsuarioDto;
+import co.edu.uniquindio.service.IAlertaManager;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,6 +17,7 @@ public class UsuariosViewController {
     ObservableList<UsuarioDto> listaUsuarios = FXCollections.observableArrayList();
     UsuarioDto usuarioSeleccionado;
     private BilleteraFacade facade;
+    private IAlertaManager alertaManager;
 
     @FXML
     private Button btnActualizarUsuario;
@@ -85,6 +88,7 @@ public class UsuariosViewController {
     @FXML
     void initialize() {
         facade = new BilleteraFacade();
+        alertaManager = AlertaManagerFactory.crearManagerCompleto();
         initView();
     }
 
@@ -109,15 +113,15 @@ public class UsuariosViewController {
                 listaUsuarios.clear();  // Limpiar y volver a cargar
                 listaUsuarios.addAll(facade.obtenerUsuarios());
                 limpiarCampos();
-                mostrarMensaje("Usuario agregado", "Éxito", "El usuario fue agregado correctamente", Alert.AlertType.INFORMATION);
+                mostrarAlerta("Usuario agregado", "Éxito", "El usuario fue agregado correctamente", Alert.AlertType.INFORMATION);
         }
             else{
-                mostrarMensaje("Usuario no agregado", "Notificacion", "El cliente no fue agregado",
+                mostrarAlerta("Usuario no agregado", "Notificacion", "El cliente no fue agregado",
                         Alert.AlertType.ERROR);
             }
         }else{
             //volver esto constantes
-            mostrarMensaje("Campos incompletos", "Notificacion",
+            mostrarAlerta("Campos incompletos", "Notificacion",
                     "Los datos del formulario estan incompletos",Alert.AlertType.WARNING);
         }
     }
@@ -164,12 +168,12 @@ public class UsuariosViewController {
             if(eliminado){
                 listaUsuarios.remove(usuarioSeleccionado);
                 limpiarCampos();
-                mostrarMensaje("Usuario eliminado", "Éxito", "El usuario fue eliminado correctamente", Alert.AlertType.INFORMATION);
+                mostrarAlerta("Usuario eliminado", "Éxito", "El usuario fue eliminado correctamente", Alert.AlertType.INFORMATION);
             } else {
-                mostrarMensaje("No se pudo eliminar", "Error", "El usuario no fue eliminado", Alert.AlertType.ERROR);
+                mostrarAlerta("No se pudo eliminar", "Error", "El usuario no fue eliminado", Alert.AlertType.ERROR);
             }
         } else {
-            mostrarMensaje("Selección requerida", "Advertencia", "Debe seleccionar un usuario de la tabla", Alert.AlertType.WARNING);
+            mostrarAlerta("Selección requerida", "Advertencia", "Debe seleccionar un usuario de la tabla", Alert.AlertType.WARNING);
         }
     }
 
@@ -180,20 +184,16 @@ public class UsuariosViewController {
                 listaUsuarios.set(listaUsuarios.indexOf(usuarioSeleccionado),usuarioDto);
                 limpiarCampos();
             }else{
-                mostrarMensaje("No se pudo actualizar", "Error", "El usuario no fue actualizado", Alert.AlertType.ERROR);
+                mostrarAlerta("No se pudo actualizar", "Error", "El usuario no fue actualizado", Alert.AlertType.ERROR);
             }
         }else{
-            mostrarMensaje("Campos incompletos", "Notificacion",
+            mostrarAlerta("Campos incompletos", "Notificacion",
                     "Los datos del formulario estan incompletos",Alert.AlertType.WARNING);
         }
     }
 
-    private void mostrarMensaje(String titulo, String header, String contenido, Alert.AlertType alertType) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(titulo);
-        alert.setHeaderText(header);
-        alert.setContentText(contenido);
-        alert.showAndWait();
+    private void mostrarAlerta(String titulo, String header, String contenido, Alert.AlertType tipo) {
+        alertaManager.mostrarAlerta(titulo, header, contenido, tipo);
     }
 
     private void listenerSeleccion() {

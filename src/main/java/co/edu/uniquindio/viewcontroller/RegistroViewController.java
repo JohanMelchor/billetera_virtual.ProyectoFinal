@@ -5,7 +5,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import co.edu.uniquindio.facade.BilleteraFacade;
+import co.edu.uniquindio.factory.AlertaManagerFactory;
 import co.edu.uniquindio.mapping.dto.UsuarioDto;
+import co.edu.uniquindio.service.IAlertaManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,10 +20,7 @@ import javafx.stage.Stage;
 
 public class RegistroViewController {
     private BilleteraFacade facade;
-
-    public RegistroViewController() {
-        facade = new BilleteraFacade();
-    }
+    private IAlertaManager alertaManager;
 
     @FXML
     private ResourceBundle resources;
@@ -55,6 +54,12 @@ public class RegistroViewController {
 
     @FXML
     private TextField txtTelefono;
+
+    @FXML
+    void initialize() {
+        facade = new BilleteraFacade();
+        alertaManager = AlertaManagerFactory.crearManagerCompleto();
+    }
 
     @FXML
     void onRegister(ActionEvent event) {
@@ -96,11 +101,7 @@ public class RegistroViewController {
     }
 
     private void mostrarAlerta(String titulo, String header, String contenido, Alert.AlertType tipo) {
-        Alert alert = new Alert(tipo);
-        alert.setTitle(titulo);
-        alert.setHeaderText(header);
-        alert.setContentText(contenido);
-        alert.showAndWait();
+        alertaManager.mostrarAlerta(titulo, header, contenido, tipo);
     }
 
     @FXML

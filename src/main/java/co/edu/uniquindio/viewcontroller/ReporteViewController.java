@@ -11,9 +11,12 @@ import java.io.File;
 import java.time.LocalDate;
 
 import co.edu.uniquindio.facade.BilleteraFacade;
+import co.edu.uniquindio.factory.AlertaManagerFactory;
+import co.edu.uniquindio.service.IAlertaManager;
 
 public class ReporteViewController {
     private BilleteraFacade facade;
+    private IAlertaManager alertaManager;
     
     private String idUsuarioActual;
     private boolean esAdmin = false;
@@ -42,6 +45,7 @@ public class ReporteViewController {
     @FXML
     void initialize() {
         facade = new BilleteraFacade();
+        alertaManager = AlertaManagerFactory.crearManagerCompleto();
         inicializarComboFormato();
         
         txtInfo.setEditable(false);
@@ -168,11 +172,7 @@ public class ReporteViewController {
     }
     
     private void mostrarAlerta(String titulo, String header, String contenido, Alert.AlertType tipo) {
-        Alert alert = new Alert(tipo);
-        alert.setTitle(titulo);
-        alert.setHeaderText(header);
-        alert.setContentText(contenido);
-        alert.showAndWait();
+        alertaManager.mostrarAlerta(titulo, header, contenido, tipo);
     }
 
     private void inicializarComboFormato() {

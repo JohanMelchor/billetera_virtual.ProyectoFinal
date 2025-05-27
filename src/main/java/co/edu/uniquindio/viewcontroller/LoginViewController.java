@@ -12,9 +12,12 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 import co.edu.uniquindio.facade.BilleteraFacade;
+import co.edu.uniquindio.factory.AlertaManagerFactory;
+import co.edu.uniquindio.service.IAlertaManager;
 
 public class LoginViewController {
     private BilleteraFacade facade;
+    private IAlertaManager alertaManager;
     
     @FXML
     private TextField txtUsuario;
@@ -31,6 +34,7 @@ public class LoginViewController {
     @FXML
     void initialize() {
         facade = new BilleteraFacade();
+        alertaManager = AlertaManagerFactory.crearManagerCompleto();
     }
     
     @FXML
@@ -113,11 +117,7 @@ public class LoginViewController {
     }
     
     private void mostrarAlerta(String titulo, String header, String contenido, Alert.AlertType tipo) {
-        Alert alert = new Alert(tipo);
-        alert.setTitle(titulo);
-        alert.setHeaderText(header);
-        alert.setContentText(contenido);
-        alert.showAndWait();
+        alertaManager.mostrarAlerta(titulo, header, contenido, tipo);
     }
 
 }

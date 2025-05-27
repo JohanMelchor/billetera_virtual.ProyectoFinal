@@ -1,7 +1,9 @@
 package co.edu.uniquindio.viewcontroller;
 
 import co.edu.uniquindio.facade.BilleteraFacade;
+import co.edu.uniquindio.factory.AlertaManagerFactory;
 import co.edu.uniquindio.mapping.dto.CategoriaDto;
+import co.edu.uniquindio.service.IAlertaManager;
 import co.edu.uniquindio.Util.CategoriaConstantes;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -9,8 +11,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-
-import java.util.Optional;
 import java.util.UUID;
 
 public class CategoriaViewController {
@@ -18,6 +18,7 @@ public class CategoriaViewController {
     private ObservableList<CategoriaDto> listaCategorias = FXCollections.observableArrayList();
     private CategoriaDto categoriaSeleccionada;
     private BilleteraFacade facade;
+    private IAlertaManager alertaManager;
     
     @FXML
     private TextField txtIdCategoria;
@@ -55,6 +56,7 @@ public class CategoriaViewController {
     @FXML
     void initialize() {
         facade = new BilleteraFacade();
+        alertaManager = AlertaManagerFactory.crearManagerCompleto();
         
         initView();
         cargarCategorias();
@@ -103,7 +105,7 @@ public class CategoriaViewController {
             if(facade.agregarCategoria(nuevaCategoria)) {
                 cargarCategorias();
                 limpiarCampos();
-                mostrarMensaje(
+                mostrarAlerta(
                     "Categoría agregada", 
                     "Éxito", 
                     CategoriaConstantes.EXITO_AGREGAR_CATEGORIA, 
@@ -113,7 +115,7 @@ public class CategoriaViewController {
                 // Generar nuevo ID único para la siguiente categoría
                 generarIdUnico();
             } else {
-                mostrarMensaje(
+                mostrarAlerta(
                     "Error", 
                     "No se pudo agregar", 
                     CategoriaConstantes.ERROR_AGREGAR_CATEGORIA, 
@@ -121,7 +123,7 @@ public class CategoriaViewController {
                 );
             }
         } else {
-            mostrarMensaje(
+            mostrarAlerta(
                 "Campos incompletos", 
                 "Datos incompletos", 
                 CategoriaConstantes.ERROR_CAMPOS_VACIOS, 
@@ -138,7 +140,7 @@ public class CategoriaViewController {
                 if(facade.actualizarCategoria(categoriaActualizada)) {
                     cargarCategorias();
                     limpiarCampos();
-                    mostrarMensaje(
+                    mostrarAlerta(
                         "Categoría actualizada", 
                         "Éxito", 
                         CategoriaConstantes.EXITO_ACTUALIZAR_CATEGORIA, 
@@ -148,7 +150,7 @@ public class CategoriaViewController {
                     // Generar nuevo ID único para la siguiente categoría
                     generarIdUnico();
                 } else {
-                    mostrarMensaje(
+                    mostrarAlerta(
                         "Error", 
                         "No se pudo actualizar", 
                         CategoriaConstantes.ERROR_ACTUALIZAR_CATEGORIA, 
@@ -156,7 +158,7 @@ public class CategoriaViewController {
                     );
                 }
             } else {
-                mostrarMensaje(
+                mostrarAlerta(
                     "Campos incompletos", 
                     "Datos incompletos", 
                     CategoriaConstantes.ERROR_CAMPOS_VACIOS, 
@@ -164,7 +166,7 @@ public class CategoriaViewController {
                 );
             }
         } else {
-            mostrarMensaje(
+            mostrarAlerta(
                 "Selección requerida", 
                 "No hay selección", 
                 "Debe seleccionar una categoría para actualizar", 
@@ -176,16 +178,16 @@ public class CategoriaViewController {
     @FXML
     void onEliminarCategoria(ActionEvent event) {
         if(categoriaSeleccionada != null) {
-            boolean confirmacion = mostrarMensajeConfirmacion(
-                "¿Está seguro de eliminar la categoría seleccionada? " +
-                "Esto puede afectar a transacciones y presupuestos existentes."
+            boolean confirmacion = mostrarConfirmacion(
+                "Confirmación de eliminación", 
+                "¿Está seguro de que desea eliminar la categoría '" + categoriaSeleccionada.nombre() + "'?"
             );
             
             if(confirmacion) {
                 if(facade.eliminarCategoria(categoriaSeleccionada.idCategoria())) {
                     listaCategorias.remove(categoriaSeleccionada);
                     limpiarCampos();
-                    mostrarMensaje(
+                    mostrarAlerta(
                         "Categoría eliminada", 
                         "Éxito", 
                         CategoriaConstantes.EXITO_ELIMINAR_CATEGORIA, 
@@ -195,7 +197,7 @@ public class CategoriaViewController {
                     // Generar nuevo ID único para la siguiente categoría
                     generarIdUnico();
                 } else {
-                    mostrarMensaje(
+                    mostrarAlerta(
                         "Error", 
                         "No se pudo eliminar", 
                         CategoriaConstantes.ERROR_ELIMINAR_CATEGORIA, 
@@ -204,12 +206,10 @@ public class CategoriaViewController {
                 }
             }
         } else {
-            mostrarMensaje(
-                "Selección requerida", 
-                "No hay selección", 
-                "Debe seleccionar una categoría para eliminar", 
-                Alert.AlertType.WARNING
-            );
+            mostrarAlerta("Selección requerida", 
+                          "No hay selección", 
+                          "Debe seleccionar una categoría para eliminar", 
+                          Alert.AlertType.WARNING);
         }
     }
     
@@ -239,22 +239,12 @@ public class CategoriaViewController {
         txtIdCategoria.setText("CAT" + UUID.randomUUID().toString().substring(0, 8));
     }
     
-    private void mostrarMensaje(String titulo, String header, String contenido, Alert.AlertType alertType) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(titulo);
-        alert.setHeaderText(header);
-        alert.setContentText(contenido);
-        alert.showAndWait();
+    private void mostrarAlerta(String titulo, String header, String contenido, Alert.AlertType tipo) {
+        alertaManager.mostrarAlerta(titulo, header, contenido, tipo);
     }
     
-    private boolean mostrarMensajeConfirmacion(String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setHeaderText(null);
-        alert.setTitle("Confirmación");
-        alert.setContentText(mensaje);
-
-        Optional<ButtonType> action = alert.showAndWait();
-        return action.isPresent() && action.get() == ButtonType.OK;
+    private boolean mostrarConfirmacion(String titulo, String mensaje) {
+        return alertaManager.mostrarConfirmacion(titulo, mensaje);
     }
 
     @FXML

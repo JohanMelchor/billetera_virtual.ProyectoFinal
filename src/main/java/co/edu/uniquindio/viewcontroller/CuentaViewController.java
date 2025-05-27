@@ -2,8 +2,10 @@ package co.edu.uniquindio.viewcontroller;
 
 import co.edu.uniquindio.mapping.dto.CuentaDto;
 import co.edu.uniquindio.mapping.dto.UsuarioDto;
+import co.edu.uniquindio.service.IAlertaManager;
 import co.edu.uniquindio.Util.CuentaConstantes;
 import co.edu.uniquindio.facade.BilleteraFacade;
+import co.edu.uniquindio.factory.AlertaManagerFactory;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,7 +15,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.util.StringConverter;
 
-import java.util.Optional;
 import java.util.UUID;
 
 public class CuentaViewController {
@@ -23,6 +24,7 @@ public class CuentaViewController {
     private String idUsuarioActual;
     private boolean esAdmin;
     private BilleteraFacade facade;
+    private IAlertaManager alertaManager;
     
     @FXML
     private ComboBox<String> cbTipoCuenta;
@@ -87,6 +89,7 @@ public class CuentaViewController {
     @FXML
     void initialize() {
         facade = new BilleteraFacade();
+        alertaManager = AlertaManagerFactory.crearManagerCompleto();
         
         // Inicializar tipos de cuenta
         cbTipoCuenta.getItems().addAll(CuentaConstantes.TIPO_CUENTA_AHORRO, CuentaConstantes.TIPO_CUENTA_CORRIENTE);
@@ -197,14 +200,14 @@ public class CuentaViewController {
                     cargarCuentasUsuario();
                 }
                 limpiarCampos();
-                mostrarMensaje(
+                mostrarAlerta(
                     "Cuenta agregada", 
                     "Éxito", 
                     CuentaConstantes.EXITO_AGREGAR_CUENTA, 
                     Alert.AlertType.INFORMATION
                 );
             } else {
-                mostrarMensaje(
+                mostrarAlerta(
                     "Error", 
                     "No se pudo agregar", 
                     CuentaConstantes.ERROR_AGREGAR_CUENTA, 
@@ -212,7 +215,7 @@ public class CuentaViewController {
                 );
             }
         } else {
-            mostrarMensaje(
+            mostrarAlerta(
                 "Campos incompletos", 
                 "Datos incompletos", 
                 CuentaConstantes.ERROR_CAMPOS_VACIOS, 
@@ -233,14 +236,14 @@ public class CuentaViewController {
                         cargarCuentasUsuario();  // ← Para usuario: solo sus cuentas
                     }
                     limpiarCampos();
-                    mostrarMensaje(
+                    mostrarAlerta(
                         "Cuenta actualizada", 
                         "Éxito", 
                         CuentaConstantes.EXITO_ACTUALIZAR_CUENTA, 
                         Alert.AlertType.INFORMATION
                     );
                 } else {
-                    mostrarMensaje(
+                    mostrarAlerta(
                         "Error", 
                         "No se pudo actualizar", 
                         CuentaConstantes.ERROR_ACTUALIZAR_CUENTA, 
@@ -248,7 +251,7 @@ public class CuentaViewController {
                     );
                 }
             } else {
-                mostrarMensaje(
+                mostrarAlerta(
                     "Campos incompletos", 
                     "Datos incompletos", 
                     CuentaConstantes.ERROR_CAMPOS_VACIOS, 
@@ -256,7 +259,7 @@ public class CuentaViewController {
                 );
             }
         } else {
-            mostrarMensaje(
+            mostrarAlerta(
                 "Selección requerida", 
                 "No hay selección", 
                 "Debe seleccionar una cuenta para actualizar", 
@@ -268,8 +271,9 @@ public class CuentaViewController {
     @FXML
     void onEliminarCuenta(ActionEvent event) {
         if(cuentaSeleccionada != null) {
-            boolean confirmacion = mostrarMensajeConfirmacion(
-                "¿Está seguro de eliminar la cuenta seleccionada?"
+            boolean confirmacion = mostrarConfirmacion(
+                "Confirmación de eliminación", 
+                "¿Está seguro de que desea eliminar la cuenta seleccionada?"
             );
             
             if(confirmacion) {
@@ -280,14 +284,14 @@ public class CuentaViewController {
                         cargarCuentasUsuario();  // ← Para usuario: solo sus cuentas
                     }
                     limpiarCampos();
-                    mostrarMensaje(
+                    mostrarAlerta(
                         "Cuenta eliminada", 
                         "Éxito", 
                         CuentaConstantes.EXITO_ELIMINAR_CUENTA, 
                         Alert.AlertType.INFORMATION
                     );
                 } else {
-                    mostrarMensaje(
+                    mostrarAlerta(
                         "Error", 
                         "No se pudo eliminar", 
                         CuentaConstantes.ERROR_ELIMINAR_CUENTA, 
@@ -296,7 +300,7 @@ public class CuentaViewController {
                 }
             }
         } else {
-            mostrarMensaje(
+            mostrarAlerta(
                 "Selección requerida", 
                 "No hay selección", 
                 "Debe seleccionar una cuenta para eliminar", 
@@ -346,22 +350,12 @@ public class CuentaViewController {
         txtIdCuenta.setText("CUE" + UUID.randomUUID().toString().substring(0, 8));
     }
     
-    private void mostrarMensaje(String titulo, String header, String contenido, Alert.AlertType alertType) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(titulo);
-        alert.setHeaderText(header);
-        alert.setContentText(contenido);
-        alert.showAndWait();
+    private void mostrarAlerta(String titulo, String header, String contenido, Alert.AlertType tipo) {
+        alertaManager.mostrarAlerta(titulo, header, contenido, tipo);
     }
     
-    private boolean mostrarMensajeConfirmacion(String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setHeaderText(null);
-        alert.setTitle("Confirmación");
-        alert.setContentText(mensaje);
-
-        Optional<ButtonType> action = alert.showAndWait();
-        return action.isPresent() && action.get() == ButtonType.OK;
+    private boolean mostrarConfirmacion(String titulo, String mensaje) {
+        return alertaManager.mostrarConfirmacion(titulo, mensaje);
     }
 
     @FXML

@@ -1,7 +1,9 @@
 package co.edu.uniquindio.viewcontroller;
 
 import co.edu.uniquindio.facade.BilleteraFacade;
+import co.edu.uniquindio.factory.AlertaManagerFactory;
 import co.edu.uniquindio.mapping.dto.UsuarioDto;
+import co.edu.uniquindio.service.IAlertaManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,6 +21,7 @@ public class BilleteraVirtualAppViewController {
     private UsuarioDto usuarioActual;
     private boolean esAdmin;
     private BilleteraFacade facade;
+    private IAlertaManager alertaManager;
     
     @FXML
     private BorderPane mainBorderPane;
@@ -60,14 +63,14 @@ public class BilleteraVirtualAppViewController {
     void initialize() {
         try {
             facade = new BilleteraFacade();
+            alertaManager = AlertaManagerFactory.crearManagerCompleto();
     
             
             // Configuración inicial de la interfaz
             configurarVistaPredeterminada();
         } catch (Exception e) {
-            mostrarAlerta(Alert.AlertType.ERROR, "Error de inicialización", 
-                         "Error al cargar la aplicación", 
-                         "Ha ocurrido un error durante la inicialización: " + e.getMessage());
+            mostrarAlerta("Error de Inicialización", "Error al iniciar la aplicación", 
+                         "No se pudo inicializar la aplicación correctamente: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
     
@@ -210,8 +213,8 @@ public class BilleteraVirtualAppViewController {
             stage.setTitle("Billetera Virtual - Inicio de Sesión");
             stage.show();
         } catch (IOException e) {
-            mostrarAlerta(Alert.AlertType.ERROR, "Error", "Error al cargar la vista", 
-                         "No se pudo cargar la vista de login: " + e.getMessage());
+            mostrarAlerta("Error", "Error al cerrar sesión", 
+                         "No se pudo cerrar la sesión correctamente: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
     
@@ -225,8 +228,8 @@ public class BilleteraVirtualAppViewController {
             
             // Verificar que exista un usuario actual antes de inicializar controladores
             if (idUsuarioActual == null || idUsuarioActual.isEmpty()) {
-                mostrarAlerta(Alert.AlertType.ERROR, "Error", "Usuario no identificado", 
-                             "Debe iniciar sesión para acceder a esta funcionalidad");
+                mostrarAlerta("Error", "Usuario no identificado", 
+                             "Debe iniciar sesión para acceder a esta vista.", Alert.AlertType.WARNING);
                 return;
             }
             
@@ -250,31 +253,22 @@ public class BilleteraVirtualAppViewController {
             
             mainBorderPane.setCenter(vista);
         } catch (IOException e) {
-            mostrarAlerta(Alert.AlertType.ERROR, "Error", "Error al cargar la vista", 
-                         "No se pudo cargar la vista '" + FXML + "': " + e.getMessage());
+            mostrarAlerta("Error", "Error al cargar la vista", 
+                         "No se pudo cargar la vista: " + titulo, Alert.AlertType.ERROR);
         } catch (IllegalStateException e) {
-            mostrarAlerta(Alert.AlertType.ERROR, "Error", "Recurso no encontrado", 
-                         "No se encontró el archivo: " + FXML);
+            mostrarAlerta("Error", "Error de estado", 
+                         "La vista no se pudo cargar correctamente: " + e.getMessage(), Alert.AlertType.ERROR);
         } catch (Exception e) {
-            mostrarAlerta(Alert.AlertType.ERROR, "Error", "Error inesperado", 
-                         "Ha ocurrido un error al cargar la vista: " + e.getMessage());
+            mostrarAlerta("Error", "Error inesperado", 
+                         "Ha ocurrido un error inesperado: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
     
-    private void mostrarAlerta(Alert.AlertType tipo, String titulo, String header, String contenido) {
-        Alert alert = new Alert(tipo);
-        alert.setTitle(titulo);
-        alert.setHeaderText(header);
-        alert.setContentText(contenido);
-        alert.showAndWait();
+    private void mostrarAlerta(String titulo, String header, String contenido, Alert.AlertType tipo) {
+        alertaManager.mostrarAlerta(titulo, header, contenido, tipo);
     }
     
     private boolean mostrarConfirmacion(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        
-        return alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK;
+        return alertaManager.mostrarConfirmacion(titulo, mensaje);
     }
 }

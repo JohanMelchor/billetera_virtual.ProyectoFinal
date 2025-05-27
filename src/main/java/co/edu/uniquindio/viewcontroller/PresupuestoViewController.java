@@ -4,8 +4,10 @@ package co.edu.uniquindio.viewcontroller;
 import co.edu.uniquindio.mapping.dto.CategoriaDto;
 import co.edu.uniquindio.mapping.dto.CuentaDto;
 import co.edu.uniquindio.mapping.dto.PresupuestoDto;
+import co.edu.uniquindio.service.IAlertaManager;
 import co.edu.uniquindio.Util.PresupuestoConstantes;
 import co.edu.uniquindio.facade.BilleteraFacade;
+import co.edu.uniquindio.factory.AlertaManagerFactory;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,7 +16,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 
-import java.util.Optional;
 import java.util.UUID;
 
 public class PresupuestoViewController {
@@ -26,6 +27,7 @@ public class PresupuestoViewController {
     private String idUsuarioActual;
     private String idCuentaActual;
     private BilleteraFacade facade;
+    private IAlertaManager alertaManager;
     
     @FXML
     private TextField txtIdPresupuesto;
@@ -93,6 +95,7 @@ public class PresupuestoViewController {
     @FXML
     void initialize() {
         facade = new BilleteraFacade();
+        alertaManager = AlertaManagerFactory.crearManagerCompleto();
         
         initView();
     }
@@ -266,7 +269,7 @@ public class PresupuestoViewController {
     void onAgregarPresupuesto(ActionEvent event) {
         CuentaDto cuentaSeleccionada = cbCuenta.getValue();
         if (cuentaSeleccionada == null) {
-            mostrarMensaje("Error", "Selección requerida", "Debe seleccionar una cuenta", Alert.AlertType.WARNING);
+            mostrarAlerta("Error", "Selección requerida", "Debe seleccionar una cuenta", Alert.AlertType.WARNING);
             return;
         }
 
@@ -275,11 +278,11 @@ public class PresupuestoViewController {
             if (facade.agregarPresupuestoACuenta(cuentaSeleccionada.idCuenta(), nuevoPresupuesto)) {
                 // CAMBIO: Siempre cargar todos los presupuestos del usuario
                 cargarDatos(false);
-                mostrarMensaje("Éxito", "Presupuesto agregado", "Presupuesto creado correctamente", Alert.AlertType.INFORMATION);
+                mostrarAlerta("Éxito", "Presupuesto agregado", "Presupuesto creado correctamente", Alert.AlertType.INFORMATION);
                 limpiarCampos();
             } else {
                 double monto = Double.parseDouble(nuevoPresupuesto.montoAsignado());
-                mostrarMensaje("Error", "No se pudo agregar", 
+                mostrarAlerta("Error", "No se pudo agregar", 
                     "Saldo insuficiente o error al crear. Monto solicitado: " + monto, 
                     Alert.AlertType.ERROR);
             }
@@ -296,7 +299,7 @@ public class PresupuestoViewController {
                     // CAMBIO: Solo una llamada para recargar datos
                     cargarDatos(false);
                     limpiarCampos();
-                    mostrarMensaje(
+                    mostrarAlerta(
                         "Presupuesto actualizado", 
                         "Éxito", 
                         PresupuestoConstantes.EXITO_ACTUALIZAR_PRESUPUESTO, 
@@ -304,7 +307,7 @@ public class PresupuestoViewController {
                     );
                     generarIdUnico();
                 } else {
-                    mostrarMensaje(
+                    mostrarAlerta(
                         "Error", 
                         "No se pudo actualizar", 
                         PresupuestoConstantes.ERROR_ACTUALIZAR_PRESUPUESTO, 
@@ -312,7 +315,7 @@ public class PresupuestoViewController {
                     );
                 }
             } else {
-                mostrarMensaje(
+                mostrarAlerta(
                     "Campos incompletos", 
                     "Datos incompletos", 
                     PresupuestoConstantes.ERROR_CAMPOS_VACIOS, 
@@ -320,7 +323,7 @@ public class PresupuestoViewController {
                 );
             }
         } else {
-            mostrarMensaje(
+            mostrarAlerta(
                 "Selección requerida", 
                 "No hay selección", 
                 "Debe seleccionar un presupuesto para actualizar", 
@@ -332,8 +335,9 @@ public class PresupuestoViewController {
     @FXML
     void onEliminarPresupuesto(ActionEvent event) {
         if(presupuestoSeleccionado != null) {
-            boolean confirmacion = mostrarMensajeConfirmacion(
-                "¿Está seguro de eliminar el presupuesto seleccionado?"
+            boolean confirmacion = mostrarConfirmacion(
+                "Confirmación de eliminación", 
+                "¿Está seguro de que desea eliminar el presupuesto '" + presupuestoSeleccionado.nombre() + "'?"
             );
             
             if(confirmacion) {
@@ -341,7 +345,7 @@ public class PresupuestoViewController {
                     // CAMBIO: Solo cargar todos los presupuestos del usuario
                     cargarDatos(false);
                     limpiarCampos();
-                    mostrarMensaje(
+                    mostrarAlerta(
                         "Presupuesto eliminado", 
                         "Éxito", 
                         PresupuestoConstantes.EXITO_ELIMINAR_PRESUPUESTO, 
@@ -350,7 +354,7 @@ public class PresupuestoViewController {
                     generarIdUnico();
                     txtCuenta.setVisible(false);
                 } else {
-                    mostrarMensaje(
+                    mostrarAlerta(
                         "Error", 
                         "No se pudo eliminar", 
                         PresupuestoConstantes.ERROR_ELIMINAR_PRESUPUESTO, 
@@ -359,7 +363,7 @@ public class PresupuestoViewController {
                 }
             }
         } else {
-            mostrarMensaje(
+            mostrarAlerta(
                 "Selección requerida", 
                 "No hay selección", 
                 "Debe seleccionar un presupuesto para eliminar", 
@@ -405,7 +409,7 @@ public class PresupuestoViewController {
                 Double.parseDouble(saldo);
             }
         } catch (NumberFormatException e) {
-            mostrarMensaje("Error", "Valor inválido", "Los montos deben ser números válidos", Alert.AlertType.ERROR);
+            mostrarAlerta("Error", "Valor inválido", "Los montos deben ser números válidos", Alert.AlertType.ERROR);
             return null;
         }
         
@@ -458,22 +462,12 @@ public class PresupuestoViewController {
         txtIdPresupuesto.setText("PRE" + UUID.randomUUID().toString().substring(0, 8));
     }
     
-    private void mostrarMensaje(String titulo, String header, String contenido, Alert.AlertType alertType) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(titulo);
-        alert.setHeaderText(header);
-        alert.setContentText(contenido);
-        alert.showAndWait();
+    private void mostrarAlerta(String titulo, String header, String contenido, Alert.AlertType tipo) {
+        alertaManager.mostrarAlerta(titulo, header, contenido, tipo);
     }
     
-    private boolean mostrarMensajeConfirmacion(String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setHeaderText(null);
-        alert.setTitle("Confirmación");
-        alert.setContentText(mensaje);
-
-        Optional<ButtonType> action = alert.showAndWait();
-        return action.isPresent() && action.get() == ButtonType.OK;
+    private boolean mostrarConfirmacion(String titulo, String mensaje) {
+        return alertaManager.mostrarConfirmacion(titulo, mensaje);
     }
 
     @FXML

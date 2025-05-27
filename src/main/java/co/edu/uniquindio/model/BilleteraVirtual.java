@@ -712,7 +712,6 @@ public class BilleteraVirtual implements IUsuarioServices,IAdministradorServices
                 // Reporte de usuario
                 Usuario usuario = buscarUsuarioPorId(idUsuario);
                 if (usuario == null) {
-                    System.err.println("Usuario no encontrado: " + idUsuario);
                     return false;
                 }
                 
