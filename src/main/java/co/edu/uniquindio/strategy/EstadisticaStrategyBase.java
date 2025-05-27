@@ -5,7 +5,6 @@ import co.edu.uniquindio.mapping.dto.TransaccionDto;
 import co.edu.uniquindio.service.IEstadisticaStrategy;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.List;
 
 public abstract class EstadisticaStrategyBase implements IEstadisticaStrategy {
 

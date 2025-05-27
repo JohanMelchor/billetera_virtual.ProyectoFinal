@@ -4,6 +4,7 @@ import co.edu.uniquindio.mapping.dto.CuentaDto;
 import co.edu.uniquindio.model.Cuenta;
 import co.edu.uniquindio.model.Usuario;
 import co.edu.uniquindio.service.ICuentaMapping;
+import co.edu.uniquindio.state.TipoEstadoCuenta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,8 @@ public class CuentaMappingImpl implements ICuentaMapping {
                 cuenta.getNumeroCuenta(),
                 cuenta.getTipoCuenta(),
                 cuenta.getUsuario().getIdUsuario(),
-                cuenta.getSaldoTotal()
+                cuenta.getSaldoTotal(),
+                cuenta.getTipoEstado() // ¡NUEVO! - Incluir el estado
         );
     }
 
@@ -37,7 +39,7 @@ public class CuentaMappingImpl implements ICuentaMapping {
     public Cuenta cuentaDtoToCuenta(CuentaDto cuentaDto) {
         Usuario usuario = co.edu.uniquindio.factory.ModelFactory.getInstance().buscarUsuarioPorId(cuentaDto.idUsuario());
         
-        return Cuenta.builder()
+        Cuenta cuenta = Cuenta.builder()
                 .idCuenta(cuentaDto.idCuenta())
                 .nombreBanco(cuentaDto.nombreBanco())
                 .numeroCuenta(cuentaDto.numeroCuenta())
@@ -45,5 +47,26 @@ public class CuentaMappingImpl implements ICuentaMapping {
                 .usuario(usuario)
                 .saldoTotal(cuentaDto.saldoTotal())
                 .build();
+        
+        // ¡NUEVO! - Establecer el estado si está presente
+        if (cuentaDto.estado() != null) {
+            cuenta.cambiarEstado(cuentaDto.estado());
+        }
+        // Si no tiene estado, se queda con el estado por defecto (ACTIVA)
+        
+        return cuenta;
+    }
+    
+    // ¡NUEVO! - Método para crear CuentaDto con estado específico
+    public CuentaDto cuentaToCuentaDtoConEstado(Cuenta cuenta, TipoEstadoCuenta estadoEspecifico) {
+        return new CuentaDto(
+                cuenta.getIdCuenta(),
+                cuenta.getNombreBanco(),
+                cuenta.getNumeroCuenta(),
+                cuenta.getTipoCuenta(),
+                cuenta.getUsuario().getIdUsuario(),
+                cuenta.getSaldoTotal(),
+                estadoEspecifico
+        );
     }
 }

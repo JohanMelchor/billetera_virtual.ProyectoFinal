@@ -2,6 +2,7 @@ package co.edu.uniquindio.controller;
 
 import co.edu.uniquindio.factory.ModelFactory;
 import co.edu.uniquindio.mapping.dto.CuentaDto;
+import co.edu.uniquindio.state.TipoEstadoCuenta;
 
 import java.util.List;
 
@@ -34,5 +35,9 @@ public class CuentaController {
 
     public List<CuentaDto> obtenerTodasCuentas() {
         return modelFactory.obtenerTodasCuentas();
+    }
+
+    public boolean cambiarEstadoCuenta(String idCuenta, TipoEstadoCuenta nuevoEstado) {
+        return modelFactory.cambiarEstadoCuenta(idCuenta, nuevoEstado);
     }
 }

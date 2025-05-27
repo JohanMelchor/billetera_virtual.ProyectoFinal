@@ -3,9 +3,11 @@ package co.edu.uniquindio.viewcontroller;
 import co.edu.uniquindio.mapping.dto.CuentaDto;
 import co.edu.uniquindio.mapping.dto.UsuarioDto;
 import co.edu.uniquindio.service.IAlertaManager;
+import co.edu.uniquindio.state.TipoEstadoCuenta;
 import co.edu.uniquindio.Util.CuentaConstantes;
 import co.edu.uniquindio.facade.BilleteraFacade;
 import co.edu.uniquindio.factory.AlertaManagerFactory;
+import co.edu.uniquindio.factory.EstadoCuentaFactory;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,6 +33,9 @@ public class CuentaViewController {
     
     @FXML
     private TextField txtIdCuenta;
+
+    @FXML
+    private ComboBox<TipoEstadoCuenta> cbEstadoCuenta;
     
     @FXML
     private TextField txtNombreBanco;
@@ -93,7 +98,7 @@ public class CuentaViewController {
         
         // Inicializar tipos de cuenta
         cbTipoCuenta.getItems().addAll(CuentaConstantes.TIPO_CUENTA_AHORRO, CuentaConstantes.TIPO_CUENTA_CORRIENTE);
-        
+        cbEstadoCuenta.getItems().addAll(EstadoCuentaFactory.getEstadosDisponibles());
         initView();
     }
     
@@ -324,7 +329,8 @@ public class CuentaViewController {
             txtNumeroCuenta.getText(),
             cbTipoCuenta.getValue(),
             idUsuarioAsignado,
-            0.0
+            0.0,
+            cbEstadoCuenta.getValue()
         );
     }
     
@@ -362,5 +368,24 @@ public class CuentaViewController {
     void onLimpiarCampos(ActionEvent event) {
         limpiarCampos();
         tableCuentas.getSelectionModel().clearSelection();
+    }
+
+    @FXML
+    void onCambiarEstado(ActionEvent event) {
+        if (cuentaSeleccionada != null) {
+            TipoEstadoCuenta nuevoEstado = cbEstadoCuenta.getValue();
+            if (nuevoEstado != null) {
+                try {
+                    boolean cambiado = facade.cambiarEstadoCuenta(cuentaSeleccionada.idCuenta(), nuevoEstado);
+                    if (cambiado) {
+                        mostrarAlerta("Estado cambiado", "Éxito", 
+                            "Estado cambiado a " + nuevoEstado.getDescripcion(), 
+                            Alert.AlertType.INFORMATION);
+                    }
+                } catch (IllegalStateException e) {
+                    mostrarAlerta("Error", "Transición no permitida", e.getMessage(), Alert.AlertType.ERROR);
+                }
+            }
+        }
     }
 }

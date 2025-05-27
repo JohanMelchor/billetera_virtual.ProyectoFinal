@@ -7,6 +7,7 @@ import co.edu.uniquindio.controller.ReporteController;
 import co.edu.uniquindio.controller.TransaccionController;
 import co.edu.uniquindio.controller.CategoriaController;
 import co.edu.uniquindio.mapping.dto.UsuarioDto;
+import co.edu.uniquindio.state.TipoEstadoCuenta;
 import co.edu.uniquindio.mapping.dto.CuentaDto;
 import co.edu.uniquindio.mapping.dto.PresupuestoDto;
 import co.edu.uniquindio.mapping.dto.TransaccionDto;
@@ -135,6 +136,10 @@ public class BilleteraFacade {
 
     public List<CuentaDto> obtenerTodasCuentas() {
         return cuentaController.obtenerTodasCuentas();
+    }
+
+    public boolean cambiarEstadoCuenta(String idCuenta, TipoEstadoCuenta nuevoEstado) {
+        return cuentaController.cambiarEstadoCuenta(idCuenta, nuevoEstado);
     }
 
     // Métodos de la clase CategoriaController

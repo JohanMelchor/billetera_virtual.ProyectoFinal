@@ -1,7 +1,11 @@
 package co.edu.uniquindio.model;
 import java.util.List;
 
+import co.edu.uniquindio.factory.EstadoCuentaFactory;
 import co.edu.uniquindio.model.Builder.CuentaBuilder;
+import co.edu.uniquindio.service.IEstadoCuenta;
+import co.edu.uniquindio.state.ResultadoEstado;
+import co.edu.uniquindio.state.TipoEstadoCuenta;
 
 public class Cuenta {
     private String idCuenta;
@@ -11,8 +15,10 @@ public class Cuenta {
     private Usuario usuario;
     private List<Presupuesto> presupuestos;
     private Double saldoTotal;
+    private IEstadoCuenta estado;
 
     public Cuenta() {
+        this.estado = EstadoCuentaFactory.crearEstado(TipoEstadoCuenta.ACTIVA);
     }
 
     public Cuenta(String idCuenta, String nombreBanco, String numeroCuenta, String tipoCuenta, Usuario usuario,
@@ -24,6 +30,7 @@ public class Cuenta {
         this.usuario = usuario;
         this.presupuestos = presupuestos;
         this.saldoTotal = saldoTotal;
+        this.estado = EstadoCuentaFactory.crearEstado(TipoEstadoCuenta.ACTIVA);
     }
 
     public String getIdCuenta() {
@@ -83,34 +90,22 @@ public class Cuenta {
         this.saldoTotal = saldoTotal;
     }
 
+    public IEstadoCuenta getEstado() {
+        return estado;
+    }
+
+    public void setEstado(IEstadoCuenta estado) {
+        this.estado = estado;
+    }
+
+    public TipoEstadoCuenta getTipoEstado() {
+        return estado.getTipo();
+    }
 
     public static CuentaBuilder builder() {
         return new CuentaBuilder();
     }
 
-    public boolean agregarPresupuesto(Presupuesto presupuesto) {
-        if (presupuesto == null || presupuesto.getMontoAsignado() <= 0) {
-            return false;
-        }
-        
-        // Usar comparación con tolerancia para decimales
-        double diferencia = this.saldoTotal - presupuesto.getMontoAsignado();
-        if (diferencia >= -0.001) { // Tolerancia para errores de redondeo
-            this.saldoTotal -= presupuesto.getMontoAsignado();
-            this.presupuestos.add(presupuesto);
-            return true;
-        }
-        return false;
-    }
-
-    public boolean eliminarPresupuesto(String idPresupuesto) {
-        Presupuesto presupuesto = buscarPresupuestoPorId(idPresupuesto);
-        if (presupuesto != null) {
-            saldoTotal += presupuesto.getSaldo(); // Devolver saldo a la cuenta
-            return presupuestos.remove(presupuesto);
-        }
-        return false;
-    }
 
     public Presupuesto buscarPresupuestoPorId(String idPresupuesto) {
         return presupuestos.stream()
@@ -119,16 +114,80 @@ public class Cuenta {
                 .orElse(null);
     }
 
+    public void cambiarEstado(TipoEstadoCuenta nuevoTipo) {
+        if (estado.puedeTransicionarA(nuevoTipo)) {
+            this.estado = EstadoCuentaFactory.crearEstado(nuevoTipo);
+        } else {
+            throw new IllegalStateException("No se puede cambiar de " + estado.getTipo() + " a " + nuevoTipo);
+        }
+    }
+
+    public String getMensajeEstado() {
+        return estado.getMensajeEstado();
+    }
+
     public boolean reducirSaldoTotal(Double monto) {
-        if (saldoTotal >= monto) {
+        ResultadoEstado resultado = estado.puedeReducirSaldo(this, monto);
+        if (resultado.isPermitido()) {
             saldoTotal -= monto;
             return true;
         }
         return false;
     }
 
-    public void aumentarSaldoTotal(Double monto) {
-        saldoTotal += monto;
+    public boolean aumentarSaldoTotal(Double monto) {
+        ResultadoEstado resultado = estado.puedeAumentarSaldo(this, monto);
+        if (resultado.isPermitido()) {
+            saldoTotal += monto;
+            return true;
+        }
+        return false;
     }
+
+     public boolean agregarPresupuesto(Presupuesto presupuesto) {
+        ResultadoEstado resultado = estado.puedeAgregarPresupuesto(this, presupuesto);
+        if (resultado.isPermitido()) {
+            if (presupuesto == null || presupuesto.getMontoAsignado() <= 0) {
+                return false;
+            }
+            
+            double diferencia = this.saldoTotal - presupuesto.getMontoAsignado();
+            if (diferencia >= -0.001) {
+                this.saldoTotal -= presupuesto.getMontoAsignado();
+                this.presupuestos.add(presupuesto);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean eliminarPresupuesto(String idPresupuesto) {
+        ResultadoEstado resultado = estado.puedeEliminarPresupuesto(this, idPresupuesto);
+        if (resultado.isPermitido()) {
+            Presupuesto presupuesto = buscarPresupuestoPorId(idPresupuesto);
+            if (presupuesto != null) {
+                saldoTotal += presupuesto.getSaldo();
+                return presupuestos.remove(presupuesto);
+            }
+        }
+        return false;
+    }
+
+    public ResultadoEstado puedeRecibirTransferencia(Double monto) {
+        return estado.puedeRecibirTransferencia(this, monto);
+    }
+    
+    public ResultadoEstado puedeEnviarTransferencia(Double monto) {
+        return estado.puedeEnviarTransferencia(this, monto);
+    }
+    
+    public ResultadoEstado puedeRetirar(Double monto) {
+        return estado.puedeRetirar(this, monto);
+    }
+    
+    public ResultadoEstado puedeDepositar(Double monto) {
+        return estado.puedeDepositar(this, monto);
+    }
+
 
 }

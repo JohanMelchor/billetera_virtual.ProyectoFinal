@@ -4,6 +4,7 @@ import co.edu.uniquindio.mapping.dto.*;
 import co.edu.uniquindio.mapping.mappers.*;
 import co.edu.uniquindio.model.*;
 import co.edu.uniquindio.service.*;
+import co.edu.uniquindio.state.TipoEstadoCuenta;
 import co.edu.uniquindio.Util.DataUtil;
 import java.util.List;
 
@@ -278,6 +279,10 @@ public class ModelFactory implements IModelFactoryServices {
 
     public String[] obtenerTiposReporte() {
         return AdapterFactory.getTiposDisponibles();
+    }
+
+    public boolean cambiarEstadoCuenta(String idCuenta, TipoEstadoCuenta nuevoEstado) {
+        return billeteraVirtual.cambiarEstadoCuenta(idCuenta, nuevoEstado);
     }
 
 }

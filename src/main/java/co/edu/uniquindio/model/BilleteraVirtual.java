@@ -1,6 +1,8 @@
 package co.edu.uniquindio.model;
 
 import co.edu.uniquindio.service.*;
+import co.edu.uniquindio.state.ResultadoEstado;
+import co.edu.uniquindio.state.TipoEstadoCuenta;
 import co.edu.uniquindio.Util.TransaccionConstantes;
 import co.edu.uniquindio.factory.AdapterFactory;
 
@@ -249,12 +251,21 @@ public class BilleteraVirtual implements IUsuarioServices,IAdministradorServices
             return false;
         }
 
-        Cuenta cuentaOrigen = buscarCuentaPorId(idCuentaOrigen);
+       Cuenta cuentaOrigen = buscarCuentaPorId(idCuentaOrigen);
         Cuenta cuentaDestino = buscarCuentaPorId(idCuentaDestino);
         
-        // Validar cuentas y saldo suficiente
-        if (cuentaOrigen == null || cuentaDestino == null || 
-            !cuentaOrigen.reducirSaldoTotal(monto)) {
+        if (cuentaOrigen == null || cuentaDestino == null) return false;
+        
+        // ¡NUEVO! Verificar estados
+        ResultadoEstado puedeEnviar = cuentaOrigen.puedeEnviarTransferencia(monto);
+        if (!puedeEnviar.isPermitido()) {
+            System.out.println("❌ " + puedeEnviar.getMensaje());
+            return false;
+        }
+        
+        ResultadoEstado puedeRecibir = cuentaDestino.puedeRecibirTransferencia(monto);
+        if (!puedeRecibir.isPermitido()) {
+            System.out.println("❌ " + puedeRecibir.getMensaje());
             return false;
         }
         
@@ -738,6 +749,19 @@ public class BilleteraVirtual implements IUsuarioServices,IAdministradorServices
     public boolean generarReporteInteligente(String idUsuario, String rutaArchivo) {
         String tipo = AdapterFactory.determinarTipo(rutaArchivo);
         return generarReporteConAdapter(idUsuario, rutaArchivo, tipo);
+    }
+
+    public boolean cambiarEstadoCuenta(String idCuenta, TipoEstadoCuenta nuevoEstado) {
+        Cuenta cuenta = buscarCuentaPorId(idCuenta);
+        if (cuenta != null) {
+            try {
+                cuenta.cambiarEstado(nuevoEstado);
+                return true;
+            } catch (IllegalStateException e) {
+                return false;
+            }
+        }
+        return false;
     }
 
 
