@@ -32,10 +32,17 @@ public class ReporteViewController {
     
     @FXML
     private TextArea txtInfo;
+
+    @FXML
+    private ComboBox<String> cbFormato;
+
+    @FXML
+    private Label lblFormato;
     
     @FXML
     void initialize() {
         facade = new BilleteraFacade();
+        inicializarComboFormato();
         
         txtInfo.setEditable(false);
         txtInfo.setWrapText(true);
@@ -50,21 +57,28 @@ public class ReporteViewController {
             lblTitulo.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
             txtInfo.setText("REPORTE ADMINISTRATIVO\n\n" +
                 "Este reporte incluirá:\n" +
-                "• Estadísticas de todo el sistema\n" +
-                "• Lista de todos los usuarios\n" +
-                "• Todas las cuentas del sistema\n" +
-                "• Todas las transacciones\n" +
-                "• Análisis completo del sistema");
+                "• Estadísticas del sistema (usuarios, cuentas, transacciones)\n" +
+                "• Lista de usuarios con sus saldos\n" +
+                "• Resumen financiero del sistema\n" +
+                "• Análisis básico de actividad\n\n" +
+                "Formatos disponibles:\n" +
+                " •PDF: Resumen visual para presentar\n" +
+                " •Excel: Datos básicos para revisar\n" +
+                " •CSV: Información para exportar");
         } else {
             lblTitulo.setText("Generar Mi Reporte Personal");
             lblTitulo.setStyle("-fx-text-fill: blue; -fx-font-weight: bold;");
             txtInfo.setText("REPORTE PERSONAL\n\n" +
-                "Este reporte incluirá:\n" +
-                "• Tu información personal\n" +
-                "• Tus cuentas y saldos\n" +
-                "• Tus transacciones\n" +
-                "• Tu resumen financiero\n" +
-                "• Análisis de tus gastos por categoría");
+                        "Este reporte incluirá:\n" +
+                        "• Tu información personal\n" +
+                        "• Tus cuentas y saldos\n" +
+                        "• Tus transacciones\n" +
+                        "• Tu resumen financiero\n" +
+                        "• Análisis de tus gastos por categoría\n\n" +
+                        "Formatos disponibles:\n" +
+                        "• PDF: Resumen visual para presentar\n" +
+                        "• Excel: Datos básicos para revisar\n" +
+                        "• CSV: Información para exportar");
         }
     }
     
@@ -90,36 +104,66 @@ public class ReporteViewController {
             return;
         }
         
-        btnGenerar.setText("Generando...");
-        btnGenerar.setDisable(true);
-        
-        boolean resultado;
-        if (esAdmin) {
-            resultado = facade.generarReporteAdmin(txtRuta.getText());
-        } else {
-            resultado = facade.generarReporteUsuario(idUsuarioActual, txtRuta.getText());
+        // OBTENER FORMATO SELECCIONADO
+        String formato = ""; // Por defecto
+        if (cbFormato != null && cbFormato.getValue() != null) {
+            formato = cbFormato.getValue().toLowerCase();
+            String valorCompleto = cbFormato.getValue();
+            formato = valorCompleto.split(" - ")[0].toLowerCase();
         }
+
+        boolean resultado;
         
-        btnGenerar.setText("Generar Reporte PDF");
-        btnGenerar.setDisable(false);
+        if (esAdmin) {
+            resultado = facade.generarReporteAdminFormato(txtRuta.getText(), formato);
+        } else {
+            resultado = facade.generarReporteUsuarioFormato(idUsuarioActual, txtRuta.getText(), formato);
+        }
         
         if (resultado) {
             mostrarAlerta("Éxito", "Reporte generado", 
-                "El reporte se guardó exitosamente en:\n" + txtRuta.getText(), 
+                String.format("El reporte %s se guardó exitosamente en:\n%s", 
+                    formato.toUpperCase(), txtRuta.getText()), 
                 Alert.AlertType.INFORMATION);
         } else {
             mostrarAlerta("Error", "Error al generar reporte", 
                 "No se pudo generar el reporte. Verifique la ruta e intente nuevamente.", 
                 Alert.AlertType.ERROR);
         }
+
+        txtRuta.clear();
+        cbFormato.setValue(null);
     }
     
     private String generarNombreArchivo() {
         String fecha = LocalDate.now().toString();
+    
+        // Obtener formato seleccionado
+        String formato = ""; // Por defecto
+        if (cbFormato != null && cbFormato.getValue() != null) {
+            String valorCompleto = cbFormato.getValue();
+            formato = valorCompleto.split(" - ")[0].toLowerCase();
+        }
+        
+        // Determinar extensión
+        String extension;
+        switch (formato) {
+            case "excel":
+                extension = ".xlsx";
+                break;
+            case "csv":
+                extension = ".csv";
+                break;
+            default:
+                extension = ".pdf";
+                break;
+        }
+        
+        // Generar nombre según tipo de usuario
         if (esAdmin) {
-            return "Reporte_Administrativo_" + fecha + ".pdf";
+            return "Reporte_Administrativo_" + fecha + extension;
         } else {
-            return "Reporte_Personal_" + idUsuarioActual + "_" + fecha + ".pdf";
+            return "Reporte_Personal_" + idUsuarioActual + "_" + fecha + extension;
         }
     }
     
@@ -129,5 +173,50 @@ public class ReporteViewController {
         alert.setHeaderText(header);
         alert.setContentText(contenido);
         alert.showAndWait();
+    }
+
+    private void inicializarComboFormato() {
+        if (cbFormato != null) {
+            // Cargar formatos disponibles
+            String[] formatos = facade.getFormatosDisponibles();
+            
+            
+            cbFormato.getItems().addAll(formatos);
+            cbFormato.setValue(null);
+            
+            // Listener para actualizar la ruta cuando cambie el formato
+            cbFormato.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal != null && !txtRuta.getText().isEmpty()) {
+                    actualizarExtensionArchivo(newVal);
+                }
+            });
+        }
+    }
+
+    private void actualizarExtensionArchivo(String formatoCompleto) {
+        String rutaActual = txtRuta.getText();
+        if (!rutaActual.isEmpty()) {
+            // Quitar extensión actual
+            int ultimoPunto = rutaActual.lastIndexOf('.');
+            if (ultimoPunto > 0) {
+                rutaActual = rutaActual.substring(0, ultimoPunto);
+            }
+            // Obtener el formato completo (con descripción)
+            String formato = formatoCompleto.split(" - ")[0].toLowerCase();
+            // Agregar nueva extensión según formato
+            switch (formato.toLowerCase()) {
+                case "excel":
+                    rutaActual += ".xlsx";
+                    break;
+                case "csv":
+                    rutaActual += ".csv";
+                    break;
+                default:
+                    rutaActual += ".pdf";
+                    break;
+            }
+            
+            txtRuta.setText(rutaActual);
+        }
     }
 }

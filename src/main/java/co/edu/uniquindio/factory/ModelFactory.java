@@ -268,4 +268,16 @@ public class ModelFactory implements IModelFactoryServices {
         return billeteraVirtual.generarReporteAdmin(rutaArchivo);
     }
 
+    public boolean generarReporteConAdapter(String idUsuario, String rutaArchivo, String tipoReporte) {
+        return billeteraVirtual.generarReporteConAdapter(idUsuario, rutaArchivo, tipoReporte);
+    }
+
+    public boolean generarReporteInteligente(String idUsuario, String rutaArchivo) {
+        return billeteraVirtual.generarReporteInteligente(idUsuario, rutaArchivo);
+    }
+
+    public String[] obtenerTiposReporte() {
+        return AdapterFactory.getTiposDisponibles();
+    }
+
 }

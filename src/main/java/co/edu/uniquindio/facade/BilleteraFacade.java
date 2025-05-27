@@ -199,4 +199,20 @@ public class BilleteraFacade {
         return usuarioController.obtenerNombreAdmin(idAdmin);
     }
 
+    public boolean generarReporteUsuarioFormato(String idUsuario, String rutaArchivo, String formato) {
+        return reporteController.generarReporteConAdapter(idUsuario, rutaArchivo, formato);
+    }
+
+    public boolean generarReporteAdminFormato(String rutaArchivo, String formato) {
+        return reporteController.generarReporteConAdapter(null, rutaArchivo, formato);
+    }
+
+    public boolean generarReporteAuto(String idUsuario, String rutaArchivo) {
+        return reporteController.generarReporteInteligente(idUsuario, rutaArchivo);
+    }
+
+    public String[] getFormatosDisponibles() {
+        return reporteController.obtenerTiposReporte();
+    }
+
 }

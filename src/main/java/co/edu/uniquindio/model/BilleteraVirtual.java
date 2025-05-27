@@ -2,6 +2,7 @@ package co.edu.uniquindio.model;
 
 import co.edu.uniquindio.service.*;
 import co.edu.uniquindio.Util.TransaccionConstantes;
+import co.edu.uniquindio.factory.AdapterFactory;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -701,5 +702,44 @@ public class BilleteraVirtual implements IUsuarioServices,IAdministradorServices
             return false;
         }
     }
+
+    public boolean generarReporteConAdapter(String idUsuario, String rutaArchivo, String tipoReporte) {
+        try {
+            // Crear el adapter apropiado
+            IReporteAdapter adapter = AdapterFactory.crearAdapter(tipoReporte, this);
+            
+            if (idUsuario != null && !idUsuario.trim().isEmpty()) {
+                // Reporte de usuario
+                Usuario usuario = buscarUsuarioPorId(idUsuario);
+                if (usuario == null) {
+                    System.err.println("Usuario no encontrado: " + idUsuario);
+                    return false;
+                }
+                
+                List<Transaccion> transacciones = obtenerTransaccionesPorUsuario(idUsuario);
+                List<Cuenta> cuentas = obtenerCuentasPorUsuario(idUsuario);
+                
+                return adapter.generarReporteUsuario(rutaArchivo, usuario, transacciones, cuentas);
+                
+            } else {
+                // Reporte administrativo
+                List<Usuario> usuarios = getListaUsuarios();
+                List<Transaccion> transacciones = getListaTransacciones();
+                List<Cuenta> cuentas = getListaCuentas();
+                
+                return adapter.generarReporteAdmin(rutaArchivo, usuarios, transacciones, cuentas);
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean generarReporteInteligente(String idUsuario, String rutaArchivo) {
+        String tipo = AdapterFactory.determinarTipo(rutaArchivo);
+        return generarReporteConAdapter(idUsuario, rutaArchivo, tipo);
+    }
+
 
 }
