@@ -8,5 +8,5 @@ public record CuentaDto(String idCuenta,
                         String tipoCuenta,
                         String idUsuario,
                         Double saldoTotal,
-                        TipoEstadoCuenta estado) {
+                        TipoEstadoCuenta tipoEstado) {
 }

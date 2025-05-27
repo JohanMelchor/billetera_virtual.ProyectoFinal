@@ -102,6 +102,9 @@ public class CuentaViewController {
         // Inicializar tipos de cuenta
         cbTipoCuenta.getItems().addAll(CuentaConstantes.TIPO_CUENTA_AHORRO, CuentaConstantes.TIPO_CUENTA_CORRIENTE);
         cbEstadoCuenta.getItems().addAll(EstadoCuentaFactory.getEstadosDisponibles());
+        
+        // ✅ SIN LISTENER AUTOMÁTICO - Solo se cambia con botón Actualizar
+        
         initView();
     }
     
@@ -113,7 +116,6 @@ public class CuentaViewController {
             cargarTodasCuentas();
             habilitarVistasAdmin();
         } else {
-            this.idUsuarioActual = idUsuario;
             cargarCuentasUsuario();
             habilitarVistasUsuario();
         }
@@ -136,7 +138,6 @@ public class CuentaViewController {
                 return null;
             }
         });
-    
     }
     
     private void habilitarVistasUsuario() {
@@ -173,7 +174,8 @@ public class CuentaViewController {
         tcNumeroCuenta.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().numeroCuenta()));
         tcTipoCuenta.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().tipoCuenta()));
         tcSaldoTotal.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().saldoTotal())));
-        tcUsuarioAsignado.setCellValueFactory(cellData -> {String idUsuario = cellData.getValue().idUsuario();
+        tcUsuarioAsignado.setCellValueFactory(cellData -> {
+            String idUsuario = cellData.getValue().idUsuario();
             UsuarioDto usuario = facade.buscarUsuarioPorId(idUsuario);
             return new SimpleStringProperty(
                 usuario != null ? usuario.nombreCompleto() : ""
@@ -181,13 +183,21 @@ public class CuentaViewController {
         });
     }
     
+    // ✅ CORREGIDO: Listener más seguro
     private void listenerSeleccion() {
         tableCuentas.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            cuentaSeleccionada = newSelection;
-            mostrarInformacionCuenta(cuentaSeleccionada);
+            // ✅ NUEVO: Verificación adicional para evitar errores
+            if (newSelection != null && !listaCuentas.isEmpty()) {
+                cuentaSeleccionada = newSelection;
+                mostrarInformacionCuenta(cuentaSeleccionada);
+            } else {
+                cuentaSeleccionada = null;
+                limpiarCampos();
+            }
         });
     }
     
+    // ✅ CORREGIDO: Mostrar información incluyendo el estado actual
     private void mostrarInformacionCuenta(CuentaDto cuentaDto) {
         if(cuentaDto != null) {
             txtIdCuenta.setText(cuentaDto.idCuenta());
@@ -195,7 +205,18 @@ public class CuentaViewController {
             txtNumeroCuenta.setText(cuentaDto.numeroCuenta());
             cbTipoCuenta.setValue(cuentaDto.tipoCuenta());
             txtSaldo.setText(String.valueOf(cuentaDto.saldoTotal()));
-            cbUsuarios.setValue(facade.buscarUsuarioPorId(cuentaDto.idUsuario()));
+            
+            // ✅ Verificación de nulos
+            if (cbUsuarios != null) {
+                cbUsuarios.setValue(facade.buscarUsuarioPorId(cuentaDto.idUsuario()));
+            }
+            
+            // ✅ Mostrar el estado actual de la cuenta (solo mostrar, no cambiar automáticamente)
+            if (cuentaDto.tipoEstado() != null) {
+                cbEstadoCuenta.setValue(cuentaDto.tipoEstado());
+            } else {
+                cbEstadoCuenta.setValue(TipoEstadoCuenta.ACTIVA); // Estado por defecto
+            }
         }
     }
     
@@ -232,34 +253,66 @@ public class CuentaViewController {
                 Alert.AlertType.WARNING
             );
         }
-        cbEstadoCuenta.setValue(null);
     }
     
+    // ✅ MODIFICADO: Ahora incluye cambio de estado junto con actualização
     @FXML
     void onActualizarCuenta(ActionEvent event) {
         if(cuentaSeleccionada != null) {
             CuentaDto cuentaActualizada = crearCuentaDto();
             if(datosValidos(cuentaActualizada)) {
-                if(facade.actualizarCuenta(cuentaActualizada)) {
-                    if (esAdmin) {
-                        cargarTodasCuentas();    // ← Para admin: todas las cuentas
-                    } else {
-                        cargarCuentasUsuario();  // ← Para usuario: solo sus cuentas
+                
+                // ✅ NUEVO: Verificar si el estado cambió y aplicar el cambio
+                TipoEstadoCuenta estadoAnterior = cuentaSeleccionada.tipoEstado();
+                TipoEstadoCuenta estadoNuevo = cbEstadoCuenta.getValue();
+                
+                boolean cambioExitoso = true;
+                
+                // Primero cambiar el estado si es diferente
+                if (estadoNuevo != null && !estadoNuevo.equals(estadoAnterior)) {
+                    try {
+                        boolean estadoCambiado = facade.cambiarEstadoCuenta(cuentaSeleccionada.idCuenta(), estadoNuevo);
+                        if (!estadoCambiado) {
+                            mostrarAlerta("Error", "No se pudo cambiar estado", 
+                                "Error al cambiar el estado de la cuenta", Alert.AlertType.ERROR);
+                            cambioExitoso = false;
+                        }
+                    } catch (IllegalStateException e) {
+                        mostrarAlerta("Error", "Transición no permitida", 
+                            e.getMessage(), Alert.AlertType.ERROR);
+                        cambioExitoso = false;
                     }
-                    limpiarCampos();
-                    mostrarAlerta(
-                        "Cuenta actualizada", 
-                        "Éxito", 
-                        CuentaConstantes.EXITO_ACTUALIZAR_CUENTA, 
-                        Alert.AlertType.INFORMATION
-                    );
-                } else {
-                    mostrarAlerta(
-                        "Error", 
-                        "No se pudo actualizar", 
-                        CuentaConstantes.ERROR_ACTUALIZAR_CUENTA, 
-                        Alert.AlertType.ERROR
-                    );
+                }
+                
+                // Luego actualizar otros datos si el cambio de estado fue exitoso
+                if (cambioExitoso) {
+                    if(facade.actualizarCuenta(cuentaActualizada)) {
+                        if (esAdmin) {
+                            cargarTodasCuentas();
+                        } else {
+                            cargarCuentasUsuario();
+                        }
+                        limpiarCampos();
+                        
+                        String mensaje = CuentaConstantes.EXITO_ACTUALIZAR_CUENTA;
+                        if (estadoNuevo != null && !estadoNuevo.equals(estadoAnterior)) {
+                            mensaje += ". Estado cambiado a: " + estadoNuevo.getDescripcion();
+                        }
+                        
+                        mostrarAlerta(
+                            "Cuenta actualizada", 
+                            "Éxito", 
+                            mensaje, 
+                            Alert.AlertType.INFORMATION
+                        );
+                    } else {
+                        mostrarAlerta(
+                            "Error", 
+                            "No se pudo actualizar", 
+                            CuentaConstantes.ERROR_ACTUALIZAR_CUENTA, 
+                            Alert.AlertType.ERROR
+                        );
+                    }
                 }
             } else {
                 mostrarAlerta(
@@ -277,7 +330,6 @@ public class CuentaViewController {
                 Alert.AlertType.WARNING
             );
         }
-        cbEstadoCuenta.setValue(null);
     }
     
     @FXML
@@ -291,9 +343,9 @@ public class CuentaViewController {
             if(confirmacion) {
                 if(facade.eliminarCuenta(cuentaSeleccionada.idCuenta())) {
                     if (esAdmin) {
-                        cargarTodasCuentas();    // ← Para admin: todas las cuentas
+                        cargarTodasCuentas();
                     } else {
-                        cargarCuentasUsuario();  // ← Para usuario: solo sus cuentas
+                        cargarCuentasUsuario();
                     }
                     limpiarCampos();
                     mostrarAlerta(
@@ -319,26 +371,44 @@ public class CuentaViewController {
                 Alert.AlertType.WARNING
             );
         }
-        cbEstadoCuenta.setValue(null);
     }
     
+    // ✅ CORREGIDO: Preservar saldo actual en lugar de usar 0.0
     private CuentaDto crearCuentaDto() {
         String idUsuarioAsignado;
         if (esAdmin) {
             UsuarioDto usuarioSeleccionado = cbUsuarios.getValue();
-                idUsuarioAsignado = usuarioSeleccionado != null ? 
+            idUsuarioAsignado = usuarioSeleccionado != null ? 
                 usuarioSeleccionado.idUsuario() : null;
         } else {
             idUsuarioAsignado = idUsuarioActual;
         }
+        
+        // ✅ Preservar el saldo actual
+        Double saldoActual = 0.0;
+        if (cuentaSeleccionada != null) {
+            // Para actualizaciones: mantener saldo existente
+            saldoActual = cuentaSeleccionada.saldoTotal();
+        } else {
+            // Para cuentas nuevas: tomar del campo de texto
+            try {
+                String saldoTexto = txtSaldo.getText();
+                if (saldoTexto != null && !saldoTexto.trim().isEmpty()) {
+                    saldoActual = Double.parseDouble(saldoTexto);
+                }
+            } catch (NumberFormatException e) {
+                saldoActual = 0.0; // Valor por defecto para cuentas nuevas
+            }
+        }
+        
         return new CuentaDto(
             txtIdCuenta.getText(),
             txtNombreBanco.getText(),
             txtNumeroCuenta.getText(),
             cbTipoCuenta.getValue(),
             idUsuarioAsignado,
-            0.0,
-            cbEstadoCuenta.getValue()
+            saldoActual,  // ✅ Usar el saldo correcto
+            cbEstadoCuenta.getValue() // Puede ser null, se usará ACTIVA por defecto
         );
     }
     
@@ -348,6 +418,7 @@ public class CuentaViewController {
                cuentaDto.numeroCuenta() != null && !cuentaDto.numeroCuenta().isEmpty() &&
                cuentaDto.tipoCuenta() != null && !cuentaDto.tipoCuenta().isEmpty() &&
                cuentaDto.idUsuario() != null && !cuentaDto.idUsuario().isEmpty();
+               // ✅ NOTA: tipoEstado puede ser null (se usará ACTIVA por defecto)
     }
     
     private void limpiarCampos() {
@@ -357,7 +428,9 @@ public class CuentaViewController {
         cbTipoCuenta.setValue(null);
         cuentaSeleccionada = null;
         txtSaldo.setText("");
-        cbUsuarios.setValue(null);
+        if (cbUsuarios != null) {
+            cbUsuarios.setValue(null);
+        }
         cbEstadoCuenta.setValue(null);
     }
     
@@ -377,25 +450,5 @@ public class CuentaViewController {
     void onLimpiarCampos(ActionEvent event) {
         limpiarCampos();
         tableCuentas.getSelectionModel().clearSelection();
-        cbEstadoCuenta.setValue(null);
-    }
-
-    @FXML
-    void onCambiarEstado(ActionEvent event) {
-        if (cuentaSeleccionada != null) {
-            TipoEstadoCuenta nuevoEstado = cbEstadoCuenta.getValue();
-            if (nuevoEstado != null) {
-                try {
-                    boolean cambiado = facade.cambiarEstadoCuenta(cuentaSeleccionada.idCuenta(), nuevoEstado);
-                    if (cambiado) {
-                        mostrarAlerta("Estado cambiado", "Éxito", 
-                            "Estado cambiado a " + nuevoEstado.getDescripcion(), 
-                            Alert.AlertType.INFORMATION);
-                    }
-                } catch (IllegalStateException e) {
-                    mostrarAlerta("Error", "Transición no permitida", e.getMessage(), Alert.AlertType.ERROR);
-                }
-            }
-        }
     }
 }

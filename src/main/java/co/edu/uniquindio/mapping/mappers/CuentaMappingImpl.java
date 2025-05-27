@@ -48,16 +48,14 @@ public class CuentaMappingImpl implements ICuentaMapping {
                 .saldoTotal(cuentaDto.saldoTotal())
                 .build();
         
-        // ¡NUEVO! - Establecer el estado si está presente
-        if (cuentaDto.estado() != null) {
-            cuenta.cambiarEstado(cuentaDto.estado());
-        }
+        if (cuentaDto.tipoEstado() != null) {
+        cuenta.cambiarEstado(cuentaDto.tipoEstado());
+    }
         // Si no tiene estado, se queda con el estado por defecto (ACTIVA)
         
         return cuenta;
     }
-    
-    // ¡NUEVO! - Método para crear CuentaDto con estado específico
+
     public CuentaDto cuentaToCuentaDtoConEstado(Cuenta cuenta, TipoEstadoCuenta estadoEspecifico) {
         return new CuentaDto(
                 cuenta.getIdCuenta(),

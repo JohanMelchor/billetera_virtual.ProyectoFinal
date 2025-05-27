@@ -246,17 +246,16 @@ public class BilleteraVirtual implements IUsuarioServices,IAdministradorServices
     @Override
     public boolean realizarTransferencia(String idCuentaOrigen, String idCuentaDestino, 
                                     Double monto, String descripcion, String idCategoria) {
-        // Validar que no sea la misma cuenta
         if (idCuentaOrigen.equals(idCuentaDestino)) {
             return false;
         }
 
-       Cuenta cuentaOrigen = buscarCuentaPorId(idCuentaOrigen);
+        Cuenta cuentaOrigen = buscarCuentaPorId(idCuentaOrigen);
         Cuenta cuentaDestino = buscarCuentaPorId(idCuentaDestino);
         
         if (cuentaOrigen == null || cuentaDestino == null) return false;
         
-        // ¡NUEVO! Verificar estados
+        // ✅ Verificar estados
         ResultadoEstado puedeEnviar = cuentaOrigen.puedeEnviarTransferencia(monto);
         if (!puedeEnviar.isPermitido()) {
             System.out.println("❌ " + puedeEnviar.getMensaje());
@@ -269,8 +268,18 @@ public class BilleteraVirtual implements IUsuarioServices,IAdministradorServices
             return false;
         }
         
-        // Realizar transferencia
-        cuentaDestino.aumentarSaldoTotal(monto);
+        // ✅ NUEVO: Realizar transferencia respetando estados
+        if (!cuentaOrigen.reducirSaldoTotal(monto)) {
+            System.out.println("❌ No se pudo reducir saldo de cuenta origen");
+            return false;
+        }
+        
+        if (!cuentaDestino.aumentarSaldoTotal(monto)) {
+            System.out.println("❌ No se pudo aumentar saldo de cuenta destino");
+            // ✅ Revertir la operación
+            cuentaOrigen.aumentarSaldoTotal(monto);
+            return false;
+        }
         
         // Registrar transacción
         Transaccion transaccion = new Transaccion(
@@ -465,7 +474,10 @@ public class BilleteraVirtual implements IUsuarioServices,IAdministradorServices
         Cuenta cuenta = buscarCuentaPorId(idCuenta);
         if (cuenta == null) return false;
         
-        cuenta.aumentarSaldoTotal(monto);
+        // ✅ NUEVO: Verificar si el estado permite la operación
+        if (!cuenta.aumentarSaldoTotal(monto)) {
+            return false;
+        }
         
         Transaccion transaccion = new Transaccion(
             UUID.randomUUID().toString(),
@@ -490,12 +502,16 @@ public class BilleteraVirtual implements IUsuarioServices,IAdministradorServices
         Presupuesto presupuesto = buscarPresupuestoPorId(idPresupuesto);
         if (presupuesto == null) return false;
         
-        // Validar que la cuenta tenga saldo suficiente
-        if (cuenta.getSaldoTotal() < monto) return false;
+        // ✅ NUEVO: Verificar estados antes de operar
+        if (!cuenta.reducirSaldoTotal(monto)) {
+            return false;
+        }
         
-        // Realizar operaciones
-        cuenta.reducirSaldoTotal(monto);  // Restar de la cuenta
-        presupuesto.aumentarSaldo(monto); // Añadir al presupuesto
+        if (!presupuesto.aumentarSaldo(monto)) {
+            // ✅ Revertir la operación
+            cuenta.aumentarSaldoTotal(monto);
+            return false;
+        }
         
         Transaccion transaccion = new Transaccion(
             UUID.randomUUID().toString(),

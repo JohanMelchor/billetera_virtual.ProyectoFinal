@@ -86,8 +86,9 @@ public class Presupuesto {
         Cuenta = cuenta;
     }
 
-    public void aumentarSaldo(Double monto) {
+    public boolean aumentarSaldo(Double monto) {
         this.saldo += monto;
+        return true;
     }
 
     public boolean reducirSaldo(Double monto) {
