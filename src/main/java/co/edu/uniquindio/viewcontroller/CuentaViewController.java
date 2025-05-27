@@ -74,6 +74,9 @@ public class CuentaViewController {
     private HBox hbUsuario;
 
     @FXML
+    private HBox hbEstado;
+
+    @FXML
     private TableColumn<CuentaDto, String> tcUsuarioAsignado;
     
     @FXML
@@ -120,6 +123,7 @@ public class CuentaViewController {
 
     private void habilitarVistasAdmin() {
         hbUsuario.setVisible(true);
+        hbEstado.setVisible(true);
         cbUsuarios.setItems(FXCollections.observableArrayList(facade.obtenerUsuarios()));
         cbUsuarios.setConverter(new StringConverter<UsuarioDto>() {
             @Override
@@ -137,6 +141,7 @@ public class CuentaViewController {
     
     private void habilitarVistasUsuario() {
         hbUsuario.setVisible(false);
+        hbEstado.setVisible(false);
         tcUsuarioAsignado.setVisible(false);
     }
 

@@ -65,6 +65,12 @@
                               <ComboBox fx:id="cbUsuarios" prefHeight="25.0" prefWidth="180.0" />
                            </children>
                         </HBox>
+                        <HBox fx:id="hbEstado" alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                           <children>
+                              <Label prefWidth="100.0" text="Estado:" />
+                              <ComboBox fx:id="cbEstadoCuenta" prefHeight="25.0" prefWidth="180.0" />
+                           </children>
+                        </HBox>
                         <HBox alignment="CENTER" prefHeight="40.0" prefWidth="200.0" spacing="20.0">
                            <children>
                               <Button fx:id="btnAgregarCuenta" mnemonicParsing="false" onAction="#onAgregarCuenta" text="Agregar" />
