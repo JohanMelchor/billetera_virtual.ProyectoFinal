@@ -4,7 +4,7 @@ import co.edu.uniquindio.facade.BilleteraFacade;
 import co.edu.uniquindio.factory.AlertaManagerFactory;
 import co.edu.uniquindio.mapping.dto.CategoriaDto;
 import co.edu.uniquindio.service.IAlertaManager;
-import co.edu.uniquindio.Util.CategoriaConstantes;
+import co.edu.uniquindio.template.CategoriaCrudTemplate;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,6 +18,7 @@ public class CategoriaViewController {
     private ObservableList<CategoriaDto> listaCategorias = FXCollections.observableArrayList();
     private CategoriaDto categoriaSeleccionada;
     private BilleteraFacade facade;
+    private CategoriaCrudTemplate crudTemplate;
     private IAlertaManager alertaManager;
     
     @FXML
@@ -57,6 +58,12 @@ public class CategoriaViewController {
     void initialize() {
         facade = new BilleteraFacade();
         alertaManager = AlertaManagerFactory.crearManagerCompleto();
+
+        crudTemplate = new CategoriaCrudTemplate(
+            facade, alertaManager,
+            txtIdCategoria, txtNombre, txtDescripcion,
+            tableCategorias, this::cargarCategorias
+        );
         
         initView();
         cargarCategorias();
@@ -86,6 +93,7 @@ public class CategoriaViewController {
     private void listenerSeleccion() {
         tableCategorias.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             categoriaSeleccionada = newSelection;
+            crudTemplate.setCategoriaSeleccionada(newSelection);
             mostrarInformacionCategoria(categoriaSeleccionada);
         });
     }
@@ -98,135 +106,9 @@ public class CategoriaViewController {
         }
     }
     
-    @FXML
-    void onAgregarCategoria(ActionEvent event) {
-        CategoriaDto nuevaCategoria = crearCategoriaDto();
-        if(datosValidos(nuevaCategoria)) {
-            if(facade.agregarCategoria(nuevaCategoria)) {
-                cargarCategorias();
-                limpiarCampos();
-                mostrarAlerta(
-                    "Categoría agregada", 
-                    "Éxito", 
-                    CategoriaConstantes.EXITO_AGREGAR_CATEGORIA, 
-                    Alert.AlertType.INFORMATION
-                );
-                
-                // Generar nuevo ID único para la siguiente categoría
-                generarIdUnico();
-            } else {
-                mostrarAlerta(
-                    "Error", 
-                    "No se pudo agregar", 
-                    CategoriaConstantes.ERROR_AGREGAR_CATEGORIA, 
-                    Alert.AlertType.ERROR
-                );
-            }
-        } else {
-            mostrarAlerta(
-                "Campos incompletos", 
-                "Datos incompletos", 
-                CategoriaConstantes.ERROR_CAMPOS_VACIOS, 
-                Alert.AlertType.WARNING
-            );
-        }
-    }
-    
-    @FXML
-    void onActualizarCategoria(ActionEvent event) {
-        if(categoriaSeleccionada != null) {
-            CategoriaDto categoriaActualizada = crearCategoriaDto();
-            if(datosValidos(categoriaActualizada)) {
-                if(facade.actualizarCategoria(categoriaActualizada)) {
-                    cargarCategorias();
-                    limpiarCampos();
-                    mostrarAlerta(
-                        "Categoría actualizada", 
-                        "Éxito", 
-                        CategoriaConstantes.EXITO_ACTUALIZAR_CATEGORIA, 
-                        Alert.AlertType.INFORMATION
-                    );
-                    
-                    // Generar nuevo ID único para la siguiente categoría
-                    generarIdUnico();
-                } else {
-                    mostrarAlerta(
-                        "Error", 
-                        "No se pudo actualizar", 
-                        CategoriaConstantes.ERROR_ACTUALIZAR_CATEGORIA, 
-                        Alert.AlertType.ERROR
-                    );
-                }
-            } else {
-                mostrarAlerta(
-                    "Campos incompletos", 
-                    "Datos incompletos", 
-                    CategoriaConstantes.ERROR_CAMPOS_VACIOS, 
-                    Alert.AlertType.WARNING
-                );
-            }
-        } else {
-            mostrarAlerta(
-                "Selección requerida", 
-                "No hay selección", 
-                "Debe seleccionar una categoría para actualizar", 
-                Alert.AlertType.WARNING
-            );
-        }
-    }
-    
-    @FXML
-    void onEliminarCategoria(ActionEvent event) {
-        if(categoriaSeleccionada != null) {
-            boolean confirmacion = mostrarConfirmacion(
-                "Confirmación de eliminación", 
-                "¿Está seguro de que desea eliminar la categoría '" + categoriaSeleccionada.nombre() + "'?"
-            );
-            
-            if(confirmacion) {
-                if(facade.eliminarCategoria(categoriaSeleccionada.idCategoria())) {
-                    listaCategorias.remove(categoriaSeleccionada);
-                    limpiarCampos();
-                    mostrarAlerta(
-                        "Categoría eliminada", 
-                        "Éxito", 
-                        CategoriaConstantes.EXITO_ELIMINAR_CATEGORIA, 
-                        Alert.AlertType.INFORMATION
-                    );
-                    
-                    // Generar nuevo ID único para la siguiente categoría
-                    generarIdUnico();
-                } else {
-                    mostrarAlerta(
-                        "Error", 
-                        "No se pudo eliminar", 
-                        CategoriaConstantes.ERROR_ELIMINAR_CATEGORIA, 
-                        Alert.AlertType.ERROR
-                    );
-                }
-            }
-        } else {
-            mostrarAlerta("Selección requerida", 
-                          "No hay selección", 
-                          "Debe seleccionar una categoría para eliminar", 
-                          Alert.AlertType.WARNING);
-        }
-    }
-    
-    private CategoriaDto crearCategoriaDto() {
-        String descripcion = txtDescripcion.getText() != null ? txtDescripcion.getText() : "";
-        
-        return new CategoriaDto(
-            txtIdCategoria.getText(),
-            txtNombre.getText(),
-            descripcion
-        );
-    }
-    
-    private boolean datosValidos(CategoriaDto categoriaDto) {
-        return categoriaDto.idCategoria() != null && !categoriaDto.idCategoria().isEmpty() &&
-               categoriaDto.nombre() != null && !categoriaDto.nombre().isEmpty();
-    }
+    @FXML void onAgregarCategoria(ActionEvent event) { crudTemplate.agregar(); }
+    @FXML void onActualizarCategoria(ActionEvent event) { crudTemplate.actualizar(); }
+    @FXML void onEliminarCategoria(ActionEvent event) { crudTemplate.eliminar(); }
     
     private void limpiarCampos() {
         generarIdUnico();
@@ -237,14 +119,6 @@ public class CategoriaViewController {
     
     private void generarIdUnico() {
         txtIdCategoria.setText("CAT" + UUID.randomUUID().toString().substring(0, 8));
-    }
-    
-    private void mostrarAlerta(String titulo, String header, String contenido, Alert.AlertType tipo) {
-        alertaManager.mostrarAlerta(titulo, header, contenido, tipo);
-    }
-    
-    private boolean mostrarConfirmacion(String titulo, String mensaje) {
-        return alertaManager.mostrarConfirmacion(titulo, mensaje);
     }
 
     @FXML
