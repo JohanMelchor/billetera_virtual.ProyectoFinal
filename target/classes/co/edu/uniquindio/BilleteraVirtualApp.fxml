@@ -9,16 +9,16 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="mainBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.viewcontroller.BilleteraVirtualAppViewController" style="-fx-background-color: #f5f5f5;">
+<BorderPane fx:id="mainBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.viewcontroller.BilleteraVirtualAppViewController">
    <top>
-      <HBox alignment="CENTER" prefHeight="70.0" prefWidth="800.0" spacing="20.0" style="-fx-background-color: #1a2b4f; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 3);" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER" prefHeight="0.0" prefWidth="800.0" spacing="20.0" style="-fx-background-color: #f0f0f0;" BorderPane.alignment="CENTER">
          <children>
-            <Label alignment="CENTER" contentDisplay="CENTER" text="Billetera Virtual" textAlignment="CENTER" style="-fx-text-fill: white;">
+            <Label alignment="CENTER" contentDisplay="CENTER" text="Billetera virtual FleXpay" textAlignment="CENTER">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
             </Label>
-            <Label fx:id="lblUsuarioActualA" contentDisplay="CENTER" text="Usuario: No identificado" textAlignment="CENTER" style="-fx-text-fill: #cc9723;">
+            <Label fx:id="lblUsuarioActualA" contentDisplay="CENTER" text="Usuario: No identificado" textAlignment="CENTER">
                <font>
                   <Font size="18.0" />
                </font>
@@ -33,37 +33,37 @@
       </HBox>
    </top>
    <left>
-      <VBox alignment="TOP_CENTER" prefHeight="400.0" prefWidth="180.0" spacing="15.0" style="-fx-background-color: #1a2b4f; -fx-padding: 15 0 0 0;" BorderPane.alignment="CENTER">
+      <VBox alignment="TOP_CENTER" prefHeight="400.0" prefWidth="150.0" spacing="10.0" style="-fx-background-color: #e0e0e0;" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="btnPerfil" mnemonicParsing="false" onAction="#onPerfil" prefHeight="35.0" prefWidth="150.0" text="Perfil" style="-fx-background-color: #744494; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-weight: bold;" />
-            <Button fx:id="btnCuentas" mnemonicParsing="false" onAction="#onCuentas" prefHeight="35.0" prefWidth="150.0" text="Cuentas" style="-fx-background-color: #744494; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-weight: bold;" />
-            <Button fx:id="btnTransacciones" mnemonicParsing="false" onAction="#onTransacciones" prefHeight="35.0" prefWidth="150.0" text="Transacciones" style="-fx-background-color: #744494; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-weight: bold;" />
-            <Button fx:id="btnPresupuestos" mnemonicParsing="false" onAction="#onPresupuestos" prefHeight="35.0" prefWidth="150.0" text="Presupuestos" style="-fx-background-color: #744494; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-weight: bold;" />
-            <Button fx:id="btnReportes" mnemonicParsing="false" onAction="#onReportes" prefHeight="35.0" prefWidth="150.0" text="Reportes" style="-fx-background-color: #744494; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-weight: bold;" />
-            <Button fx:id="btnCategorias" mnemonicParsing="false" onAction="#onCategorias" prefHeight="35.0" prefWidth="150.0" text="Categorías" style="-fx-background-color: #744494; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-weight: bold;" />
-            <Button fx:id="btnEstadisticas" mnemonicParsing="false" onAction="#onEstadisticas" prefHeight="35.0" prefWidth="150.0" text="Estadísticas" style="-fx-background-color: #744494; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-weight: bold;" />
-            <Button fx:id="btnUsuarios" mnemonicParsing="false" onAction="#onUsuarios" prefHeight="35.0" prefWidth="150.0" text="Usuarios" style="-fx-background-color: #744494; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-weight: bold;" />
-            <Button fx:id="btnCerrarSesion" mnemonicParsing="false" onAction="#onCerrarSesion" prefHeight="35.0" prefWidth="150.0" text="Cerrar Sesión" style="-fx-background-color: #cc9723; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-weight: bold;" />
+            <Button fx:id="btnPerfil" mnemonicParsing="false" onAction="#onPerfil" prefHeight="30.0" prefWidth="120.0" text="Perfil" />
+            <Button fx:id="btnCuentas" mnemonicParsing="false" onAction="#onCuentas" prefHeight="30.0" prefWidth="120.0" text="Cuentas" />
+            <Button fx:id="btnTransacciones" mnemonicParsing="false" onAction="#onTransacciones" prefHeight="30.0" prefWidth="120.0" text="Transacciones" />
+            <Button fx:id="btnPresupuestos" mnemonicParsing="false" onAction="#onPresupuestos" prefHeight="30.0" prefWidth="120.0" text="Presupuestos" />
+            <Button fx:id="btnReportes" mnemonicParsing="false" onAction="#onReportes" prefHeight="30.0" prefWidth="120.0" text="Reportes" />
+            <Button fx:id="btnCategorias" mnemonicParsing="false" onAction="#onCategorias" prefHeight="30.0" prefWidth="120.0" text="Categorías" />
+            <Button fx:id="btnEstadisticas" mnemonicParsing="false" onAction="#onEstadisticas" prefHeight="30.0" prefWidth="120.0" text="Estadísticas" />
+            <Button fx:id="btnUsuarios" mnemonicParsing="false" onAction="#onUsuarios" prefHeight="30.0" prefWidth="120.0" text="Usuarios" />
+            <Button fx:id="btnCerrarSesion" mnemonicParsing="false" onAction="#onCerrarSesion" prefHeight="30.0" prefWidth="120.0" text="Cerrar Sesión" />
          </children>
          <padding>
-            <Insets bottom="20.0" left="15.0" right="15.0" top="20.0" />
+            <Insets bottom="10.0" left="10.0" right="10.0" top="20.0" />
          </padding>
       </VBox>
    </left>
    <center>
-      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" style="-fx-background-radius: 10; -fx-border-radius: 10;" BorderPane.alignment="CENTER">
+      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
-            <Label text="Bienvenido a Billetera Virtual" textAlignment="CENTER" style="-fx-text-fill: #1a2b4f;">
+            <Label text="Bienvenido a FleXPay" textAlignment="CENTER">
                <font>
                   <Font name="System Bold" size="20.0" />
                </font>
             </Label>
-            <Label text="Seleccione una opción del menú lateral" textAlignment="CENTER" style="-fx-text-fill: #5a5a5a;">
+            <Label text="Seleccione una opción del menú lateral" textAlignment="CENTER">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label fx:id="lblUsuarioActual" text="Usuario: No identificado" style="-fx-text-fill: #744494;">
+            <Label fx:id="lblUsuarioActual" text="Usuario: No identificado">
                <font>
                   <Font size="14.0" />
                </font>
@@ -71,4 +71,5 @@
          </children>
       </VBox>
    </center>
+   
 </BorderPane>

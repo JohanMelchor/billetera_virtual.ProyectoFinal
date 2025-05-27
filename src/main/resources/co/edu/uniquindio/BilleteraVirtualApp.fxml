@@ -13,7 +13,7 @@
    <top>
       <HBox alignment="CENTER" prefHeight="0.0" prefWidth="800.0" spacing="20.0" style="-fx-background-color: #f0f0f0;" BorderPane.alignment="CENTER">
          <children>
-            <Label alignment="CENTER" contentDisplay="CENTER" text="Billetera Virtual" textAlignment="CENTER">
+            <Label alignment="CENTER" contentDisplay="CENTER" text="Billetera virtual FleXpay" textAlignment="CENTER">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
@@ -53,7 +53,7 @@
    <center>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
-            <Label text="Bienvenido a Billetera Virtual" textAlignment="CENTER">
+            <Label text="Bienvenido a FleXPay" textAlignment="CENTER">
                <font>
                   <Font name="System Bold" size="20.0" />
                </font>
