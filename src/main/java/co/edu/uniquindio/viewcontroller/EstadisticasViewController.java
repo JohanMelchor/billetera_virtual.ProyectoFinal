@@ -1,17 +1,19 @@
 package co.edu.uniquindio.viewcontroller;
 
-import co.edu.uniquindio.Util.TransaccionConstantes;
 import co.edu.uniquindio.facade.BilleteraFacade;
+import co.edu.uniquindio.factory.AlertaManagerFactory;
 import co.edu.uniquindio.mapping.dto.*;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import co.edu.uniquindio.service.IAlertaManager;
+import co.edu.uniquindio.strategy.DatosEstadisticas;
+import co.edu.uniquindio.strategy.EstadisticaProcessor;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.chart.*;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import javafx.scene.Node;
 
 import java.util.*;
 
@@ -21,6 +23,8 @@ public class EstadisticasViewController {
     private List<TransaccionDto> listaTransacciones;
     private List<CategoriaDto> listaCategorias;
     private BilleteraFacade facade;
+    private IAlertaManager alertaManager;
+    private EstadisticaProcessor estadisticaProcessor;
     
     @FXML
     private ComboBox<String> cbTipoEstadistica;
@@ -52,18 +56,18 @@ public class EstadisticasViewController {
     @FXML
     void initialize() {
         facade = new BilleteraFacade();
-        
-        // Inicializar ComboBox de tipos de estadísticas
-        cbTipoEstadistica.getItems().addAll(
-            "Transacciones por Categoría",
-            "Saldo por Usuario",
-            "Gastos vs Ingresos",
-            "Categorías Más Usadas",
-            "Evolución por Días",      
-            "Distribución de Montos"
-        );
-        
+        alertaManager = AlertaManagerFactory.crearManagerCompleto();
         cargarDatos();
+    
+        // Crear processor con los datos
+        DatosEstadisticas datos = new DatosEstadisticas(listaUsuarios, listaTransacciones, listaCategorias, facade);
+        estadisticaProcessor = new EstadisticaProcessor(datos);
+        
+        // Cargar nombres automáticamente desde el factory
+        cbTipoEstadistica.getItems().clear();
+        cbTipoEstadistica.getItems().addAll(estadisticaProcessor.getEstadisticasDisponibles());
+        
+        calcularEstadisticasGenerales();
     }
     
     private void cargarDatos() {
@@ -139,143 +143,27 @@ public class EstadisticasViewController {
     @FXML
     void onGenerarEstadistica(ActionEvent event) {
         String tipoEstadistica = cbTipoEstadistica.getValue();
-        if(tipoEstadistica == null || tipoEstadistica.isEmpty()) {
+        if (tipoEstadistica == null || tipoEstadistica.isEmpty()) {
             return;
         }
         
-        // Limpiar contenedor de gráficas
-        contenedorGraficas.getChildren().clear();
-        
-        switch(tipoEstadistica) {
-            case "Transacciones por Categoría":
-                generarGraficaTransaccionesPorCategoria();
-                break;
-            case "Saldo por Usuario":
-                generarGraficaSaldoPorUsuario();
-                break;
-            case "Gastos vs Ingresos":
-                generarGraficaGastosVsIngresos();
-                break;
-            case "Categorías Más Usadas":           
-                generarGraficaCategoriasMasUsadas();
-                break;
-            case "Evolución por Días":              
-                generarGraficaEvolucionPorDias();
-                break;
-            case "Distribución de Montos":          
-                generarGraficaDistribucionMontos();
-                break;
-        }
-    }
-    
-    private void generarGraficaTransaccionesPorCategoria() {
-        // Contar transacciones por categoría
-        Map<String, Integer> contadorCategoria = new HashMap<>();
-        for(TransaccionDto transaccion : listaTransacciones) {
-            String idCategoria = transaccion.idCategoria();
-            if(idCategoria != null && !idCategoria.isEmpty()) {
-                String nombreCategoria = obtenerNombreCategoria(idCategoria);
-                contadorCategoria.put(
-                    nombreCategoria,
-                    contadorCategoria.getOrDefault(nombreCategoria, 0) + 1
-                );
-            } else {
-                contadorCategoria.put(
-                    "Sin Categoría",
-                    contadorCategoria.getOrDefault("Sin Categoría", 0) + 1
-                );
-            }
-        }
-        
-        // Crear datos para el gráfico de pastel
-        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
-        for(Map.Entry<String, Integer> entry : contadorCategoria.entrySet()) {
-            pieChartData.add(new PieChart.Data(entry.getKey() + " (" + entry.getValue() + ")", entry.getValue()));
-        }
-        
-        // Crear gráfico de pastel
-        PieChart pieChart = new PieChart(pieChartData);
-        pieChart.setTitle("Transacciones por Categoría");
-        pieChart.setLabelsVisible(true);
-        
-        // Agregar gráfico al contenedor
-        contenedorGraficas.getChildren().add(pieChart);
-    }
-    
-    private void generarGraficaSaldoPorUsuario() {
-        // Crear datos para el gráfico de barras
-        CategoryAxis xAxis = new CategoryAxis();
-        NumberAxis yAxis = new NumberAxis();
-        BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
-        barChart.setTitle("Saldo por Usuario");
-        xAxis.setLabel("Usuario");
-        yAxis.setLabel("Saldo");
-        
-        // Crear serie de datos
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("Saldo");
-        
-        for(UsuarioDto usuario : listaUsuarios) {
-            series.getData().add(new XYChart.Data<>(
-                usuario.nombreCompleto(),
-                Double.parseDouble(usuario.saldo())
-            ));
-        }
-        
-        barChart.getData().add(series);
-        
-        
-        contenedorGraficas.getChildren().add(barChart);
-    }
-    
-    private void generarGraficaGastosVsIngresos() {
-
-        double totalIngresos = 0.0;
-        double totalGastos = 0.0;
-        
-        for(TransaccionDto transaccion : listaTransacciones) {
-            double monto = Double.parseDouble(transaccion.monto());
-            String tipo = transaccion.tipoTransaccion();
+        try {
+            // Limpiar contenedor de gráficas
+            contenedorGraficas.getChildren().clear();
             
-
-            if (tipo.equals(TransaccionConstantes.TIPO_DEPOSITO_CUENTA) ||
-                tipo.equals(TransaccionConstantes.TIPO_DEPOSITO_PRESUPUESTO) ||
-                tipo.equals(TransaccionConstantes.TIPO_AJUSTE_POSITIVO) ||
-                tipo.equals(TransaccionConstantes.TIPO_DEPOSITO_INICIAL) ||
-                tipo.equals(TransaccionConstantes.TIPO_BONIFICACION)) {
-                
-                totalIngresos += monto;
-                
-            } else if (tipo.equals(TransaccionConstantes.TIPO_RETIRO_CUENTA) ||
-                    tipo.equals(TransaccionConstantes.TIPO_RETIRO_PRESUPUESTO) ||
-                    tipo.equals(TransaccionConstantes.TIPO_AJUSTE_NEGATIVO) ||
-                    tipo.equals(TransaccionConstantes.TIPO_PENALIZACION)) {
-                
-                totalGastos += monto;
-            }
-            // Las transferencias no se cuentan como ingreso ni gasto
+            // Generar estadística usando Strategy
+            Node grafico = estadisticaProcessor.generarEstadistica(tipoEstadistica);
+            contenedorGraficas.getChildren().add(grafico);
+            
+        } catch (Exception e) {
+            mostrarAlerta("Error al generar estadística", 
+                "No se pudo generar la estadística", 
+                "Ocurrió un error al intentar generar la estadística: " + e.getMessage(), 
+                Alert.AlertType.ERROR);
         }
-        
-        // Crear datos para el gráfico de barras
-        CategoryAxis xAxis = new CategoryAxis();
-        NumberAxis yAxis = new NumberAxis();
-        BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
-        barChart.setTitle("Gastos vs Ingresos");
-        xAxis.setLabel("Tipo");
-        yAxis.setLabel("Monto Total");
-        
-        // Crear serie de datos
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("Monto");
-        
-        series.getData().add(new XYChart.Data<>("Ingresos", totalIngresos));
-        series.getData().add(new XYChart.Data<>("Gastos", totalGastos));
-        
-        barChart.getData().add(series);
-        
-        contenedorGraficas.getChildren().add(barChart);
     }
-    
+
+
     private String obtenerNombreCategoria(String idCategoria) {
         for(CategoriaDto categoria : listaCategorias) {
             if(categoria.idCategoria().equals(idCategoria)) {
@@ -283,117 +171,6 @@ public class EstadisticasViewController {
             }
         }
         return "Desconocida";
-    }
-
-    private void generarGraficaCategoriasMasUsadas() {
-        Map<String, Integer> contadorCategorias = new HashMap<>();
-        
-        for(TransaccionDto transaccion : listaTransacciones) {
-            String idCategoria = transaccion.idCategoria();
-            String nombreCategoria = idCategoria != null && !idCategoria.isEmpty() ? 
-                obtenerNombreCategoria(idCategoria) : "Sin Categoría";
-            contadorCategorias.merge(nombreCategoria, 1, Integer::sum);
-        }
-        
-        // Crear gráfico de barras horizontal
-        CategoryAxis yAxis = new CategoryAxis();
-        NumberAxis xAxis = new NumberAxis();
-        BarChart<Number, String> barChart = new BarChart<>(xAxis, yAxis);
-        barChart.setTitle("Categorías Más Usadas");
-        xAxis.setLabel("Número de Transacciones");
-        yAxis.setLabel("Categoría");
-        
-        XYChart.Series<Number, String> series = new XYChart.Series<>();
-        series.setName("Uso de Categorías");
-        
-        // Ordenar por más usadas
-        contadorCategorias.entrySet().stream()
-            .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-            .limit(10) // Solo las top 10
-            .forEach(entry -> {
-                series.getData().add(new XYChart.Data<>(entry.getValue(), entry.getKey()));
-            });
-        
-        barChart.getData().add(series);
-        contenedorGraficas.getChildren().add(barChart);
-    }
-
-    private void generarGraficaEvolucionPorDias() {
-        Map<String, Integer> transaccionesPorDia = new TreeMap<>();
-        
-        for(TransaccionDto transaccion : listaTransacciones) {
-            try {
-                String fecha = transaccion.fecha();
-                String dia = fecha.substring(0, 10); // YYYY-MM-DD
-                transaccionesPorDia.merge(dia, 1, Integer::sum);
-            } catch (Exception e) {
-                // Ignorar fechas mal formateadas
-            }
-        }
-
-        // Crear gráfico de líneas
-        CategoryAxis xAxis = new CategoryAxis();
-        NumberAxis yAxis = new NumberAxis();
-        LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
-        lineChart.setTitle("Evolución de Transacciones por Día");
-        xAxis.setLabel("Fecha");
-        yAxis.setLabel("Número de Transacciones");
-        
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("Transacciones Diarias");
-        
-        // Tomar solo los últimos 30 días o menos
-        transaccionesPorDia.entrySet().stream()
-            .sorted(Map.Entry.comparingByKey())
-            .limit(30)
-            .forEach(entry -> {
-                series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
-            });
-        
-        lineChart.getData().add(series);
-        contenedorGraficas.getChildren().add(lineChart);
-    }
-
-    private void generarGraficaDistribucionMontos() {
-        // Categorizar montos en rangos
-        Map<String, Integer> rangoMontos = new LinkedHashMap<>();
-        rangoMontos.put("$0 - $50", 0);
-        rangoMontos.put("$50 - $100", 0);
-        rangoMontos.put("$100 - $500", 0);
-        rangoMontos.put("$500 - $1000", 0);
-        rangoMontos.put("$1000+", 0);
-        
-        for(TransaccionDto transaccion : listaTransacciones) {
-            double monto = Double.parseDouble(transaccion.monto());
-            
-            if(monto <= 50) {
-                rangoMontos.merge("$0 - $50", 1, Integer::sum);
-            } else if(monto <= 100) {
-                rangoMontos.merge("$50 - $100", 1, Integer::sum);
-            } else if(monto <= 500) {
-                rangoMontos.merge("$100 - $500", 1, Integer::sum);
-            } else if(monto <= 1000) {
-                rangoMontos.merge("$500 - $1000", 1, Integer::sum);
-            } else {
-                rangoMontos.merge("$1000+", 1, Integer::sum);
-            }
-        }
-
-        // Crear gráfico de pastel
-        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
-        for(Map.Entry<String, Integer> entry : rangoMontos.entrySet()) {
-            if(entry.getValue() > 0) { // Solo mostrar rangos con datos
-                pieChartData.add(new PieChart.Data(
-                    entry.getKey() + " (" + entry.getValue() + ")", 
-                    entry.getValue()));
-            }
-        }
-        
-        PieChart pieChart = new PieChart(pieChartData);
-        pieChart.setTitle("Distribución de Transacciones por Monto");
-        pieChart.setLabelsVisible(true);
-        
-        contenedorGraficas.getChildren().add(pieChart);
     }
 
     private void calcularCategoriaMasUsada() {
@@ -499,5 +276,8 @@ public class EstadisticasViewController {
         return tipoCompleto;
     }
 
+    private void mostrarAlerta(String titulo, String header, String contenido, Alert.AlertType tipo) {
+        alertaManager.mostrarAlerta(titulo, header, contenido, tipo);
+    }
 
 }
