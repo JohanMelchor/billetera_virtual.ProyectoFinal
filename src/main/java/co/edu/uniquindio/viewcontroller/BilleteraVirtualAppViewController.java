@@ -17,11 +17,6 @@ import java.util.List;
 public class BilleteraVirtualAppViewController {
     
     private UsuarioController usuarioController;
-    private CuentaController cuentaController;
-    private TransaccionController transaccionController;
-    private PresupuestoController presupuestoController;
-    private CategoriaController categoriaController;
-    
     private String idUsuarioActual;
     private UsuarioDto usuarioActual;
     private boolean esAdmin;
@@ -66,10 +61,10 @@ public class BilleteraVirtualAppViewController {
     void initialize() {
         try {
             usuarioController = new UsuarioController();
-            cuentaController = new CuentaController();
-            transaccionController = new TransaccionController();
-            presupuestoController = new PresupuestoController();
-            categoriaController = new CategoriaController();
+            new CuentaController();
+            new TransaccionController();
+            new PresupuestoController();
+            new CategoriaController();
             
             // Configuración inicial de la interfaz
             configurarVistaPredeterminada();

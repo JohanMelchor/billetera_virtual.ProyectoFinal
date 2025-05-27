@@ -5,7 +5,6 @@ import co.edu.uniquindio.mapping.mappers.*;
 import co.edu.uniquindio.model.*;
 import co.edu.uniquindio.service.*;
 import co.edu.uniquindio.Util.DataUtil;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ModelFactory implements IModelFactoryServices {
