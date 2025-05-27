@@ -3,7 +3,7 @@ package co.edu.uniquindio.viewcontroller;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import co.edu.uniquindio.controller.UsuarioController;
+import co.edu.uniquindio.facade.BilleteraFacade;
 import co.edu.uniquindio.mapping.dto.UsuarioDto;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,10 +16,11 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 public class PerfilViewController {
-    private UsuarioController usuarioController;
+    
     private String idUsuarioActual;
     private UsuarioDto usuarioOriginal;
     private UsuarioDto usuarioCopia;
+    private BilleteraFacade facade;
 
     @FXML
     private ResourceBundle resources;
@@ -83,7 +84,7 @@ public class PerfilViewController {
 
     @FXML
     void initialize() {
-        usuarioController = new UsuarioController();
+        facade = new BilleteraFacade();
         if (txtPasswordVisible != null) {
             txtPasswordVisible.setVisible(false);
         }
@@ -129,7 +130,7 @@ public class PerfilViewController {
             usuarioOriginal.saldo(),
             txtPasswordNew.getText()  // Nueva contraseña
         );
-        if (usuarioController.actualizarUsuario(usuarioActualizado)) {
+        if (facade.actualizarUsuario(usuarioActualizado)) {
             mostrarAlerta("Éxito", "Contraseña actualizada", "La contraseña se cambió correctamente.", Alert.AlertType.INFORMATION);
             // ACTUALIZA LOS OBJETOS EN MEMORIA
             this.usuarioOriginal = usuarioActualizado;
@@ -170,7 +171,7 @@ public class PerfilViewController {
                 usuarioOriginal.saldo(), 
                 usuarioOriginal.password()
             );
-            if(usuarioController.actualizarUsuario(usuarioActualizado)) {
+            if(facade.actualizarUsuario(usuarioActualizado)) {
                 mostrarAlerta("Éxito", "Perfil actualizado", 
                             "Tus datos se han actualizado correctamente", 
                             Alert.AlertType.INFORMATION);
@@ -186,7 +187,7 @@ public class PerfilViewController {
 
     public void inicializarConUsuario(String idUsuario) {
         this.idUsuarioActual = idUsuario;
-        this.usuarioOriginal = usuarioController.buscarUsuarioPorId(idUsuario);
+        this.usuarioOriginal = facade.buscarUsuarioPorId(idUsuario);
         this.usuarioCopia = usuarioOriginal != null ? usuarioOriginal.clonar() : null;
         configurarCampos();
         cargarDatosUsuario();
@@ -203,7 +204,7 @@ public class PerfilViewController {
     }
 
     private void cargarDatosUsuario() {
-        UsuarioDto usuario = usuarioController.buscarUsuarioPorId(idUsuarioActual);
+        UsuarioDto usuario = facade.buscarUsuarioPorId(idUsuarioActual);
         if(usuario != null) {
             usuarioOriginal = usuario; // Guarda el usuario original
             txtIdUsuario.setText(usuario.idUsuario());
@@ -236,7 +237,7 @@ public class PerfilViewController {
     }
 
     private boolean validarContrasenas() {
-        if (!usuarioController.validarCredenciales(idUsuarioActual, txtPasswordActual.getText())) {
+        if (!facade.validarCredenciales(idUsuarioActual, txtPasswordActual.getText())) {
             mostrarAlerta("Error", "Contraseña incorrecta", "La contraseña actual no es válida.", Alert.AlertType.ERROR);
             return false;
         }

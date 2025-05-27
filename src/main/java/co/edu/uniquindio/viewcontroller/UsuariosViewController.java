@@ -1,6 +1,7 @@
 package co.edu.uniquindio.viewcontroller;
 
-import co.edu.uniquindio.controller.UsuarioController;
+
+import co.edu.uniquindio.facade.BilleteraFacade;
 import co.edu.uniquindio.mapping.dto.UsuarioDto;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -11,9 +12,9 @@ import javafx.scene.control.*;
 
 public class UsuariosViewController {
 
-    UsuarioController usuarioController;
     ObservableList<UsuarioDto> listaUsuarios = FXCollections.observableArrayList();
     UsuarioDto usuarioSeleccionado;
+    private BilleteraFacade facade;
 
     @FXML
     private Button btnActualizarUsuario;
@@ -83,7 +84,7 @@ public class UsuariosViewController {
 
     @FXML
     void initialize() {
-        usuarioController = new UsuarioController();
+        facade = new BilleteraFacade();
         initView();
     }
 
@@ -97,16 +98,16 @@ public class UsuariosViewController {
 
 
     private void obtenerUsuarios() {
-        listaUsuarios.addAll(usuarioController.obtenerUsuarios());
+        listaUsuarios.addAll(facade.obtenerUsuarios());
     }
 
 
     private void agregarUsuario(){
         UsuarioDto usuarioDto = crearUsuarioDto();
         if(datosValidos(usuarioDto)){
-            if(usuarioController.agregarUsuario(usuarioDto)){
+            if(facade.agregarUsuario(usuarioDto)){
                 listaUsuarios.clear();  // Limpiar y volver a cargar
-                listaUsuarios.addAll(usuarioController.obtenerUsuarios());
+                listaUsuarios.addAll(facade.obtenerUsuarios());
                 limpiarCampos();
                 mostrarMensaje("Usuario agregado", "Éxito", "El usuario fue agregado correctamente", Alert.AlertType.INFORMATION);
         }
@@ -159,7 +160,7 @@ public class UsuariosViewController {
 
     private void eliminarUsuario() {
         if(usuarioSeleccionado != null){
-            boolean eliminado = usuarioController.eliminarUsuario(usuarioSeleccionado.idUsuario());
+            boolean eliminado = facade.eliminarUsuario(usuarioSeleccionado.idUsuario());
             if(eliminado){
                 listaUsuarios.remove(usuarioSeleccionado);
                 limpiarCampos();
@@ -175,7 +176,7 @@ public class UsuariosViewController {
     private void actualizarUsuario() {
         UsuarioDto usuarioDto=crearUsuarioDto();
         if(datosValidos(usuarioDto)){
-            if(usuarioController.actualizarUsuario(usuarioDto)){
+            if(facade.actualizarUsuario(usuarioDto)){
                 listaUsuarios.set(listaUsuarios.indexOf(usuarioSeleccionado),usuarioDto);
                 limpiarCampos();
             }else{

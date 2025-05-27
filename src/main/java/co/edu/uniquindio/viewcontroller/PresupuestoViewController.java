@@ -1,12 +1,11 @@
 package co.edu.uniquindio.viewcontroller;
 
-import co.edu.uniquindio.controller.CategoriaController;
-import co.edu.uniquindio.controller.CuentaController;
-import co.edu.uniquindio.controller.PresupuestoController;
+
 import co.edu.uniquindio.mapping.dto.CategoriaDto;
 import co.edu.uniquindio.mapping.dto.CuentaDto;
 import co.edu.uniquindio.mapping.dto.PresupuestoDto;
 import co.edu.uniquindio.Util.PresupuestoConstantes;
+import co.edu.uniquindio.facade.BilleteraFacade;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,15 +19,13 @@ import java.util.UUID;
 
 public class PresupuestoViewController {
     
-    private PresupuestoController presupuestoController;
-    private CategoriaController categoriaController;
-    private CuentaController cuentaController;
     private ObservableList<PresupuestoDto> listaPresupuestos = FXCollections.observableArrayList();
     private ObservableList<CategoriaDto> listaCategorias = FXCollections.observableArrayList();
     private ObservableList<CuentaDto> listaCuentas = FXCollections.observableArrayList();
     private PresupuestoDto presupuestoSeleccionado;
     private String idUsuarioActual;
     private String idCuentaActual;
+    private BilleteraFacade facade;
     
     @FXML
     private TextField txtIdPresupuesto;
@@ -95,9 +92,7 @@ public class PresupuestoViewController {
     
     @FXML
     void initialize() {
-        presupuestoController = new PresupuestoController();
-        categoriaController = new CategoriaController();
-        cuentaController = new CuentaController();
+        facade = new BilleteraFacade();
         
         initView();
     }
@@ -110,7 +105,7 @@ public class PresupuestoViewController {
         } else {
             this.idUsuarioActual = idUsuario;
             listaCuentas.clear();
-            listaCuentas.addAll(cuentaController.obtenerCuentasPorUsuario(idUsuario));
+            listaCuentas.addAll(facade.obtenerCuentasPorUsuario(idUsuario));
             habilitarVistaUsuario();
             cargarDatos(false);
         }
@@ -118,7 +113,7 @@ public class PresupuestoViewController {
 
     private void cargarTodosPresupuestos() {
         listaPresupuestos.clear();
-        listaPresupuestos.addAll(presupuestoController.obtenerTodosPresupuestos());
+        listaPresupuestos.addAll(facade.obtenerTodosPresupuestos());
     }
 
     public void inicializarConCuenta(String idCuenta) {
@@ -193,19 +188,19 @@ public class PresupuestoViewController {
     private void cargarDatos(boolean esAdmin) {
         listaPresupuestos.clear();
         if (esAdmin) {
-            listaPresupuestos.addAll(presupuestoController.obtenerTodosPresupuestos());
+            listaPresupuestos.addAll(facade.obtenerTodosPresupuestos());
         } else if (idUsuarioActual != null && !idUsuarioActual.isEmpty()) {
-            listaPresupuestos.addAll(presupuestoController.obtenerPresupuestosPorUsuario(idUsuarioActual));
+            listaPresupuestos.addAll(facade.obtenerPresupuestosPorUsuario(idUsuarioActual));
         }
         // Siempre cargar categorías
         listaCategorias.clear();
-        listaCategorias.addAll(categoriaController.obtenerCategorias());
+        listaCategorias.addAll(facade.obtenerCategorias());
     }
 
     private void cargarPresupuestosDeCuenta() {
         if (idCuentaActual != null) {
             listaPresupuestos.clear();
-            listaPresupuestos.addAll(presupuestoController.obtenerPresupuestosPorCuenta(idCuentaActual));
+            listaPresupuestos.addAll(facade.obtenerPresupuestosPorCuenta(idCuentaActual));
             
         }
     }
@@ -277,7 +272,7 @@ public class PresupuestoViewController {
 
         PresupuestoDto nuevoPresupuesto = crearPresupuestoDto(true);
         if (datosValidos(nuevoPresupuesto)) {
-            if (presupuestoController.agregarPresupuestoACuenta(cuentaSeleccionada.idCuenta(), nuevoPresupuesto)) {
+            if (facade.agregarPresupuestoACuenta(cuentaSeleccionada.idCuenta(), nuevoPresupuesto)) {
                 // CAMBIO: Siempre cargar todos los presupuestos del usuario
                 cargarDatos(false);
                 mostrarMensaje("Éxito", "Presupuesto agregado", "Presupuesto creado correctamente", Alert.AlertType.INFORMATION);
@@ -297,7 +292,7 @@ public class PresupuestoViewController {
         if(presupuestoSeleccionado != null) {
             PresupuestoDto presupuestoActualizado = crearPresupuestoDto(false);
             if(datosValidos(presupuestoActualizado)) {
-                if(presupuestoController.actualizarPresupuesto(presupuestoActualizado)) {
+                if(facade.actualizarPresupuesto(presupuestoActualizado)) {
                     // CAMBIO: Solo una llamada para recargar datos
                     cargarDatos(false);
                     limpiarCampos();
@@ -342,7 +337,7 @@ public class PresupuestoViewController {
             );
             
             if(confirmacion) {
-                if(presupuestoController.eliminarPresupuesto(presupuestoSeleccionado.idPresupuesto())) {
+                if(facade.eliminarPresupuesto(presupuestoSeleccionado.idPresupuesto())) {
                     // CAMBIO: Solo cargar todos los presupuestos del usuario
                     cargarDatos(false);
                     limpiarCampos();

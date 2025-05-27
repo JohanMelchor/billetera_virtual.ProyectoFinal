@@ -1,6 +1,6 @@
 package co.edu.uniquindio.viewcontroller;
 
-import co.edu.uniquindio.controller.CategoriaController;
+import co.edu.uniquindio.facade.BilleteraFacade;
 import co.edu.uniquindio.mapping.dto.CategoriaDto;
 import co.edu.uniquindio.Util.CategoriaConstantes;
 import javafx.beans.property.SimpleStringProperty;
@@ -15,9 +15,9 @@ import java.util.UUID;
 
 public class CategoriaViewController {
     
-    private CategoriaController categoriaController;
     private ObservableList<CategoriaDto> listaCategorias = FXCollections.observableArrayList();
     private CategoriaDto categoriaSeleccionada;
+    private BilleteraFacade facade;
     
     @FXML
     private TextField txtIdCategoria;
@@ -54,7 +54,7 @@ public class CategoriaViewController {
     
     @FXML
     void initialize() {
-        categoriaController = new CategoriaController();
+        facade = new BilleteraFacade();
         
         initView();
         cargarCategorias();
@@ -72,7 +72,7 @@ public class CategoriaViewController {
     
     private void cargarCategorias() {
         listaCategorias.clear();
-        listaCategorias.addAll(categoriaController.obtenerCategorias());
+        listaCategorias.addAll(facade.obtenerCategorias());
     }
     
     private void initDataBinding() {
@@ -100,7 +100,7 @@ public class CategoriaViewController {
     void onAgregarCategoria(ActionEvent event) {
         CategoriaDto nuevaCategoria = crearCategoriaDto();
         if(datosValidos(nuevaCategoria)) {
-            if(categoriaController.agregarCategoria(nuevaCategoria)) {
+            if(facade.agregarCategoria(nuevaCategoria)) {
                 cargarCategorias();
                 limpiarCampos();
                 mostrarMensaje(
@@ -135,7 +135,7 @@ public class CategoriaViewController {
         if(categoriaSeleccionada != null) {
             CategoriaDto categoriaActualizada = crearCategoriaDto();
             if(datosValidos(categoriaActualizada)) {
-                if(categoriaController.actualizarCategoria(categoriaActualizada)) {
+                if(facade.actualizarCategoria(categoriaActualizada)) {
                     cargarCategorias();
                     limpiarCampos();
                     mostrarMensaje(
@@ -182,7 +182,7 @@ public class CategoriaViewController {
             );
             
             if(confirmacion) {
-                if(categoriaController.eliminarCategoria(categoriaSeleccionada.idCategoria())) {
+                if(facade.eliminarCategoria(categoriaSeleccionada.idCategoria())) {
                     listaCategorias.remove(categoriaSeleccionada);
                     limpiarCampos();
                     mostrarMensaje(

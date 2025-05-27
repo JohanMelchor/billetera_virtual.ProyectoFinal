@@ -1,10 +1,9 @@
 package co.edu.uniquindio.viewcontroller;
 
-import co.edu.uniquindio.controller.CuentaController;
-import co.edu.uniquindio.controller.UsuarioController;
 import co.edu.uniquindio.mapping.dto.CuentaDto;
 import co.edu.uniquindio.mapping.dto.UsuarioDto;
 import co.edu.uniquindio.Util.CuentaConstantes;
+import co.edu.uniquindio.facade.BilleteraFacade;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,12 +18,11 @@ import java.util.UUID;
 
 public class CuentaViewController {
     
-    private CuentaController cuentaController;
-    private UsuarioController usuarioController;
     private ObservableList<CuentaDto> listaCuentas = FXCollections.observableArrayList();
     private CuentaDto cuentaSeleccionada;
     private String idUsuarioActual;
     private boolean esAdmin;
+    private BilleteraFacade facade;
     
     @FXML
     private ComboBox<String> cbTipoCuenta;
@@ -88,8 +86,7 @@ public class CuentaViewController {
     
     @FXML
     void initialize() {
-        cuentaController = new CuentaController();
-        usuarioController = new UsuarioController();
+        facade = new BilleteraFacade();
         
         // Inicializar tipos de cuenta
         cbTipoCuenta.getItems().addAll(CuentaConstantes.TIPO_CUENTA_AHORRO, CuentaConstantes.TIPO_CUENTA_CORRIENTE);
@@ -115,7 +112,7 @@ public class CuentaViewController {
 
     private void habilitarVistasAdmin() {
         hbUsuario.setVisible(true);
-        cbUsuarios.setItems(FXCollections.observableArrayList(usuarioController.obtenerUsuarios()));
+        cbUsuarios.setItems(FXCollections.observableArrayList(facade.obtenerUsuarios()));
         cbUsuarios.setConverter(new StringConverter<UsuarioDto>() {
             @Override
             public String toString(UsuarioDto usuario) {
@@ -137,7 +134,7 @@ public class CuentaViewController {
 
     private void cargarTodasCuentas() {
         listaCuentas.clear();
-        listaCuentas.addAll(cuentaController.obtenerTodasCuentas());
+        listaCuentas.addAll(facade.obtenerTodasCuentas());
     }
     
     private void initView() {
@@ -153,7 +150,7 @@ public class CuentaViewController {
     private void cargarCuentasUsuario() {
         if(idUsuarioActual != null && !idUsuarioActual.isEmpty()) {
             listaCuentas.clear();
-            listaCuentas.addAll(cuentaController.obtenerCuentasPorUsuario(idUsuarioActual));
+            listaCuentas.addAll(facade.obtenerCuentasPorUsuario(idUsuarioActual));
         }
     }
     
@@ -164,7 +161,7 @@ public class CuentaViewController {
         tcTipoCuenta.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().tipoCuenta()));
         tcSaldoTotal.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().saldoTotal())));
         tcUsuarioAsignado.setCellValueFactory(cellData -> {String idUsuario = cellData.getValue().idUsuario();
-            UsuarioDto usuario = usuarioController.buscarUsuarioPorId(idUsuario);
+            UsuarioDto usuario = facade.buscarUsuarioPorId(idUsuario);
             return new SimpleStringProperty(
                 usuario != null ? usuario.nombreCompleto() : ""
             );
@@ -185,7 +182,7 @@ public class CuentaViewController {
             txtNumeroCuenta.setText(cuentaDto.numeroCuenta());
             cbTipoCuenta.setValue(cuentaDto.tipoCuenta());
             txtSaldo.setText(String.valueOf(cuentaDto.saldoTotal()));
-            cbUsuarios.setValue(usuarioController.buscarUsuarioPorId(cuentaDto.idUsuario()));
+            cbUsuarios.setValue(facade.buscarUsuarioPorId(cuentaDto.idUsuario()));
         }
     }
     
@@ -193,7 +190,7 @@ public class CuentaViewController {
     void onAgregarCuenta(ActionEvent event) {
         CuentaDto nuevaCuenta = crearCuentaDto();
         if(datosValidos(nuevaCuenta)) {
-            if(cuentaController.agregarCuenta(nuevaCuenta)) {
+            if(facade.agregarCuenta(nuevaCuenta)) {
                 if (esAdmin) {
                     cargarTodasCuentas();
                 } else {
@@ -229,7 +226,7 @@ public class CuentaViewController {
         if(cuentaSeleccionada != null) {
             CuentaDto cuentaActualizada = crearCuentaDto();
             if(datosValidos(cuentaActualizada)) {
-                if(cuentaController.actualizarCuenta(cuentaActualizada)) {
+                if(facade.actualizarCuenta(cuentaActualizada)) {
                     if (esAdmin) {
                         cargarTodasCuentas();    // ← Para admin: todas las cuentas
                     } else {
@@ -276,7 +273,7 @@ public class CuentaViewController {
             );
             
             if(confirmacion) {
-                if(cuentaController.eliminarCuenta(cuentaSeleccionada.idCuenta())) {
+                if(facade.eliminarCuenta(cuentaSeleccionada.idCuenta())) {
                     if (esAdmin) {
                         cargarTodasCuentas();    // ← Para admin: todas las cuentas
                     } else {

@@ -1,14 +1,12 @@
 package co.edu.uniquindio.viewcontroller;
 
-import co.edu.uniquindio.controller.CategoriaController;
-import co.edu.uniquindio.controller.CuentaController;
-import co.edu.uniquindio.controller.PresupuestoController;
-import co.edu.uniquindio.controller.TransaccionController;
+
 import co.edu.uniquindio.mapping.dto.CategoriaDto;
 import co.edu.uniquindio.mapping.dto.CuentaDto;
 import co.edu.uniquindio.mapping.dto.PresupuestoDto;
 import co.edu.uniquindio.mapping.dto.TransaccionDto;
 import co.edu.uniquindio.Util.TransaccionConstantes;
+import co.edu.uniquindio.facade.BilleteraFacade;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,16 +17,13 @@ import javafx.util.StringConverter;
 
 public class TransaccionViewController {
     
-    private TransaccionController transaccionController;
-    private PresupuestoController presupuestoController;
-    private CategoriaController categoriaController;
-    private CuentaController cuentaController;
     private ObservableList<TransaccionDto> listaTransacciones = FXCollections.observableArrayList();
     private ObservableList<CuentaDto> listaCuentas = FXCollections.observableArrayList();
     private ObservableList<CategoriaDto> listaCategorias = FXCollections.observableArrayList();
     private ObservableList<PresupuestoDto> listaPresupuestos = FXCollections.observableArrayList();
     private String idUsuarioActual;
     private boolean esAdmin = false;
+    private BilleteraFacade facade;
     
     @FXML
     private ComboBox<String> cbTipoTransaccion;
@@ -134,10 +129,7 @@ public class TransaccionViewController {
     
     @FXML
     void initialize() {
-        transaccionController = new TransaccionController();
-        presupuestoController = new PresupuestoController();
-        categoriaController = new CategoriaController();
-        cuentaController = new CuentaController();
+        facade = new BilleteraFacade();
         
         // Inicializar tipos de transacción
         cbTipoTransaccion.getItems().addAll(
@@ -190,8 +182,8 @@ public class TransaccionViewController {
 
     private void habilitarVistaAdministrador() {
         // Cargar todas las cuentas para el admin
-        listaCuentas.setAll(cuentaController.obtenerTodasCuentas());
-        listaCategorias.setAll(categoriaController.obtenerCategorias());
+        listaCuentas.setAll(facade.obtenerTodasCuentas());
+        listaCategorias.setAll(facade.obtenerCategorias());
         
         // Configurar elementos administrativos
         if (lblTransaccionesAdmin != null) {
@@ -277,7 +269,7 @@ public class TransaccionViewController {
 
     private void cargarTodasTransacciones() {
         listaTransacciones.clear();
-        listaTransacciones.addAll(transaccionController.obtenerTodasTransacciones());
+        listaTransacciones.addAll(facade.obtenerTodasTransacciones());
     }
     private void initView() {
         initDataBinding();
@@ -335,14 +327,14 @@ public class TransaccionViewController {
     private void cargarDatos() {
         if (esAdmin) {
             // Admin: cargar todas las cuentas y transacciones
-            listaCuentas.setAll(cuentaController.obtenerTodasCuentas());
-            listaCategorias.setAll(categoriaController.obtenerCategorias());
-            listaTransacciones.setAll(transaccionController.obtenerTodasTransacciones());
+            listaCuentas.setAll(facade.obtenerTodasCuentas());
+            listaCategorias.setAll(facade.obtenerCategorias());
+            listaTransacciones.setAll(facade.obtenerTodasTransacciones());
         } else if (idUsuarioActual != null) {
             // Usuario: cargar solo sus datos
-            listaCuentas.setAll(cuentaController.obtenerCuentasPorUsuario(idUsuarioActual));
-            listaCategorias.setAll(categoriaController.obtenerCategorias());
-            listaTransacciones.setAll(transaccionController.obtenerTransaccionesPorUsuario(idUsuarioActual));
+            listaCuentas.setAll(facade.obtenerCuentasPorUsuario(idUsuarioActual));
+            listaCategorias.setAll(facade.obtenerCategorias());
+            listaTransacciones.setAll(facade.obtenerTransaccionesPorUsuario(idUsuarioActual));
         }
     }
     
@@ -470,7 +462,7 @@ public class TransaccionViewController {
                         mostrarMensaje("Error", "Seleccione cuenta destino", "Seleccione cuenta destino para la operación", Alert.AlertType.ERROR);
                         return;
                     }
-                    resultado = transaccionController.depositoCuenta(
+                    resultado = facade.depositoCuenta(
                         cuentaDestino.idCuenta(), monto, descripcion, idCategoria);
                 break;
 
@@ -481,7 +473,7 @@ public class TransaccionViewController {
                         mostrarMensaje("Error", "Seleccione cuenta y presupuesto", "Seleccione cuenta y presupuesto", Alert.AlertType.ERROR);
                         return;
                     }
-                    resultado = transaccionController.depositoPresupuesto(
+                    resultado = facade.depositoPresupuesto(
                         cuentaOrigen.idCuenta(), presupuestoDestino.idPresupuesto(), monto, descripcion, idCategoria);
                     break;
                     
@@ -491,7 +483,7 @@ public class TransaccionViewController {
                         mostrarMensaje("Error","Seleccione cuenta origen",  "Seleccione cuenta de origen para la operacion", Alert.AlertType.ERROR);
                         return;
                     }
-                    resultado = transaccionController.retiroPorCuenta(
+                    resultado = facade.retiroPorCuenta(
                         cuentaOrigen.idCuenta(), monto, descripcion, idCategoria);
                     break;
                     
@@ -502,7 +494,7 @@ public class TransaccionViewController {
                         mostrarMensaje("Error","Seleccione cuenta y presupuesto", "Seleccione cuenta y presupuesto", Alert.AlertType.ERROR);
                         return;
                     }
-                    resultado = transaccionController.retiroPorPresupuesto(
+                    resultado = facade.retiroPorPresupuesto(
                         cuentaOrigen.idCuenta(), presupuesto.idPresupuesto(), monto, descripcion, idCategoria);
                     break;
                     
@@ -517,7 +509,7 @@ public class TransaccionViewController {
                         mostrarMensaje("Error", "Las cuentas de origen y destino no pueden ser iguales", "Seleccione cuentas diferentes", Alert.AlertType.ERROR);
                         return;
                     }
-                    resultado = transaccionController.realizarTransferencia(
+                    resultado = facade.realizarTransferencia(
                         origen.idCuenta(), 
                         destino.idCuenta(), 
                         monto, 
@@ -558,7 +550,7 @@ public class TransaccionViewController {
 
     private void cargarPresupuestosDeCuenta(String idCuenta) {
         listaPresupuestos.clear();
-        listaPresupuestos.addAll(presupuestoController.obtenerPresupuestosPorCuenta(idCuenta));
+        listaPresupuestos.addAll(facade.obtenerPresupuestosPorCuenta(idCuenta));
     }
 
     @FXML
@@ -599,7 +591,7 @@ public class TransaccionViewController {
                 case TransaccionConstantes.TIPO_DEPOSITO_INICIAL:
                 case TransaccionConstantes.TIPO_BONIFICACION:
                     // Agregar dinero a la cuenta
-                    resultado = transaccionController.depositoCuenta(
+                    resultado = facade.depositoCuenta(
                         cuentaAfectada.idCuenta(), monto, descripcionCompleta, null
                     );
                     break;
@@ -607,7 +599,7 @@ public class TransaccionViewController {
                 case TransaccionConstantes.TIPO_AJUSTE_NEGATIVO:
                 case TransaccionConstantes.TIPO_PENALIZACION:
                     // Quitar dinero de la cuenta
-                    resultado = transaccionController.retiroPorCuenta(
+                    resultado = facade.retiroPorCuenta(
                         cuentaAfectada.idCuenta(), monto, descripcionCompleta, null
                     );
                     break;

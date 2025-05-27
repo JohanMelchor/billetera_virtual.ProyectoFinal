@@ -1,6 +1,6 @@
 package co.edu.uniquindio.viewcontroller;
 
-import co.edu.uniquindio.controller.*;
+import co.edu.uniquindio.facade.BilleteraFacade;
 import co.edu.uniquindio.mapping.dto.UsuarioDto;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,11 +15,10 @@ import java.io.IOException;
 import java.util.List;
 
 public class BilleteraVirtualAppViewController {
-    
-    private UsuarioController usuarioController;
     private String idUsuarioActual;
     private UsuarioDto usuarioActual;
     private boolean esAdmin;
+    private BilleteraFacade facade;
     
     @FXML
     private BorderPane mainBorderPane;
@@ -60,11 +59,8 @@ public class BilleteraVirtualAppViewController {
     @FXML
     void initialize() {
         try {
-            usuarioController = new UsuarioController();
-            new CuentaController();
-            new TransaccionController();
-            new PresupuestoController();
-            new CategoriaController();
+            facade = new BilleteraFacade();
+    
             
             // Configuración inicial de la interfaz
             configurarVistaPredeterminada();
@@ -100,14 +96,14 @@ public class BilleteraVirtualAppViewController {
         this.idUsuarioActual = idAdmin;
         this.esAdmin = true;
         
-        String nombreAdmin = usuarioController.obtenerNombreAdmin(idAdmin);
+        String nombreAdmin = facade.obtenerNombreAdmin(idAdmin);
         lblUsuarioActual.setText("Administrador : " + nombreAdmin);
         lblUsuarioActualA.setText("Bienvenido : " + nombreAdmin);
         configurarVistaAdmin();
     }
 
     private boolean cargarDatosUsuario() {
-        List<UsuarioDto> usuarios = usuarioController.obtenerUsuarios();
+        List<UsuarioDto> usuarios = facade.obtenerUsuarios();
         
         for(UsuarioDto usuario : usuarios) {
             if(usuario.idUsuario().equals(idUsuarioActual)) {

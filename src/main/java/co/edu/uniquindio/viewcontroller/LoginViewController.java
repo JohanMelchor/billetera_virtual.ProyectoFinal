@@ -1,6 +1,5 @@
 package co.edu.uniquindio.viewcontroller;
 
-import co.edu.uniquindio.controller.UsuarioController;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,9 +11,10 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+import co.edu.uniquindio.facade.BilleteraFacade;
+
 public class LoginViewController {
-    
-    private UsuarioController usuarioController;
+    private BilleteraFacade facade;
     
     @FXML
     private TextField txtUsuario;
@@ -30,7 +30,7 @@ public class LoginViewController {
     
     @FXML
     void initialize() {
-        usuarioController = new UsuarioController();
+        facade = new BilleteraFacade();
     }
     
     @FXML
@@ -44,11 +44,11 @@ public class LoginViewController {
         }
         
         // Primero intentamos como usuario normal
-        if(usuarioController.validarCredenciales(idUsuario, password)) {
+        if(facade.validarCredenciales(idUsuario, password)) {
             cargarVistaUsuario(idUsuario);
         } 
         // Si no es usuario, intentamos como administrador
-        else if(usuarioController.validarCredencialesAdmin(idUsuario, password)) {
+        else if(facade.validarCredencialesAdmin(idUsuario, password)) {
             cargarVistaAdmin(idUsuario);
         } 
         else {

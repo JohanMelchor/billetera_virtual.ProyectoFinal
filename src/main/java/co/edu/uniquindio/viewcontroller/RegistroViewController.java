@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import co.edu.uniquindio.controller.UsuarioController;
+import co.edu.uniquindio.facade.BilleteraFacade;
 import co.edu.uniquindio.mapping.dto.UsuarioDto;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,10 +17,10 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 public class RegistroViewController {
-    private UsuarioController usuarioController;
+    private BilleteraFacade facade;
 
     public RegistroViewController() {
-        usuarioController = new UsuarioController();
+        facade = new BilleteraFacade();
     }
 
     @FXML
@@ -85,7 +85,7 @@ public class RegistroViewController {
             password
         );
 
-        if (usuarioController.registrarUsuario(usuarioDto)) {
+        if (facade.registrarUsuario(usuarioDto)) {
             mostrarAlerta("Éxito", "Usuario registrado", 
                          "El usuario se ha registrado correctamente", Alert.AlertType.INFORMATION);
             onVolver(event);

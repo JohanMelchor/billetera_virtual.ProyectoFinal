@@ -1,6 +1,6 @@
 package co.edu.uniquindio.viewcontroller;
 
-import co.edu.uniquindio.controller.ReporteController;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -10,9 +10,11 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.time.LocalDate;
 
+import co.edu.uniquindio.facade.BilleteraFacade;
+
 public class ReporteViewController {
+    private BilleteraFacade facade;
     
-    private ReporteController reporteController;
     private String idUsuarioActual;
     private boolean esAdmin = false;
     
@@ -33,7 +35,7 @@ public class ReporteViewController {
     
     @FXML
     void initialize() {
-        reporteController = new ReporteController();
+        facade = new BilleteraFacade();
         
         txtInfo.setEditable(false);
         txtInfo.setWrapText(true);
@@ -93,9 +95,9 @@ public class ReporteViewController {
         
         boolean resultado;
         if (esAdmin) {
-            resultado = reporteController.generarReporteAdmin(txtRuta.getText());
+            resultado = facade.generarReporteAdmin(txtRuta.getText());
         } else {
-            resultado = reporteController.generarReporteUsuario(idUsuarioActual, txtRuta.getText());
+            resultado = facade.generarReporteUsuario(idUsuarioActual, txtRuta.getText());
         }
         
         btnGenerar.setText("Generar Reporte PDF");

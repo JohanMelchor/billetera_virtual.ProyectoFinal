@@ -1,7 +1,7 @@
 package co.edu.uniquindio.viewcontroller;
 
 import co.edu.uniquindio.Util.TransaccionConstantes;
-import co.edu.uniquindio.controller.*;
+import co.edu.uniquindio.facade.BilleteraFacade;
 import co.edu.uniquindio.mapping.dto.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,12 +17,10 @@ import java.util.*;
 
 public class EstadisticasViewController {
     
-    private UsuarioController usuarioController;
-    private TransaccionController transaccionController;
-    private CategoriaController categoriaController;
     private List<UsuarioDto> listaUsuarios;
     private List<TransaccionDto> listaTransacciones;
     private List<CategoriaDto> listaCategorias;
+    private BilleteraFacade facade;
     
     @FXML
     private ComboBox<String> cbTipoEstadistica;
@@ -53,9 +51,7 @@ public class EstadisticasViewController {
     
     @FXML
     void initialize() {
-        usuarioController = new UsuarioController();
-        transaccionController = new TransaccionController();
-        categoriaController = new CategoriaController();
+        facade = new BilleteraFacade();
         
         // Inicializar ComboBox de tipos de estadísticas
         cbTipoEstadistica.getItems().addAll(
@@ -71,9 +67,9 @@ public class EstadisticasViewController {
     }
     
     private void cargarDatos() {
-        listaUsuarios = usuarioController.obtenerUsuarios();
-        listaTransacciones = transaccionController.obtenerTransacciones();
-        listaCategorias = categoriaController.obtenerCategorias();
+        listaUsuarios = facade.obtenerUsuarios();
+        listaTransacciones = facade.obtenerTransacciones();
+        listaCategorias = facade.obtenerCategorias();
         
         // Calcular estadísticas generales
         calcularEstadisticasGenerales();
@@ -89,14 +85,13 @@ public class EstadisticasViewController {
         lblPromedioSaldo.setText(String.format("%.2f", promedio));
         
         Map<String, Integer> contadorPorUsuario = new HashMap<>();
-        CuentaController cuentaController = new CuentaController();
         
         for(TransaccionDto transaccion : listaTransacciones) {
             // Contar transacciones por cuenta origen
             if(transaccion.idCuentaOrigen() != null && !transaccion.idCuentaOrigen().isEmpty()) {
                 // Buscar el dueño de esta cuenta
                 for(UsuarioDto usuario : listaUsuarios) {
-                    List<CuentaDto> cuentasUsuario = cuentaController.obtenerCuentasPorUsuario(usuario.idUsuario());
+                    List<CuentaDto> cuentasUsuario = facade.obtenerCuentasPorUsuario(usuario.idUsuario());
                     for(CuentaDto cuenta : cuentasUsuario) {
                         if(cuenta.idCuenta().equals(transaccion.idCuentaOrigen())) {
                             contadorPorUsuario.merge(usuario.nombreCompleto(), 1, Integer::sum);
@@ -112,7 +107,7 @@ public class EstadisticasViewController {
             !transaccion.idCuentaDestino().equals(transaccion.idCuentaOrigen())) {
                 
                 for(UsuarioDto usuario : listaUsuarios) {
-                    List<CuentaDto> cuentasUsuario = cuentaController.obtenerCuentasPorUsuario(usuario.idUsuario());
+                    List<CuentaDto> cuentasUsuario = facade.obtenerCuentasPorUsuario(usuario.idUsuario());
                     for(CuentaDto cuenta : cuentasUsuario) {
                         if(cuenta.idCuenta().equals(transaccion.idCuentaDestino())) {
                             contadorPorUsuario.merge(usuario.nombreCompleto(), 1, Integer::sum);
