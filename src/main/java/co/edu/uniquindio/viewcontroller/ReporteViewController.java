@@ -74,11 +74,10 @@ public class ReporteViewController {
             lblTitulo.setStyle("-fx-text-fill: blue; -fx-font-weight: bold;");
             txtInfo.setText("REPORTE PERSONAL\n\n" +
                         "Este reporte incluirá:\n" +
-                        "• Tu información personal\n" +
-                        "• Tus cuentas y saldos\n" +
-                        "• Tus transacciones\n" +
-                        "• Tu resumen financiero\n" +
-                        "• Análisis de tus gastos por categoría\n\n" +
+                        "• Tu información personal (nombre, email, saldo)\n" +
+                        "• Resumen financiero (ingresos, gastos, balance)\n" +
+                        "• Lista de tus cuentas con saldos actuales\n" +
+                        "• Historial de tus últimas 10 transacciones\n\n" +
                         "Formatos disponibles:\n" +
                         "• PDF: Resumen visual para presentar\n" +
                         "• Excel: Datos básicos para revisar\n" +

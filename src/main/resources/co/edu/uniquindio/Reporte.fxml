@@ -33,7 +33,7 @@
                   <TextField fx:id="txtRuta" editable="false" layoutX="75.0" layoutY="59.0" prefWidth="350.0" promptText="Seleccione dónde guardar el archivo PDF..." />
                   <Button fx:id="btnSeleccionar" layoutX="434.0" layoutY="59.0" onAction="#onSeleccionar" style="-fx-background-color: #FF9800; -fx-text-fill: white;" text="Seleccionar ruta" />
                   <Label fx:id="lblFormato" layoutX="20.0" layoutY="27.0" text="Formato:" />
-                  <ComboBox fx:id="cbFormato" layoutX="75.0" layoutY="23.0" prefHeight="25.0" prefWidth="100.0" />
+                  <ComboBox fx:id="cbFormato" layoutX="75.0" layoutY="23.0" prefHeight="25.0" prefWidth="200.0" />
                   <Label layoutX="126.0" layoutY="1.0" style="-fx-text-fill: gray; -fx-font-size: 11px;" text="(PDF para presentar, Excel para analizar, CSV para importar)" />
                </children>
             </Pane>

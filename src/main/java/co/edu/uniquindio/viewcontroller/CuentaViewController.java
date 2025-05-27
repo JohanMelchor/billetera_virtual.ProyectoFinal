@@ -232,6 +232,7 @@ public class CuentaViewController {
                 Alert.AlertType.WARNING
             );
         }
+        cbEstadoCuenta.setValue(null);
     }
     
     @FXML
@@ -276,6 +277,7 @@ public class CuentaViewController {
                 Alert.AlertType.WARNING
             );
         }
+        cbEstadoCuenta.setValue(null);
     }
     
     @FXML
@@ -317,6 +319,7 @@ public class CuentaViewController {
                 Alert.AlertType.WARNING
             );
         }
+        cbEstadoCuenta.setValue(null);
     }
     
     private CuentaDto crearCuentaDto() {
@@ -355,6 +358,7 @@ public class CuentaViewController {
         cuentaSeleccionada = null;
         txtSaldo.setText("");
         cbUsuarios.setValue(null);
+        cbEstadoCuenta.setValue(null);
     }
     
     private void generarIdUnico() {
@@ -373,6 +377,7 @@ public class CuentaViewController {
     void onLimpiarCampos(ActionEvent event) {
         limpiarCampos();
         tableCuentas.getSelectionModel().clearSelection();
+        cbEstadoCuenta.setValue(null);
     }
 
     @FXML

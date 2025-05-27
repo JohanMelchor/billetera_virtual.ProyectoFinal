@@ -266,6 +266,7 @@ public class TransaccionViewController {
         lblTransaccionesAdmin.setVisible(false);
         cbTipoAdmin.setVisible(false);
         cbCuentaAfectada.setVisible(false);
+        btnTransaccion.setVisible(true);
         txtMontoAdmin.setVisible(false);
         txtJustificacion.setVisible(false);
         btnCrearTransaccionAdmin.setVisible(false);

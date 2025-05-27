@@ -137,7 +137,11 @@ public class UsuariosViewController {
         tcCorreoUsuario.setCellValueFactory(cellData-> new SimpleStringProperty(cellData.getValue().correo()));
         tcTelefonoUsuario.setCellValueFactory(cellData-> new SimpleStringProperty(cellData.getValue().telefono()));
         tcDireccionUsuario.setCellValueFactory(cellData-> new SimpleStringProperty(cellData.getValue().direccion()));
-        tcSaldoUsuario.setCellValueFactory(cellData-> new SimpleStringProperty(String.valueOf(cellData.getValue().saldo())));
+        tcSaldoUsuario.setCellValueFactory(cellData -> {
+        String idUsuario = cellData.getValue().idUsuario();
+        double saldoTotal = calcularSaldoTotalUsuario(idUsuario);
+        return new SimpleStringProperty(String.format("$%.2f", saldoTotal));
+    });
     }
 
     @FXML
@@ -145,5 +149,23 @@ public class UsuariosViewController {
         limpiarCampos();
         usuarioSeleccionado = null;
         tableUsuario.getSelectionModel().clearSelection();
+    }
+
+    private double calcularSaldoTotalUsuario(String idUsuario) {
+        try {
+            // Obtener todas las cuentas del usuario
+            var cuentasUsuario = facade.obtenerCuentasPorUsuario(idUsuario);
+            
+            // Sumar todos los saldos de las cuentas
+            double saldoTotal = 0.0;
+            for (var cuenta : cuentasUsuario) {
+                saldoTotal += cuenta.saldoTotal();
+            }
+            
+            return saldoTotal;
+        } catch (Exception e) {
+            // En caso de error, mostrar 0
+            return 0.0;
+        }
     }
 }
